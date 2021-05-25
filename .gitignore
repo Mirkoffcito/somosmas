@@ -67,3 +67,5 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Ignore environment variables config
+.env
