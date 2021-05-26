@@ -36,5 +36,17 @@ ActiveRecord::Schema.define(version: 2021_05_26_012020) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+  create_table "organizations", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "address"
+    t.integer "phone"
+    t.string "email", null: false
+    t.text "welcome_text", null: false
+    t.text "about_us_text"
+    t.datetime "deleted_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
 end
