@@ -26,6 +26,7 @@ development:
   database: t40_api_development
   username: <%= ENV['DATABASE_USERNAME'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
+  host: localhost
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -34,9 +35,6 @@ development:
 
 
   # The password associated with the postgres role (username).
-  username: <%= ENV['DATABASE_USERNAME'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
-  host: localhost
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
   # domain sockets, so uncomment these lines.
@@ -63,10 +61,8 @@ test:
   database: t40_api_test
   username: <%= ENV['T40_API_DATABASE_USERNAME'] %>
   password: <%= ENV['T40_API_DATABASE_PASSWORD'] %>
-
-  username: <%= ENV['DATABASE_USERNAME'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
   host: localhost
+
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
