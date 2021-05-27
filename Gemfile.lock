@@ -169,7 +169,10 @@ GEM
       thread_safe (~> 0.1)
     tzinfo-data (1.2021.1)
       tzinfo (>= 1.0.0)
+<<<<<<< HEAD
     wdm (0.1.1)
+=======
+>>>>>>> 283b34fd420f0afcd6767ddcdfd6572f95c60c8d
     websocket-driver (0.7.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
