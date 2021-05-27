@@ -1,2 +1,2 @@
-class OrganizationController < ApplicationController
+class Api::OrganizationsController < ApplicationController
 end
