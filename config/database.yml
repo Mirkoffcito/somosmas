@@ -24,6 +24,8 @@ default: &default
 development:
   <<: *default
   database: t40_api_development
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -59,6 +61,8 @@ development:
 test:
   <<: *default
   database: t40_api_test
+  username: <%= ENV['T40_API_DATABASE_USERNAME'] %>
+  password: <%= ENV['T40_API_DATABASE_PASSWORD'] %>
 
   username: <%= ENV['DATABASE_USERNAME'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
