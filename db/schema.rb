@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_26_123647) do
+ActiveRecord::Schema.define(version: 2021_05_27_111906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,11 +36,24 @@ ActiveRecord::Schema.define(version: 2021_05_26_123647) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-<<<<<<< HEAD
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.text "description"
-=======
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_categories_on_deleted_at"
+  end
+
+  create_table "news", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "title"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_news_on_deleted_at"
+  end
+
   create_table "organizations", force: :cascade do |t|
     t.string "name", null: false
     t.string "address"
@@ -49,7 +62,6 @@ ActiveRecord::Schema.define(version: 2021_05_26_123647) do
     t.text "welcome_text", null: false
     t.text "about_us_text"
     t.datetime "deleted_at"
->>>>>>> d09ef0b2f81ae0558742cf6b86755e883824651c
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
