@@ -1,2 +1,4 @@
-class TestimonialsController < ApplicationController
+module Api
+  class TestimonialsController < ApplicationController
+  end
 end
