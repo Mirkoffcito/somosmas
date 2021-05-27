@@ -1,4 +1,5 @@
 class Api::UsersController < ApplicationController
+    rescue_from ActionController::ParameterMissing, with: :parameter_missing
 
     def register
         @user = User.create(user_params)
@@ -15,4 +16,7 @@ class Api::UsersController < ApplicationController
         params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :role_id, :image)
     end
 
+    def parameter_missing
+        render json: {error: 'Params must be passed formatted as follows: user[param], for example: user[email] '}, status: 400
+    end
 end
