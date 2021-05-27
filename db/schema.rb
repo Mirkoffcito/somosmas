@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 2021_05_26_115837) do
     t.text "content", null: false
     t.date "deleted_at"
   end
-  
+
   create_table "organizations", force: :cascade do |t|
     t.string "name", null: false
     t.string "address"
