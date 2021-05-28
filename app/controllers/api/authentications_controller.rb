@@ -1,4 +1,5 @@
 class Api::AuthenticationsController < ApplicationController
+  rescue_from StandardError, with: :parameter_missing
   before_action :authorize_request, except: :login
 
   def login
@@ -14,7 +15,11 @@ class Api::AuthenticationsController < ApplicationController
 
   private
 
-    def login_params
+    def user_params
       params.require(:user).permit(:email, :password)
+    end
+    
+    def parameter_missing
+      render json: {error: 'Parameter is missing or its value is empty'}, status: :bad_request
     end
 end
