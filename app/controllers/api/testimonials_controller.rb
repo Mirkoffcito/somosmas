@@ -1,6 +1,2 @@
-module Api
-  class TestimonialsController < ApplicationController
-  
-  
-  end
+class Api::TestimonialsController < ApplicationController
 end
