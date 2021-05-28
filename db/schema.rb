@@ -42,6 +42,15 @@ ActiveRecord::Schema.define(version: 2021_05_28_131946) do
     t.date "deleted_at"
   end
 
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_categories_on_deleted_at"
+  end
+
   create_table "members", force: :cascade do |t|
     t.string "name", null: false
     t.string "facebook_url"
