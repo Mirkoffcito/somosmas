@@ -9,7 +9,7 @@ class Api::AuthenticationsController < ApplicationController
       time = Time.now + 24.hours.to_i
       render json: { token: token }, status: :ok
     else
-      render json: { error: "Invalid user or password" }
+      render json: { error: "Invalid user or password" }, status: :bad_request
     end
   end
 
