@@ -47,6 +47,8 @@ ActiveRecord::Schema.define(version: 2021_05_28_135112) do
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_categories_on_deleted_at"
   end
 
   create_table "members", force: :cascade do |t|
@@ -58,6 +60,15 @@ ActiveRecord::Schema.define(version: 2021_05_28_135112) do
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "news", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "title"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_news_on_deleted_at"
   end
 
   create_table "organizations", force: :cascade do |t|
