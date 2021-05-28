@@ -2,7 +2,7 @@ class User < ApplicationRecord
   acts_as_paranoid
   has_one_attached :image
 
-  belongs_to :role
+  belongs_to :role, optional: true
 
   has_secure_password
 
@@ -15,6 +15,6 @@ class User < ApplicationRecord
                     uniqueness: { case_sensitive: false }
 
   validates :password, presence: true, length: { minimum: 6 }
-  validates :role, presence: true
+  validates :password_confirmation, presence: true, on: :create
 
 end

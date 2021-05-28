@@ -72,6 +72,14 @@ ActiveRecord::Schema.define(version: 2021_05_27_050752) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "testimonials", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "content"
+    t.datetime "deleted_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "first_name", null: false
     t.string "last_name", null: false
