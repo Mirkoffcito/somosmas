@@ -9,7 +9,7 @@ class AuthorizeApiRequest
     rescue ActiveRecord::RecordNotFound => e
       render json: { errors: e.message }, status: :unauthorized
     rescue JWT::DecodeError => e
-      render json: { message: 'Forbidden access.' }, status: :unauthorized
+      render json: { message: 'Unauthorized access.' }, status: :unauthorized
     end
   end
 
