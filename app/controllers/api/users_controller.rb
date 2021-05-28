@@ -17,6 +17,6 @@ class Api::UsersController < ApplicationController
     end
 
     def parameter_missing
-        render json: {error: 'Params must be passed formatted as follows: user[param], for example: user[email] '}, status: 400
+        render json: {error: 'Parameter is missing or its value is empty'}, status: :bad_request
     end
 end
