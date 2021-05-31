@@ -12,6 +12,6 @@ module AuthorizeApiRequest
   end
 
   def user_authorize
-    @current_user.isadmin?
+    @current_user.is_admin?
   end
 end
