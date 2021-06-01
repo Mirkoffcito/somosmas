@@ -1,5 +1,7 @@
 class Api::UsersController < ApplicationController
     rescue_from ActionController::ParameterMissing, with: :parameter_missing
+    before_action :authorize_request, except: [:register]
+    before_action :user_authorize, only: [:index]
 
     def register
         @user = User.create(user_params)
@@ -8,6 +10,12 @@ class Api::UsersController < ApplicationController
         else
             render json: @user.errors, status: :unprocessable_entity
         end
+    end
+
+    def index
+        @users = User.all
+        
+        render json: @users, each_serializer: UserSerializer
     end
 
     private
