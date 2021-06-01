@@ -15,10 +15,14 @@ class Api::OrganizationsController < ApplicationController
   end
 
   def update
-    if @organization.update(organization_params)
-      render json: @organization, serializer: OrganizationSerializer
+    if user_authorize
+      if @organization.update(organization_params)
+        render json: @organization, serializer: OrganizationSerializer
+      else
+        render json: @organization.errors, status: :unprocessable_entity
+      end
     else
-      render json: @organization.errors, status: :unprocessable_entity
+      render json: { error: "No eres Administrador" }, status: :unauthorized
     end
   end
 
