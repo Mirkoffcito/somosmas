@@ -2,7 +2,6 @@ class Api::OrganizationsController < ApplicationController
   before_action :authorize_request
   before_action :user_authorize
   rescue_from ActionController::ParameterMissing, with: :parameter_missing
-  rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
 
   def index
     @organization = Organization.first
@@ -13,7 +12,7 @@ class Api::OrganizationsController < ApplicationController
   def update
     @organization = Organization.first
 
-    @organization.update!(organization_params)
+    @organization.update(organization_params)
     render json: @organization, serializer: OrganizationSerializer
   end
 
@@ -27,7 +26,4 @@ class Api::OrganizationsController < ApplicationController
     render json: {error: 'Parameter is missing or its value is empty'}, status: :bad_request
   end
 
-  def record_invalid
-    render json: {error: 'Invalid phone number'}, status: :unprocessable_entity
-  end
 end
