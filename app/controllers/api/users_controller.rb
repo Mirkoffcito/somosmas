@@ -24,6 +24,17 @@ class Api::UsersController < ApplicationController
             render json: @user.errors, status: :unauthorized
         end
     end
+    
+    def destroy
+        @user = User.find(params[:id])
+
+        if @user.id == @current_user.id
+            @user.destroy
+            render json: {message: 'Succesfully deleted'}
+        else
+            render json: @user.errors, status: :unauthorized
+        end
+    end
 
     private
 
@@ -34,4 +45,5 @@ class Api::UsersController < ApplicationController
     def parameter_missing
         render json: {error: 'Parameter is missing or its value is empty'}, status: :bad_request
     end
+
 end
