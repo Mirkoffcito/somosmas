@@ -11,6 +11,12 @@ class Api::UsersController < ApplicationController
         end
     end
 
+    def index
+        @users = User.all
+        
+        render json: @users, each_serializer: UserSerializer
+    end
+    
     def show
         if @current_user
             render json: @current_user
