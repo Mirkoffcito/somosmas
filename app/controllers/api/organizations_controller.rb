@@ -6,23 +6,15 @@ class Api::OrganizationsController < ApplicationController
 
   def index
     @organization = Organization.first
-    
-    if user_authorize
-      render json: @organization, serializer: OrganizationSerializer
-    else
-      render json: { error: "No eres Administrador" }, status: :unauthorized
-    end
+
+    render json: @organization, serializer: OrganizationSerializer
   end
 
   def update
-    unless user_authorize # if user is not an admin
-      render json: { error: "No eres Administrador" }, status: :unauthorized
-    else # if user is an admin
-        @organization = Organization.first
+    @organization = Organization.first
 
-        @organization.update!(organization_params)
-        render json: @organization, serializer: OrganizationSerializer
-    end
+    @organization.update!(organization_params)
+    render json: @organization, serializer: OrganizationSerializer
   end
 
   private
