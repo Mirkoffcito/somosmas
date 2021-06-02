@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     get 'organization/public' => 'organizations#index'
     post 'auth/register', to: 'users#register'
     post 'auth/login', to: 'authentications#login'
+    get 'auth/me', to: 'users#show'
   end
   
 end

@@ -1,5 +1,6 @@
 class Api::UsersController < ApplicationController
     rescue_from ActionController::ParameterMissing, with: :parameter_missing
+    before_action :authorize_request, except: [:register]
 
     def register
         @user = User.create(user_params)
@@ -8,6 +9,14 @@ class Api::UsersController < ApplicationController
             UserMailer.send_signup_email(@user).deliver
            else
             render json: @user.errors, status: :unprocessable_entity
+        end
+    end
+
+    def show
+        if @current_user
+            render json: @current_user
+        else
+            render json: @user.errors, status: :unauthorized
         end
     end
 
