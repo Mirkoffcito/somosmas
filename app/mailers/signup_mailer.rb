@@ -11,7 +11,7 @@ class SignupMailer< ApplicationMailer
     personalization.add_to(Email.new(email: 'cfo.oostdijk@gmail.com'))
     personalization.add_dynamic_template_data({
       "subject" => "Bienvenido a Somos Mas",
-      "first_name" => "Cristian})
+      "first_name" => "Cristian"})
     mail.add_personalization(personalization)
 
     sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY']) 
