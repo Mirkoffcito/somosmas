@@ -1,7 +1,6 @@
 class Api::OrganizationsController < ApplicationController
   before_action :authorize_request
   before_action :user_authorize
-  before_action :set_organization, except: [:index]
   rescue_from ActionController::ParameterMissing, with: :parameter_missing
 
   def index
@@ -15,25 +14,26 @@ class Api::OrganizationsController < ApplicationController
   end
 
   def update
-    if user_authorize
-      if @organization.update(organization_params)
+    unless user_authorize # if user is not an admin
+      render json: { error: "No eres Administrador" }, status: :unauthorized
+    else # if user is an admin
+      if organization
+        @organization.update(organization_params)
         render json: @organization, serializer: OrganizationSerializer
       else
         render json: @organization.errors, status: :unprocessable_entity
       end
-    else
-      render json: { error: "No eres Administrador" }, status: :unauthorized
     end
+  end
+
+  def organization
+    @organization = Organization.first
   end
 
   private
 
   def organization_params
     params.require(:organization).permit(:name, :image, :address, :phone)
-  end
-
-  def set_organization
-    @organization = Organization.first
   end
 
   def parameter_missing
