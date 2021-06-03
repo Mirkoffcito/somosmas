@@ -20,15 +20,19 @@ class Api::UsersController < ApplicationController
     end
 
     def update
-      if @current_user
-        @current_user = User.update(user_params)   
+      if @current_user.id == @user.id
+        @current_user = User.update(user_update_params)   
         render json: @current_user if @current_user.save
       else
-        render json: @user.errors, status: :unprocessable_entity
+        render json: @user.errors, status: :not_found
       end
     end
 
     private
+
+    def user_update_params
+      params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :image)
+  end
 
     def user_params
         params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :role_id, :image)
