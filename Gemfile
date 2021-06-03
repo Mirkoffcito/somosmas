@@ -27,7 +27,8 @@ gem 'paranoia', '~> 2.4', '>= 2.4.3'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'dotenv-rails'
-
+#Sendgrid
+gem 'sendgrid-ruby'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 

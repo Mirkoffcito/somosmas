@@ -1,5 +1,6 @@
 class Api::UsersController < ApplicationController
     rescue_from ActionController::ParameterMissing, with: :parameter_missing
+    before_action :authorize_request, except: [:register]
 
     def register
         @user = User.create(user_params)
@@ -7,6 +8,31 @@ class Api::UsersController < ApplicationController
             render json: @user, serializer: UserSerializer, status: :created
         else
             render json: @user.errors, status: :unprocessable_entity
+        end
+    end
+
+    def index
+        @users = User.all
+        
+        render json: @users, each_serializer: UserSerializer
+    end
+    
+    def show
+        if @current_user
+            render json: @current_user
+        else
+            render json: @user.errors, status: :unauthorized
+        end
+    end
+    
+    def destroy
+        @user = User.find(params[:id])
+
+        if @user.id == @current_user.id
+            @user.destroy
+            render json: {message: 'Succesfully deleted'}
+        else
+            render json: @user.errors, status: :unauthorized
         end
     end
 
@@ -19,4 +45,5 @@ class Api::UsersController < ApplicationController
     def parameter_missing
         render json: {error: 'Parameter is missing or its value is empty'}, status: :bad_request
     end
+
 end
