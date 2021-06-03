@@ -3,7 +3,7 @@ class SignupMailer< ApplicationMailer
   require 'sendgrid-ruby'
   include SendGrid
     
-  def signupmail (user)
+  def signup_mail (user)
     @user = user
     mail = SendGrid::Mail.new
     mail.from = Email.new(email: ENV['SENDER_MAIL'])
