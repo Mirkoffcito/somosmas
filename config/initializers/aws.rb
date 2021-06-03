@@ -1,9 +1,9 @@
 require 'aws-sdk-s3'
 
 Aws.config.update({
-  # region: ENV['AWS_REGION'],
+  region: ENV['AWS_REGION'],
   credentials: Aws::Credentials.new(
     ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
 })
 
-# AWS_BUCKET = Aws::S3::Resource.new.bucket(ENV['AWS_BUCKET'])
+AWS_BUCKET = Aws::S3::Resource.new.bucket(ENV['AWS_BUCKET'])
