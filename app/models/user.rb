@@ -20,4 +20,10 @@ class User < ApplicationRecord
   def is_admin?
     role_id == 1
   end
+
+  after_create :signup_mail
+  def signup_mail
+    SignupMailer.signup_mail(self).deliver
+  end
+
 end

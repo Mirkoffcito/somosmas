@@ -6,7 +6,6 @@ class Api::UsersController < ApplicationController
         @user = User.create(user_params)
         if @user.save
             render json: @user, serializer: UserSerializer, status: :created
-            SignupMailer.signup_mail(user).deliver_now
            else
             render json: @user.errors, status: :unprocessable_entity
         end
