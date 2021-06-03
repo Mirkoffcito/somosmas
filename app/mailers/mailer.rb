@@ -12,4 +12,20 @@ class Mailer < ApplicationMailer
     sg.client.mail._('send').post(request_body: mail.to_json)
   end
 
+  def send_mail (user, subject, template)
+    @user = user
+    mail = SendGrid::Mail.new
+    mail.from = Email.new(email: ENV['SENDER_MAIL'])
+    mail.template_id = template
+    personalization = Personalization.new
+    personalization.add_to(Email.new(email: @user.email))
+    personalization.add_dynamic_template_data({
+    "subject" => "subject",
+    "first_name" => @user.first_name})
+    mail.add_personalization(personalization)
+    
+    sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY']) 
+    response = sg.client.mail._('send').post(request_body: mail.to_json) 
+    end
+
 end
