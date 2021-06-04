@@ -61,9 +61,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
-<<<<<<< HEAD
     awesome_print (1.9.2)
-=======
     aws-eventstream (1.1.1)
     aws-partitions (1.465.0)
     aws-sdk-core (3.114.0)
@@ -80,7 +78,6 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.2.3)
       aws-eventstream (~> 1, >= 1.0.2)
->>>>>>> 5cdd5dbc65e203165d8ee1a2fcfd587bc656fbcc
     bcrypt (3.1.16)
     bootsnap (1.7.5)
       msgpack (~> 1.0)
