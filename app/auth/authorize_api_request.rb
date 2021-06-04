@@ -12,6 +12,8 @@ module AuthorizeApiRequest
   end
 
   def user_authorize
-    @current_user.is_admin?
+    if !@current_user.is_admin?
+      render json: { error: 'Unauthorized access.' }, status: :unauthorized
+    end
   end
 end
