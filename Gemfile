@@ -30,7 +30,7 @@ gem 'dotenv-rails'
 #Sendgrid
 gem 'sendgrid-ruby'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
+gem 'rack-cors'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -49,3 +49,5 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'active_model_serializers', '~> 0.10.12'
+
+gem 'aws-sdk-s3', '~> 1.95', '>= 1.95.1'
