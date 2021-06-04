@@ -22,8 +22,8 @@ class Api::UsersController < ApplicationController
     def update
       @user = User.find(params[:id])
       if @current_user.id == @user.id
-        @current_user = User.update(user_update_params)   
-        render json: @current_user if @current_user.save
+        @user = User.update!(user_update_params)   
+        render json: @current_user
       else
         render json: @user.errors, status: :not_found
       end
@@ -31,8 +31,10 @@ class Api::UsersController < ApplicationController
 
     private
 
+    # TODO method to validates and change user password 
+    
     def user_update_params
-      params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :image)
+      params.require(:user).permit(:first_name, :last_name, :email, :image)
     end
 
     def user_params
