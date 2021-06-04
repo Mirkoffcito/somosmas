@@ -1,0 +1,3 @@
+class Slide < ApplicationRecord
+
+end
