@@ -6,7 +6,7 @@ class Api::UsersController < ApplicationController
         @user = User.create(user_params)
         if @user.save
             render json: @user, serializer: UserSerializer, status: :created
-        else
+           else
             render json: @user.errors, status: :unprocessable_entity
         end
     end
