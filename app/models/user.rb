@@ -20,4 +20,12 @@ class User < ApplicationRecord
   def is_admin?
     role_id == 1
   end
+
+  after_create :send_mail
+  def send_mail
+    subject = 'Bienvenidos a Somos Mas'
+    template = ENV['SENDGRID_SIGNUP_TEMPLATE_ID'] 
+    Mailer.send_mail(self, subject, template).deliver
+  end
+
 end
