@@ -37,7 +37,7 @@ class Api::UsersController < ApplicationController
     end
 
     def update
-      @user = User.find(params[:id])
+      user
       return render json: @user.errors, status: :not_found unless @user
       if @current_user.id == @user.id
         @user.update!(user_update_params) 
@@ -50,6 +50,11 @@ class Api::UsersController < ApplicationController
     private
 
     # TODO method to validates and change user password 
+    def user
+        @user = User.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+        render json: { errors: 'User not found' }, status: :not_found
+    end
     
     def user_update_params
       params.require(:user).permit(:first_name, :last_name, :email, :image)
