@@ -38,7 +38,7 @@ class Api::UsersController < ApplicationController
 
     def update
       @user = User.find(params[:id])
-      unless @user return render json: @user.errors, status: :not_found
+      return render json: @user.errors, status: :not_found unless @user
       if @current_user.id == @user.id
         @user.update!(user_update_params) 
         render json: @user
