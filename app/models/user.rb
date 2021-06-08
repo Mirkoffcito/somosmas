@@ -1,6 +1,4 @@
 class User < ApplicationRecord
-  include UserType
-
   acts_as_paranoid
   has_one_attached :image
 
