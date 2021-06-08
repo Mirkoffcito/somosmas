@@ -1,5 +1,4 @@
-module Api
-  class ActivitiesController < ApplicationController
+class Api::ActivitiesController < ApplicationController
   before_action :authorize_request
   before_action :user_authorize
 
@@ -18,8 +17,7 @@ module Api
   private
 
   def activity_params
-    params.permit(:name, :content, :image)
+    params.require(:activity).permit(:name, :content, :image)
   end
 
-  end
 end
