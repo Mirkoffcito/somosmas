@@ -17,7 +17,7 @@ class Api::AuthenticationsController < ApplicationController
     if @user.save
       login  
     else
-        render json: @user.errors, status: :unprocessable_entity
+      render json: @user.errors, status: :unprocessable_entity
     end
   end
 
