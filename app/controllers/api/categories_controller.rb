@@ -1,6 +1,7 @@
 class Api::CategoriesController < ApplicationController
   before_action :authorize_request
   before_action :user_authorize
+  before_action :category, only: [:destroy]
 
   def index
     @categories = Category.all()
@@ -13,10 +14,10 @@ class Api::CategoriesController < ApplicationController
     end
   end
 
-  def category
+  def category 
     @category = Category.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      render json: { errors: 'New not found' }, status: :not_found
+      render json: { errors: 'Category not found' }, status: :not_found
   end
 
   def create
