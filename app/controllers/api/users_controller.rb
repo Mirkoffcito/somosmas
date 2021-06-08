@@ -1,5 +1,4 @@
 class Api::UsersController < ApplicationController
-    rescue_from ActionController::ParameterMissing, with: :parameter_missing
     before_action :authorize_request, except: [:register]
 
     def register
@@ -49,7 +48,7 @@ class Api::UsersController < ApplicationController
 
     private
 
-    # TODO method to validates and change user password 
+    # TODO method to validates and change user password
     
     def user_update_params
       params.require(:user).permit(:first_name, :last_name, :email, :image)
@@ -58,9 +57,4 @@ class Api::UsersController < ApplicationController
     def user_params
         params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :role_id, :image)
     end
-
-    def parameter_missing
-        render json: {error: 'Parameter is missing or its value is empty'}, status: :bad_request
-    end
-
 end
