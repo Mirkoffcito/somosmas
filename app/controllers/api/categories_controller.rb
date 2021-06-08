@@ -7,4 +7,15 @@ class Api::CategoriesController < ApplicationController
     render json: @categories, each_serializer: CategorySerializer
   end
 
+  def destroy
+    @category = Category.find(params[:id])
+    render json: @category.errors, status: :not_found unless @category
+
+    if @category.destroy
+      render json: {message: 'Succesfully deleted'}
+    else
+      render json: @category.errors, status: :unauthorized
+    end
+  end
+
 end
