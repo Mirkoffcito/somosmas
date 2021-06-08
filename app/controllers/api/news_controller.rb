@@ -1,6 +1,6 @@
 class Api::NewsController < ApplicationController
     before_action :authorize_request
-    before_action :user_authorize, only: [:show]
+    before_action :authenticate_admin, only: [:show]
     before_action :new, only: [:show]
 
     def show

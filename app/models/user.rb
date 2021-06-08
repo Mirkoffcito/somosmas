@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include UserType
+
   acts_as_paranoid
   has_one_attached :image
 
@@ -16,10 +18,6 @@ class User < ApplicationRecord
 
   validates :password, presence: true, length: { minimum: 6 }, on: :create
   validates :password_confirmation, presence: true, on: :create
-
-  def is_admin?
-    role_id == 1
-  end
 
   after_create :send_mail
   def send_mail

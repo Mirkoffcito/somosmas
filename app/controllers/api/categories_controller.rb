@@ -1,6 +1,6 @@
 class Api::CategoriesController < ApplicationController
   before_action :authorize_request
-  before_action :user_authorize
+  before_action :authenticate_admin
 
   def index
     @categories = Category.all()

@@ -1,6 +1,6 @@
 class Api::AuthenticationsController < ApplicationController
   rescue_from StandardError, with: :parameter_missing
-  before_action :authorize_request, except: :login
+  skip_before_action :authorize_request
 
   def login
     @user = User.find_by_email(params[:user][:email])
