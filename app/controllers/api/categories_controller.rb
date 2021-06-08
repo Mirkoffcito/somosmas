@@ -19,4 +19,18 @@ class Api::CategoriesController < ApplicationController
       render json: { errors: 'New not found' }, status: :not_found
   end
 
+  def create
+    @category = Category.create(category_params)
+
+    if @category.save
+      render json: @category, each_serializer: CategorySerializer
+    else
+      render json: @category.errors, status: :bad_request
+    end
+  end
+
+  private
+    def category_params
+      params.require(:category).permit(:name, :description, :image)
+    end
 end

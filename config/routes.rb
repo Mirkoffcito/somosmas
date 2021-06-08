@@ -9,8 +9,12 @@ Rails.application.routes.draw do
     get 'users', to: 'users#index'
     delete 'users/:id', to: 'users#destroy'
     patch 'organization/public', to: 'organizations#update'
-    get 'categories', to: 'categories#index'
-    resources :categories, only: [:destroy]
+
+    resources :news, only: [:show]
+    
+    resources :slides, only: [:index]
+    resources :categories, only: [:index, :create, :destroy]
+    resources :activities, only: [:create]
   end
   
 end
