@@ -13,7 +13,7 @@ class Api::CategoriesController < ApplicationController
     if @category.save
       render json: @category, each_serializer: CategorySerializer
     else
-      render json: @category.errors
+      render json: @category.errors, status: :bad_request
     end
   end
 
