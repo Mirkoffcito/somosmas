@@ -1,6 +1,4 @@
-module Api
-  class ActivitiesController < ApplicationController
+class Api::ActivitiesController < ApplicationController
 
 
-  end
 end
