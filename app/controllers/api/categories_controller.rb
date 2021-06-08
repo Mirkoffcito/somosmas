@@ -7,4 +7,20 @@ class Api::CategoriesController < ApplicationController
     render json: @categories, each_serializer: CategorySerializer
   end
 
+  def create
+    @category = Category.create(category_params)
+
+    if @category.save
+      render json: @category, each_serializer: CategorySerializer
+    else
+      render json: @category.errors
+    end
+  end
+
+
+
+  private
+    def category_params
+      params.require(:category).permit(:name, :description, :image)
+    end
 end
