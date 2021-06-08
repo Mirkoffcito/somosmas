@@ -8,14 +8,15 @@ class Api::CategoriesController < ApplicationController
   end
 
   def destroy
-    @category = Category.find(params[:id])
-    render json: @category.errors, status: :not_found unless @category
-
     if @category.destroy
-      render json: {message: 'Succesfully deleted'}
-    else
-      render json: @category.errors, status: :unauthorized
+      render json: {message: 'Succesfully deleted'}, status: :ok
     end
+  end
+
+  def category
+    @category = Category.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { errors: 'New not found' }, status: :not_found
   end
 
 end
