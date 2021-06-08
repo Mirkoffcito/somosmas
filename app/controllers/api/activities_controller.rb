@@ -14,6 +14,20 @@ class Api::ActivitiesController < ApplicationController
     end
   end
 
+  # UPDATE/activities
+
+  def update
+    @activity = Activity.find(params[:id])
+    render json: @activity.errors, status: :not_found unless @activity
+
+    if @activity.update!(activity_params)
+      render json: @activity
+    else
+      render json: @activity.errors, status: :bad_request
+    end
+
+  end
+
   private
 
   def activity_params
