@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     resources :slides, only: [:index]
     resources :categories, only: [:index, :create]
     resources :activities, only: [:create]
+    
   end
   
 end
