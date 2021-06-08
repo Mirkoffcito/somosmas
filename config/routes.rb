@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     patch 'organization/public', to: 'organizations#update'
     get 'categories', to: 'categories#index'
 
-    resources :news, only: [:show]
+    resources :news, only: [:show, :destroy]
 
   end
   
