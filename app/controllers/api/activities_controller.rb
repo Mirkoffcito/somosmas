@@ -17,8 +17,7 @@ class Api::ActivitiesController < ApplicationController
   private
 
   def activity_params
-    params.require(::activity).permit(:name, :content, :image)
+    params.require(:activity).permit(:name, :content, :image)
   end
-
 
 end
