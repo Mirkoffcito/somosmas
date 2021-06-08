@@ -1,7 +1,6 @@
 class Api::OrganizationsController < ApplicationController
   before_action :authorize_request
   before_action :user_authorize
-  rescue_from ActionController::ParameterMissing, with: :parameter_missing
 
   def index
     @organization = Organization.first
@@ -21,9 +20,4 @@ class Api::OrganizationsController < ApplicationController
   def organization_params
     params.require(:organization).permit(:name, :image, :address, :phone)
   end
-
-  def parameter_missing
-    render json: {error: 'Parameter is missing or its value is empty'}, status: :bad_request
-  end
-
 end

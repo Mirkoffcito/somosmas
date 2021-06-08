@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 2021_06_08_134811) do
   end
 
   create_table "categories", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -92,7 +92,6 @@ ActiveRecord::Schema.define(version: 2021_06_08_134811) do
   end
 
   create_table "slides", force: :cascade do |t|
-    t.string "image_url", null: false
     t.string "text"
     t.bigint "order"
     t.bigint "organization_id"
