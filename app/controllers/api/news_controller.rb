@@ -8,8 +8,9 @@ class Api::NewsController < ApplicationController
     end
 
     def destroy
-        @new.destroy
-        render json: {message: 'Succesfully deleted'}
+        if @new.destroy
+            render json: {message: 'Succesfully deleted'}, status: :ok
+        end
     end
     
     def new
