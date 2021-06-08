@@ -18,7 +18,7 @@ module Api
   private
 
   def activity_params
-    params.require(:user).permit(:name, :content, :image)
+    params.permit(:name, :content, :image)
   end
 
   end
