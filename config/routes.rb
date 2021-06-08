@@ -11,9 +11,10 @@ Rails.application.routes.draw do
     patch 'organization/public', to: 'organizations#update'
 
     resources :news, only: [:show]
-
+    
     resources :slides, only: [:index]
     resources :categories, only: [:index, :create]
+    resources :activities, only: [:create]
   end
   
 end
