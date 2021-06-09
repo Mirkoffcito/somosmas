@@ -17,6 +17,16 @@ class Api::CategoriesController < ApplicationController
     end
   end
 
+  def update
+    @category = Category.find(params[:id])
+    
+    if @category.update(category_params)
+      render json: @category, serializer: CategorySerializer
+    else
+      render json: @category.errors, status: :unprocessable_entity
+    end
+  end
+
   private
     def category_params
       params.require(:category).permit(:name, :description, :image)
