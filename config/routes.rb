@@ -10,8 +10,7 @@ Rails.application.routes.draw do
     delete 'users/:id', to: 'users#destroy'
     patch 'organization/public', to: 'organizations#update'
 
-    resources :news, only: [:show]
-    
+    resources :news, only: [:show, :destroy, :create]
     resources :slides, only: [:index]
     resources :categories, only: [:index, :create]
     resources :activities, only: [:create, :update]
