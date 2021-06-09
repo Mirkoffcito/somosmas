@@ -6,7 +6,8 @@ class Api::AuthenticationsController < ApplicationController
     if @user && @user.authenticate(params[:user][:password])
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 24.hours.to_i
-      render json: { token: token }, status: :ok
+      @user.token = token
+      render json: @user, status: :ok
     else
       render json: { error: "Invalid user or password" }, status: :bad_request
     end
