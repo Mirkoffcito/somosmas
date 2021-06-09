@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
     resources :news, only: [:show, :destroy, :create]
     resources :slides, only: [:index]
-    resources :categories, only: [:index, :create, :destroy, :show]
+    resources :categories, only: [:index, :create, :update, :destroy, :show]
     resources :activities, only: [:create, :update]
   end
   
