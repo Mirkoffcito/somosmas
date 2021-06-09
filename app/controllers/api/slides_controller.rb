@@ -35,6 +35,12 @@ class Api::SlidesController < ApplicationController
     end
   end
 
+  # Not found error gets treated in app/controllers/concerns/errors_helper.rb
+  # GET /slides/:id
+  def show
+    render json: @slide, serializer: SlideSerializer if slide
+  end
+
   private
     def slide_params
       params.require(:slide).permit(:text, :order, :image, :organization_id)
