@@ -20,8 +20,7 @@ class Api::ActivitiesController < ApplicationController
     activity
     render json: @activity.errors, status: :not_found unless @activity
 
-    if @activity.update!(activity_params)
-    rescue ActiveRecord::RecordInvalid, with: :parameter_missing
+    if @activity.update(activity_params)
       render json: @activity
     else
       render json: @activity.errors, status: :bad_request
