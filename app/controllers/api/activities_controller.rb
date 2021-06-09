@@ -17,10 +17,11 @@ class Api::ActivitiesController < ApplicationController
   # UPDATE/activities
 
   def update
-    @activity = Activity.find(params[:id])
+    activity
     render json: @activity.errors, status: :not_found unless @activity
 
     if @activity.update!(activity_params)
+    rescue ActiveRecord::RecordInvalid, with: :parameter_missing
       render json: @activity
     else
       render json: @activity.errors, status: :bad_request
@@ -29,6 +30,10 @@ class Api::ActivitiesController < ApplicationController
   end
 
   private
+
+  def activity
+    @activity = Activity.find(params[:id])
+  end
 
   def activity_params
     params.require(:activity).permit(:name, :content, :image)
