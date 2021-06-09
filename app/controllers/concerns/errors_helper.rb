@@ -10,7 +10,7 @@ module ErrorsHelper extend ActiveSupport::Concern
     end
 
     def not_found
-      render json: {error:'Resource not found'}, status: :not_found
+      render json: {error: "#{controller_name.singularize} not found"}, status: :not_found
     end
 
     def file_type_error

@@ -1,4 +1,4 @@
 class CategorySerializer < CustomActiveModelSerializer
-    attributes :name
+    attributes :name, :description, :image
 
 end
