@@ -7,7 +7,19 @@ class Api::CategoriesController < ApplicationController
     @categories = Category.all()
     render json: @categories, each_serializer: CategorySerializer
   end
- 
+
+  def destroy
+    if @category.destroy
+      render json: {message: 'Succesfully deleted'}, status: :ok
+    end
+  end
+
+  def category 
+    @category = Category.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { errors: 'Category not found' }, status: :not_found
+  end
+
   def create
     @category = Category.create(category_params)
 
