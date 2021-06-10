@@ -9,6 +9,7 @@ class Api::SlidesController < ApplicationController
     render json: @slides, each_serializer: SlidesSerializer
   end
 
+<<<<<<< HEAD
   def create   
     @slide = Slide.new(slide_params)
     @slide.order = @slides.last.order + 1 if @slide.order.nil?
@@ -22,6 +23,11 @@ class Api::SlidesController < ApplicationController
   def update
     if slide.update(slide_params)
       render json: slide, serializer: SlideSerializer
+=======
+  def show
+    if slide
+      render json: @slide, serializer: SlideShowSerializer
+>>>>>>> bec6327 (fixed controller and changed slides serializer's name)
     else
       render json: slide.errors, status: :unprocessable_entity
     end
