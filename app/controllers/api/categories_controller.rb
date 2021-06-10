@@ -1,10 +1,23 @@
 class Api::CategoriesController < ApplicationController
   before_action :authorize_request
   before_action :authenticate_admin
+  before_action :category, only: [:destroy, :show]
 
   def index
     @categories = Category.all()
     render json: @categories, each_serializer: CategorySerializer
+  end
+
+  def destroy
+    if @category.destroy
+      render json: {message: 'Succesfully deleted'}, status: :ok
+    end
+  end
+
+  def category 
+    @category = Category.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render json: { errors: 'Category not found' }, status: :not_found
   end
 
   def create
@@ -17,6 +30,26 @@ class Api::CategoriesController < ApplicationController
     end
   end
 
+  def update
+    @category = Category.find(params[:id])
+    
+    if @category.update(category_params)
+      render json: @category, serializer: CategorySerializer
+    else
+      render json: @category.errors, status: :unprocessable_entity
+    end
+  end
+
+  def show
+    render json: @category, status: :ok
+  end
+
+  def category 
+    @category = Category.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { errors: 'Category not found' }, status: :not_found
+  end
+  
   private
     def category_params
       params.require(:category).permit(:name, :description, :image)

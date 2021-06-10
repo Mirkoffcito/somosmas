@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  attr_accessor :token
   acts_as_paranoid
   has_one_attached :image
 
