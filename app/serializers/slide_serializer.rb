@@ -1,4 +1,4 @@
-class SlideShowSerializer < SlidesSerializer
+class SlideSerializer < SlidesSerializer
   attributes :text
 
   belongs_to :organization
