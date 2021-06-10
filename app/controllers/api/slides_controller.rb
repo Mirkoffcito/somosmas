@@ -19,7 +19,28 @@ class Api::SlidesController < ApplicationController
     end
   end
 
-  def slide_params
-    require(:slide).permit(:image, :order, :text, :organization_id)
+  def update
+    if slide.update(slide_params)
+      render json: slide, serializer: SlideSerializer
+    else
+      render json: slide.errors, status: :unprocessable_entity
+    end
   end
+
+  def destroy
+    if slide.destroy
+      render json: {message: 'Succesfully deleted'}
+    else
+      render json: slide.errors
+    end
+  end
+
+  private
+    def slide_params
+      params.require(:slide).permit(:text, :order, :image, :organization_id)
+    end
+
+    def slide
+      @slide ||= Slide.find(params[:id])
+    end
 end
