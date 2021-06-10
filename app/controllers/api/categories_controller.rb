@@ -1,6 +1,6 @@
 class Api::CategoriesController < ApplicationController
   before_action :authorize_request
-  before_action :user_authorize
+  before_action :authenticate_admin
   before_action :category, only: [:destroy, :show]
 
   def index

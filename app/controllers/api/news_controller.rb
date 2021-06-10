@@ -1,6 +1,6 @@
 class Api::NewsController < ApplicationController
     before_action :authorize_request
-    before_action :user_authorize, only: [:create, :destroy, :show]
+    before_action :authenticate_admin, only: [:create, :destroy, :show]
     before_action :new, only: [:show, :destroy]
 
     def show
