@@ -9,6 +9,8 @@ class Api::SlidesController < ApplicationController
   end
 
   def update
+    @slide = Slide.find(params[:id])
+    
     if @slide.update(slide_params)
       render json: @slide, serializer: SlideSerializer
     else
