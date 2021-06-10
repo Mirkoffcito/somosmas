@@ -25,7 +25,6 @@ class Api::ActivitiesController < ApplicationController
     else
       render json: @activity.errors, status: :bad_request
     end
-
   end
 
   private
@@ -37,5 +36,4 @@ class Api::ActivitiesController < ApplicationController
   def activity_params
     params.require(:activity).permit(:name, :content, :image)
   end
-
 end

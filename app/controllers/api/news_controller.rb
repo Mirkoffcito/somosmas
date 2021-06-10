@@ -34,6 +34,8 @@ class Api::NewsController < ApplicationController
     render json: { errors: 'New not found' }, status: :not_found
   end
 
+  private
+
   def new_params
     params.require(:new).permit(:name, :content, :category_id)
   end
