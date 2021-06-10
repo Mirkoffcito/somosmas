@@ -11,7 +11,7 @@ module Api
       @activity = Activity.new(activity_params)
 
       if @activity.save
-        render json: @activity, status: :created
+        render json: @activity, serializer: ActivitySerializer, status: :created
       else
         render json: @activity.errors, status: :bad_request
       end
@@ -21,7 +21,7 @@ module Api
 
     def update
       if activity.update(activity_params)
-        render json: activity, status: :ok
+        render json: activity, serializer: ActivitySerializer, status: :ok
       else
         render json: activity.errors, status: :unprocessable_entity
       end
