@@ -10,7 +10,7 @@ class Api::SlidesController < ApplicationController
   end
 
   def create   
-    slide_params(:order) = @slides.last.order.to_i + 1 if slide_params(:order) == nil
+    @slide.order = @slides.last.order + 1 if @slide.order.nil?
     @slide = Slide.new(slide_params)
     if @slide.save
       render json: @slide serializer SlidesSerializer
