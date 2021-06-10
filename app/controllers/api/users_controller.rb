@@ -1,5 +1,6 @@
 class Api::UsersController < ApplicationController
-  before_action :authorize_request
+    before_action :authorize_request
+    before_action :authenticate_admin, only: :index
 
   def index
     @users = User.all
