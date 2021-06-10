@@ -13,7 +13,7 @@ class Api::SlidesController < ApplicationController
     @slides = Slide.all.order(:order)
 
     if @slides.last.order=@slide.order
-      render json: {error: 'A slide with that order already exists'}
+      render json: {error: 'A slide with that order already exists'}, status: :bad_request
     else
       if @slides.last.nil?
         @slide.order = 1
