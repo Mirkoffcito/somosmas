@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class New < ApplicationRecord
   acts_as_paranoid
   has_one_attached :image

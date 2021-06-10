@@ -14,7 +14,7 @@ class Api::AuthenticationsController < ApplicationController
   def register
     @user = User.create(user_params)
     if @user.save
-      login  
+      login
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -22,8 +22,7 @@ class Api::AuthenticationsController < ApplicationController
 
   private
 
-    def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :role_id, :image)
-    end
-    
+  def user_params
+    params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :role_id, :image)
+  end
 end
