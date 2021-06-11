@@ -1,5 +1,6 @@
-module AuthorizeApiRequest
+# frozen_string_literal: true
 
+module AuthorizeApiRequest
   def authorize_request
     header = request.headers['Authorization']
     header = header.split(' ').last if header
@@ -10,5 +11,4 @@ module AuthorizeApiRequest
   rescue JWT::DecodeError => e
     render json: { message: 'Unauthorized access.' }, status: :unauthorized
   end
-
 end
