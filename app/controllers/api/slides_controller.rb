@@ -10,22 +10,12 @@ class Api::SlidesController < ApplicationController
 
   def create   
     @slide = Slide.new(slide_params)
-    @slides = Slide.all.order(:order)
+    @slide.order = Slide.order(:order).last.try(:order).to_i+1 if @slide.order.nil?
 
-    if @slides.last.order=@slide.order
-      render json: {error: 'A slide with that order already exists'}, status: :bad_request
+    if @slide.save
+      render json: @slide, serializer: SlideSerializer
     else
-      if @slides.last.nil?
-        @slide.order = 1
-      else
-        @slide.order = @slides.last.order.to_i+1
-      end
-
-      if @slide.save
-        render json: @slide, serializer: SlideSerializer
-      else
-        render json: @slide.errors, status: :unprocessable_entity
-      end
+      render json: @slide.errors, status: :unprocessable_entity
     end
   end
 
