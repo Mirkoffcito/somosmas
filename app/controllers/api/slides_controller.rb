@@ -1,6 +1,5 @@
 class Api::SlidesController < ApplicationController
   before_action :authorize_request
-  before_action :user_authorize
   before_action :authenticate_admin
 
   def index
@@ -11,9 +10,10 @@ class Api::SlidesController < ApplicationController
 
   def create   
     @slide = Slide.new(slide_params)
-    @slide.order = @slides.last.order + 1 if @slide.order.nil?
+    @slide.order = Slide.order(:order).last.try(:order).to_i+1 if @slide.order.nil?
+
     if @slide.save
-      render json: @slide serializer SlidesSerializer
+      render json: @slide, serializer: SlideSerializer
     else
       render json: @slide.errors, status: :unprocessable_entity
     end
@@ -33,6 +33,12 @@ class Api::SlidesController < ApplicationController
     else
       render json: slide.errors
     end
+  end
+
+  # Not found error gets treated in app/controllers/concerns/errors_helper.rb
+  # GET /slides/:id
+  def show
+    render json: slide, serializer: SlideSerializer if slide
   end
 
   private
