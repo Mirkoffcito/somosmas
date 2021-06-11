@@ -1,2 +1,6 @@
-class Api::RolesController < ApplicationController
+# frozen_string_literal: true
+
+module Api
+  class RolesController < ApplicationController
+  end
 end
