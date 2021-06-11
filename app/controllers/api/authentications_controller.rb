@@ -2,6 +2,8 @@
 
 module Api
   class AuthenticationsController < ApplicationController
+    skip_before_action :authorize_request
+
     def register
       @user = User.create(user_params)
       if @user.save

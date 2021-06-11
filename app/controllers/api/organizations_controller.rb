@@ -1,5 +1,4 @@
 class Api::OrganizationsController < ApplicationController
-  before_action :authorize_request
   before_action :authenticate_admin, except: [:index]
 
   def index

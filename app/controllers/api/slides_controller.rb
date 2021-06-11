@@ -1,5 +1,4 @@
 class Api::SlidesController < ApplicationController
-  before_action :authorize_request
   before_action :authenticate_admin
 
   def index
