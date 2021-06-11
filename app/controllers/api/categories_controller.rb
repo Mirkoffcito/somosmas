@@ -2,7 +2,6 @@
 
 module Api
   class CategoriesController < ApplicationController
-    before_action :authorize_request
     before_action :authenticate_admin
 
     def index
@@ -11,7 +10,7 @@ module Api
     end
 
     def create
-      @category = Category.create(category_params)
+      @category = Category.new(category_params)
 
       if @category.save
         render json: @category, each_serializer: CategorySerializer, status: :created

@@ -2,7 +2,6 @@
 
 module Api
   class ActivitiesController < ApplicationController
-    before_action :authorize_request
     before_action :authenticate_admin
 
     # POST/activities
