@@ -14,7 +14,8 @@ Rails.application.routes.draw do
     resources :slides, only: [:index, :update, :destroy, :show, :create]
     resources :categories, only: [:index, :create, :update, :destroy, :show]
     resources :activities, only: [:create, :update]
-    resources :members, only: [:index]
+    resources :testimonials, only: [:create]
+    resources :members, only: [:index, :destroy]
   end
 
 end
