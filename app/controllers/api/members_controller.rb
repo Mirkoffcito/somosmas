@@ -9,5 +9,14 @@ module Api
       render json: @members
     end
 
+    def destroy
+      render json: { message: 'Succesfully deleted' }, status: :ok if member.destroy
+    end
+
+    private
+
+    def member
+      @member ||= Member.find(params[:id])
+    end
   end
 end
