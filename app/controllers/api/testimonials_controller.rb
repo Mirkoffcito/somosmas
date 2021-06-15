@@ -1,14 +1,21 @@
-# frozen_string_literal: true
-
 module Api
   class TestimonialsController < ApplicationController
-    before_action :authenticate_admin, only: [:update]
+    before_action :authenticate_admin, only: %i[create update]
 
     def update
       if testimonial.update(testimonial_params)
         render json: testimonial, status: :ok
       else
         render json: testimonial.errors, status: :unprocessable_entity
+      end
+    end
+
+    def create
+      @testimonial = Testimonial.new(testimonial_params)
+      if @testimonial.save
+        render json: @testimonial, status: :created
+      else
+        render json: @testimonial.errors, status: :bad_request
       end
     end
 
