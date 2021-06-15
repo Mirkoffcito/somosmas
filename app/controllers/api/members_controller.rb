@@ -2,5 +2,12 @@
 
 module Api
   class MembersController < ApplicationController
+    before_action :authenticate_admin, except: [:index]
+
+    def index
+      @members = Member.all
+      render json: @members
+    end
+
   end
 end
