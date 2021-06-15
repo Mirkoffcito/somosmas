@@ -1,41 +1,42 @@
-class Api::NewsController < ApplicationController
-  before_action :authenticate_admin, only: %i[create destroy show update]
-  before_action :new, only: %i[show destroy update]
+# frozen_string_literal: true
 
-  def show
-    render json: @new, status: :ok
-  end
+module Api
+  class NewsController < ApplicationController
+    before_action :authenticate_admin
 
-  def create
-    @new = New.new(new_params)
-    if @new.save
-      render json: @new, status: :created
-    else
-      render json: @new.errors, status: :bad_request
+    def create
+      @new = New.new(new_params)
+      if @new.save
+        render json: @new, status: :created
+      else
+        render json: @new.errors, status: :bad_request
+      end
     end
-  end
 
-  def update
-    if @new.update(new_params)
-      render json: @new, status: :ok
-    else
-      render json: @new.errors, status: :unprocessable_entity
+    def show
+      render json: article, status: :ok
     end
-  end
 
-  def destroy
-    render json: { message: 'Successfully deleted' }, status: :ok if @new.destroy
-  end
+    def update
+      if article.update(new_params)
+        render json: article, status: :ok
+      else
+        render json: article.errors, status: :unprocessable_entity
+      end
+    end
 
-  def new
-    @new = New.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    render json: { errors: 'New not found' }, status: :not_found
-  end
+    def destroy
+      render json: { message: 'Successfully deleted' }, status: :ok if article.destroy
+    end
 
-  private
+    private
 
-  def new_params
-    params.require(:new).permit(:name, :content, :category_id)
+    def article
+      @new ||= New.find(params[:id])
+    end
+
+    def new_params
+      params.require(:new).permit(:name, :content, :category_id)
+    end
   end
 end
