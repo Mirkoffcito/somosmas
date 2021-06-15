@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     resources :categories, only: [:index, :create, :update, :destroy, :show]
     resources :activities, only: [:create, :update]
     resources :testimonials, only: [:create]
+    resources :members, only: [:index, :destroy]
   end
 
 end
