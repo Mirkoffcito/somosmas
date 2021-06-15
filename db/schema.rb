@@ -103,6 +103,9 @@ ActiveRecord::Schema.define(version: 2021_06_15_131753) do
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "facebook_url"
+    t.string "instagram_url"
+    t.string "linkedin_url"
   end
 
   create_table "roles", force: :cascade do |t|
