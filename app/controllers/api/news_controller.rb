@@ -14,7 +14,7 @@ module Api
     end
 
     def show
-      render json: @new, status: :ok
+      render json: article, status: :ok
     end
 
     def update
