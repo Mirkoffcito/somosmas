@@ -14,12 +14,8 @@ Rails.application.routes.draw do
     resources :slides, only: [:index, :update, :destroy, :show, :create]
     resources :categories, only: [:index, :create, :update, :destroy, :show]
     resources :activities, only: [:create, :update]
-<<<<<<< HEAD
     resources :testimonials, only: [:create, :update]
-    resources :members, only: [:index, :destroy]
-=======
-    resources :members, only: [:create]
->>>>>>> 2af4e77 (added create method in members controller and POST route for /members and MembersSerializer)
+    resources :members, only: [:index, :destroy, :create]
   end
 
 end

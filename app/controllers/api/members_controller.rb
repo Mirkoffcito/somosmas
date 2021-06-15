@@ -2,6 +2,7 @@
 
 module Api
   class MembersController < ApplicationController
+<<<<<<< HEAD
     before_action :authenticate_admin, except: [:index]
 
     def index
@@ -12,6 +13,9 @@ module Api
     def destroy
       render json: { message: 'Succesfully deleted' }, status: :ok if member.destroy
     end
+=======
+    before_action :authenticate_admin, only: [:create]
+>>>>>>> 0cea2d9 (added only create in admin authentication callback)
 
     def create
       @member = Member.new(member_params)
