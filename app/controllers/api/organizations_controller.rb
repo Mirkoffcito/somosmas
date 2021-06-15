@@ -1,23 +1,26 @@
-class Api::OrganizationsController < ApplicationController
-  before_action :authorize_request
-  before_action :user_authorize
+# frozen_string_literal: true
 
-  def index
-    @organization = Organization.first
+module Api
+  class OrganizationsController < ApplicationController
+    before_action :authenticate_admin, except: [:index]
 
-    render json: @organization, serializer: OrganizationSerializer
-  end
+    def index
+      @organization = Organization.first
 
-  def update
-    @organization = Organization.first
+      render json: @organization, serializer: OrganizationSerializer
+    end
 
-    @organization.update(organization_params)
-    render json: @organization, serializer: OrganizationSerializer
-  end
+    def update
+      @organization = Organization.first
 
-  private
+      @organization.update(organization_params)
+      render json: @organization, serializer: OrganizationSerializer
+    end
 
-  def organization_params
-    params.require(:organization).permit(:name, :image, :address, :phone)
+    private
+
+    def organization_params
+      params.require(:organization).permit(:name, :image, :address, :phone)
+    end
   end
 end

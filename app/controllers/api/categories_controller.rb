@@ -1,57 +1,48 @@
-class Api::CategoriesController < ApplicationController
-  before_action :authorize_request
-  before_action :user_authorize
-  before_action :category, only: [:destroy, :show]
+# frozen_string_literal: true
 
-  def index
-    @categories = Category.all()
-    render json: @categories, each_serializer: CategorySerializer
-  end
+module Api
+  class CategoriesController < ApplicationController
+    before_action :authenticate_admin
 
-  def destroy
-    if @category.destroy
-      render json: {message: 'Succesfully deleted'}, status: :ok
+    def index
+      @categories = Category.all
+      render json: @categories, each_serializer: CategorySerializer
     end
-  end
 
-  def category 
-    @category = Category.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
-      render json: { errors: 'Category not found' }, status: :not_found
-  end
+    def create
+      @category = Category.new(category_params)
 
-  def create
-    @category = Category.create(category_params)
-
-    if @category.save
-      render json: @category, each_serializer: CategorySerializer
-    else
-      render json: @category.errors, status: :bad_request
+      if @category.save
+        render json: @category, each_serializer: CategorySerializer, status: :created
+      else
+        render json: @category.errors, status: :bad_request
+      end
     end
-  end
 
-  def update
-    @category = Category.find(params[:id])
-    
-    if @category.update(category_params)
-      render json: @category, serializer: CategorySerializer
-    else
-      render json: @category.errors, status: :unprocessable_entity
+    def show
+      render json: category, status: :ok
     end
-  end
 
-  def show
-    render json: @category, status: :ok
-  end
+    def update
+      if category.update(category_params)
+        render json: category, serializer: CategorySerializer, status: :ok
+      else
+        render json: category.errors, status: :unprocessable_entity
+      end
+    end
 
-  def category 
-    @category = Category.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    render json: { errors: 'Category not found' }, status: :not_found
-  end
-  
-  private
+    def destroy
+      render json: { message: 'Succesfully deleted' }, status: :ok if category.destroy
+    end
+
+    private
+
+    def category
+      @category ||= Category.find(params[:id])
+    end
+
     def category_params
       params.require(:category).permit(:name, :description, :image)
     end
+  end
 end

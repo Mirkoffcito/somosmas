@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+
   namespace 'api' do
     get 'organization/public' => 'organizations#index'
     post 'auth/register', to: 'authentications#register'
@@ -10,10 +10,12 @@ Rails.application.routes.draw do
     delete 'users/:id', to: 'users#destroy'
     patch 'organization/public', to: 'organizations#update'
 
-    resources :news, only: [:show, :destroy, :create]
-    resources :slides, only: [:index]
+    resources :news, only: [:show, :destroy, :create, :update]
+    resources :slides, only: [:index, :update, :destroy, :show, :create]
     resources :categories, only: [:index, :create, :update, :destroy, :show]
     resources :activities, only: [:create, :update]
+    resources :testimonials, only: [:create, :update, :destroy]
+    resources :members, only: [:index, :destroy, :create]
   end
-  
+
 end
