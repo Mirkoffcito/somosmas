@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_10_203315) do
+ActiveRecord::Schema.define(version: 2021_06_15_131753) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,17 @@ ActiveRecord::Schema.define(version: 2021_06_10_203315) do
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_categories_on_deleted_at"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.text "content"
+    t.bigint "user_id", null: false
+    t.bigint "new_id", null: false
+    t.datetime "deleted_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["new_id"], name: "index_comments_on_new_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "contacts", force: :cascade do |t|
@@ -92,6 +103,9 @@ ActiveRecord::Schema.define(version: 2021_06_10_203315) do
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "facebook_url"
+    t.string "instagram_url"
+    t.string "linkedin_url"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -132,6 +146,8 @@ ActiveRecord::Schema.define(version: 2021_06_10_203315) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "comments", "news", column: "new_id"
+  add_foreign_key "comments", "users"
   add_foreign_key "news", "categories"
   add_foreign_key "slides", "organizations"
   add_foreign_key "users", "roles"
