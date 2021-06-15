@@ -12,6 +12,8 @@ module Api
       end
     end
 
+    private
+    
     def testimonial
       @testimonial ||= Testimonial.find(params[:id])
     end
