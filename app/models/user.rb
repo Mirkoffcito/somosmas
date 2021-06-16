@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  attr_accessor :token
+  attr_accessor :token, :is_seed
 
   acts_as_paranoid
   has_one_attached :image
@@ -22,7 +22,10 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }, on: :create
   validates :password_confirmation, presence: true, on: :create
 
-  after_create :send_mail
+  after_create :send_mail unless :is_seed
+
+  private
+
   def send_mail
     subject = 'Bienvenidos a Somos Mas'
     template = ENV['SENDGRID_SIGNUP_TEMPLATE_ID']
