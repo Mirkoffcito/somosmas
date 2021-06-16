@@ -10,12 +10,12 @@ module Api
         render json: @comment.errors, status: :unprocessable_entity
       end
     end
-    
+
     private
 
     def comment_params
-      params.require(:comment).permit(:new_id, :user_id, :content)
+      params.require(:comment).permit(:new_id, :content)
     end
-    
+
   end
 end
