@@ -17,7 +17,6 @@ Rails.application.routes.draw do
     resources :testimonials, only: [:create, :update, :destroy]
     resources :members, only: [:index, :destroy, :create, :update]
     resources :comments, only: [:index]
-    resources :members, only: [:index, :destroy, :create]
     resources :contacts, only: [:create]
   end
 
