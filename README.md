@@ -10,7 +10,7 @@ Execute these commands to seed your database.
 
  - ```rails db:seed:roles_seeds```
 
-- Creates 4 Admin Users and 4 Client Users
+- Creates 10 Admin Users and 10 Client Users
  - ```rails db:seed:users_seeds```
 
 **The email format for admin users is:**
