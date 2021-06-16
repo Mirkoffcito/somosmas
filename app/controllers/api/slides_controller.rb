@@ -1,46 +1,50 @@
-class Api::SlidesController < ApplicationController
-  before_action :authenticate_admin
+# frozen_string_literal: true
 
-  def index
-    @slides = Slide.all.order(:order)
+module Api
+  class SlidesController < ApplicationController
+    before_action :authenticate_admin
 
-    render json: @slides, each_serializer: SlidesSerializer
-  end
+    def index
+      @slides = Slide.all.order(:order)
 
-  def create   
-    @slide = Slide.new(slide_params)
-    @slide.order = Slide.order(:order).last.try(:order).to_i+1 if @slide.order.nil?
-
-    if @slide.save
-      render json: @slide, serializer: SlideSerializer
-    else
-      render json: @slide.errors, status: :unprocessable_entity
+      render json: @slides, each_serializer: SlidesSerializer
     end
-  end
 
-  def update
-    if slide.update(slide_params)
+    # Not found error gets treated in app/controllers/concerns/errors_helper.rb
+    # GET /slides/:id
+    def show
       render json: slide, serializer: SlideSerializer
-    else
-      render json: slide.errors, status: :unprocessable_entity
     end
-  end
 
-  def destroy
-    if slide.destroy
-      render json: {message: 'Succesfully deleted'}
-    else
-      render json: slide.errors
+    def create
+      @slide = Slide.new(slide_params)
+      @slide.order = Slide.order(:order).last.try(:order).to_i + 1 if @slide.order.nil?
+
+      if @slide.save
+        render json: @slide, serializer: SlideSerializer, status: :created
+      else
+        render json: @slide.errors, status: :unprocessable_entity
+      end
     end
-  end
 
-  # Not found error gets treated in app/controllers/concerns/errors_helper.rb
-  # GET /slides/:id
-  def show
-    render json: slide, serializer: SlideSerializer if slide
-  end
+    def update
+      if slide.update(slide_params)
+        render json: slide, serializer: SlideSerializer
+      else
+        render json: slide.errors, status: :unprocessable_entity
+      end
+    end
 
-  private
+    def destroy
+      if slide.destroy
+        render json: { message: 'Succesfully deleted' }
+      else
+        render json: slide.errors
+      end
+    end
+
+    private
+
     def slide_params
       params.require(:slide).permit(:text, :order, :image, :organization_id)
     end
@@ -48,4 +52,5 @@ class Api::SlidesController < ApplicationController
     def slide
       @slide ||= Slide.find(params[:id])
     end
+  end
 end
