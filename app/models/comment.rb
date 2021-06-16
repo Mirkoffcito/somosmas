@@ -4,4 +4,7 @@ class Comment < ApplicationRecord
   belongs_to :new
 
   validates :new_id, presence: true
+
+  default_scope {order(created_at: :asc)}
+
 end
