@@ -2,8 +2,6 @@
 
 module Api
   class NewsController < ApplicationController
-    before_action :authenticate_admin
-
     def create
       @new = New.new(new_params)
       if @new.save

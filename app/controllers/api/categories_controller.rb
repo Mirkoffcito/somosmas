@@ -2,8 +2,6 @@
 
 module Api
   class CategoriesController < ApplicationController
-    before_action :authenticate_admin
-
     def index
       @categories = Category.all
       render json: @categories, each_serializer: CategorySerializer

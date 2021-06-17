@@ -2,8 +2,6 @@
 
 module Api
   class SlidesController < ApplicationController
-    before_action :authenticate_admin
-
     def index
       @slides = Slide.all.order(:order)
 
