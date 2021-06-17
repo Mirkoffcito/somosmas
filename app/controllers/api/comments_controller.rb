@@ -1,6 +1,6 @@
 module Api
   class CommentsController < ApplicationController
-    before_action :authenticate_admin
+    before_action :authenticate_admin, except: [:create, :update]
 
     def index
       @comments = Comment.all
@@ -14,6 +14,16 @@ module Api
         render json: @comment, status: :created
       else
         render json: @comment.errors, status: :unprocessable_entity
+      end
+    end
+
+    def update
+      @comment = Comment.find(params[:id])
+      if @current_user.id == @comment.user_id || @current_user.role.name == "admin"
+        @comment.update!(comment_params)
+        render json: @comment, serializer: CommentSerializer, status: :ok
+      else
+        render json: { message: 'Unauthorized access.' }, status: :unauthorized
       end
     end
 
