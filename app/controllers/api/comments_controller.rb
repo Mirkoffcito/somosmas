@@ -1,5 +1,7 @@
 module Api
   class CommentsController < ApplicationController
+    skip_before_action :authenticate_admin, only: [:create, :update]
+
     def index
       @comments = Comment.all
       render json: @comments
