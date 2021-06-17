@@ -18,8 +18,8 @@ module Api
     end
 
     def update
-      if @current_user.id == @comment.user_id || @current_user.role.name == "admin"
-        @comment.update!(comment_params)
+      if comment.user_id == @current_user.id || @current_user.role.admin?
+        comment.update(comment_params)
         render json: @comment, serializer: CommentSerializer, status: :ok
       else
         render json: { message: 'Unauthorized access.' }, status: :unauthorized
