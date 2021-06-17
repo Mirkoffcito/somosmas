@@ -2,7 +2,7 @@
 
 module Api
   class OrganizationsController < ApplicationController
-    before_action :authenticate_admin, except: [:index]
+    skip_before_action :authenticate_admin, only: [:index]
 
     def index
       @organization = Organization.first

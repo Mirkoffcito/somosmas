@@ -3,6 +3,7 @@
 module Api
   class AuthenticationsController < ApplicationController
     skip_before_action :authorize_request
+    skip_before_action :authenticate_admin
 
     def register
       @user = User.create(user_params)
