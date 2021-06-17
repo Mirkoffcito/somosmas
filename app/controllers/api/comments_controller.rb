@@ -18,7 +18,6 @@ module Api
     end
 
     def update
-      @comment = Comment.find(params[:id])
       if @current_user.id == @comment.user_id || @current_user.role.name == "admin"
         @comment.update!(comment_params)
         render json: @comment, serializer: CommentSerializer, status: :ok
@@ -28,6 +27,10 @@ module Api
     end
 
     private
+
+    def comment
+      @comment ||= Comment.find(params[:id])
+    end
 
     def comment_params
       params.require(:comment).permit(:new_id, :content)
