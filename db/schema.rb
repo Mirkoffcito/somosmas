@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_15_131753) do
+ActiveRecord::Schema.define(version: 2021_06_15_144221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,8 @@ ActiveRecord::Schema.define(version: 2021_06_15_131753) do
     t.date "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_contacts_on_user_id"
   end
 
   create_table "members", force: :cascade do |t|
@@ -148,6 +150,7 @@ ActiveRecord::Schema.define(version: 2021_06_15_131753) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "news", column: "new_id"
   add_foreign_key "comments", "users"
+  add_foreign_key "contacts", "users"
   add_foreign_key "news", "categories"
   add_foreign_key "slides", "organizations"
   add_foreign_key "users", "roles"
