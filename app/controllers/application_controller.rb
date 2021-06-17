@@ -6,4 +6,5 @@ class ApplicationController < ActionController::API
   include Permissions
 
   before_action :authorize_request
+  before_action :authenticate_admin
 end

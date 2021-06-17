@@ -2,7 +2,7 @@
 
 module Api
   class UsersController < ApplicationController
-    before_action :authenticate_admin, only: :index
+    skip_before_action :authenticate_admin, except: :index
 
     def index
       @users = User.all
