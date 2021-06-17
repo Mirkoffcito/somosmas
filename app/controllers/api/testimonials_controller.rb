@@ -1,6 +1,11 @@
 module Api
   class TestimonialsController < ApplicationController
-    before_action :authenticate_admin
+    before_action :authenticate_admin, except: [:index]
+
+    def index
+      @testimonials = Testimonial.all
+      render json: @testimonials
+    end
 
     def destroy
       render json: { message: 'Succesfully deleted' }, status: :ok if testimonial.destroy
