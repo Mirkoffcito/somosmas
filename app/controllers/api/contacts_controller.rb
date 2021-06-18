@@ -3,8 +3,8 @@ module Api
     skip_before_action :authenticate_admin
 
     def index
-      @contact = @current_user.contacts
-      render json: @contact, each_serializer: ContactSerializer
+      @contacts = @current_user.contacts
+      render json: @contacts, each_serializer: ContactSerializer
     end
 
     def create
