@@ -5,7 +5,7 @@ module Api
     def index
         @contacts = Contact.select { |contact| contact.user_id == @current_user.id }
       if @contacts != nil?
-        render json: @contacts, status :ok
+        render json: @contacts, status: :ok
       else 
         render json: @contacts.errors, status: :unprocessable_entity
       end
