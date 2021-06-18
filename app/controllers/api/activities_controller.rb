@@ -2,8 +2,6 @@
 
 module Api
   class ActivitiesController < ApplicationController
-    before_action :authenticate_admin
-
     # POST/activities
 
     def create
