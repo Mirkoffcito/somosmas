@@ -5,6 +5,7 @@ class User < ApplicationRecord
 
   acts_as_paranoid
   has_one_attached :image
+  has_many :contacts
 
   belongs_to :role, optional: true
 
