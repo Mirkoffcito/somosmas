@@ -11,6 +11,12 @@ module Api
       end
     end
 
+
+    def index 
+      @news = New.all
+      render json: @news, status: :ok
+    end 
+
     def show
       render json: article, status: :ok
     end
