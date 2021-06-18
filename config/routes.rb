@@ -17,8 +17,8 @@ Rails.application.routes.draw do
     resources :contacts, only: [:index, :create]
     resources :testimonials, only: [:create, :update, :destroy, :index]
     resources :members, only: [:index, :destroy, :create, :update]
-    resources :comments, only: [:index, :create]
- 
+    resources :comments, only: [:index, :create, :update]
+    
   end
 
 end
