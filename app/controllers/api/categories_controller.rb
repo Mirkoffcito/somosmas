@@ -4,7 +4,7 @@ module Api
   class CategoriesController < ApplicationController
     def index
       @categories = Category.all
-      render json: @categories, each_serializer: CategorySerializer
+      paginate @categories, per_page: 10, each_serializer: CategorySerializer
     end
 
     def create
