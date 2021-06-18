@@ -46,8 +46,6 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'rspec-rails', '~> 5.0', '>= 5.0.1'
-  gem 'pager_api'
-  gem 'pagy'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -56,3 +54,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'active_model_serializers', '~> 0.10.12'
 
 gem 'aws-sdk-s3', '~> 1.95', '>= 1.95.1'
+
+gem "pager_api", "~> 0.3.2"
+
+gem "pagy", "~> 4.8"
