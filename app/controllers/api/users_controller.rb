@@ -7,7 +7,7 @@ module Api
     def index
       @users = User.all
 
-      render json: @users, each_serializer: UserSerializer
+      paginate @users, per_page: 5, each_serializer: UserSerializer
     end
 
     def show
