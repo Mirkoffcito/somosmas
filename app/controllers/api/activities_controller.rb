@@ -2,6 +2,14 @@
 
 module Api
   class ActivitiesController < ApplicationController
+    skip_before_action :authenticate_admin, only: :index
+    
+    def index
+      @activities = Activity.all
+
+      paginate @activities, per_page: 10, each_serializer: ActivitySerializer
+    end
+
     # POST/activities
 
     def create
