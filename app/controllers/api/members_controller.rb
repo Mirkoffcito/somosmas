@@ -6,7 +6,6 @@ module Api
 
     def index
       @members = Member.all
-      #render json: @members
       paginate @members, per_page: 10, each_serializer: MemberSerializer
 
     end
