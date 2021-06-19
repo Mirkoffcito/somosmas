@@ -10,18 +10,11 @@ module Api
       else 
         render json: @contacts.errors, status: :unprocessable_entity
       end
-      @contact = @current_user.contacts
-      render json: @contact, each_serializer: ContactSerializer
-
-    def index
-      
-      
     end
 
     def create
-    
-    @contact = Contact.new(contact_params)
-    @contact.user_id = @current_user.id if @current_user
+      @contact = Contact.new(contact_params)
+      @contact.user_id = @current_user.id if @current_user
       if @contact.save
         render json: @contact, status: :created
       else

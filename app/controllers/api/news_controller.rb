@@ -2,6 +2,8 @@
 
 module Api
   class NewsController < ApplicationController
+    skip_before_action :authenticate_admin, only: [:index]
+
     def create
       @new = New.new(new_params)
       if @new.save
@@ -14,7 +16,7 @@ module Api
 
     def index 
       @news = New.all
-      render json: @news, status: :ok
+      render json: @news, each_serializer: NewSerializer, status: :ok
     end 
 
     def show
