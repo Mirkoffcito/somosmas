@@ -4,21 +4,24 @@ module Api
     skip_before_action :authenticate_admin
 
     def index
-        @contacts = Contact.select { |contact| contact.user_id == @current_user.id }
+      @contacts = @current_user.contacts
       if @contacts != nil?
-        render json: @contacts, status: :ok
+        render json: @contacts, each_serializer: ContactSerializer, status: :ok
       else 
         render json: @contacts.errors, status: :unprocessable_entity
       end
       @contact = @current_user.contacts
       render json: @contact, each_serializer: ContactSerializer
-    end
 
+    def index
+      
+      
+    end
 
     def create
     
     @contact = Contact.new(contact_params)
-    @contact.user_id = @current_user.id
+    @contact.user_id = @current_user.id if @current_user
       if @contact.save
         render json: @contact, status: :created
       else
@@ -27,9 +30,11 @@ module Api
     end
     
     private
-    
+
     def contact_params
       params.require(:contact).permit(:name, :message, :email)
     end
+
   end
+  
 end
