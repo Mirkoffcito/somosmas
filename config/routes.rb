@@ -9,12 +9,13 @@ Rails.application.routes.draw do
     get 'users', to: 'users#index'
     delete 'users/:id', to: 'users#destroy'
     patch 'organization/public', to: 'organizations#update'
+    get 'backoffice/contacts', to: 'contacts#index'
 
     resources :news, only: [:show, :destroy, :create, :update]
     resources :slides, only: [:index, :update, :destroy, :show, :create]
     resources :categories, only: [:index, :create, :update, :destroy, :show]
     resources :activities, only: [:index, :create, :update]
-    resources :contacts, only: [:index, :create]
+    resources :contacts, only: [:index, :create, :show]
     resources :testimonials, only: [:create, :update, :destroy, :index]
     resources :members, only: [:index, :destroy, :create, :update]
     resources :comments, only: [:index, :create, :update]

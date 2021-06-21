@@ -3,8 +3,12 @@ module Api
     skip_before_action :authenticate_admin
 
     def index
-      @contacts = @current_user.contacts
-      render json: @contacts, each_serializer: ContactSerializer
+      if @current_user.role.admin?
+        @contacts = Contact.all
+        render json: @contacts, each_serializer: ContactSerializer
+      else
+        render json: { message: 'Unauthorized access.' }, status: :unauthorized
+      end
     end
 
     def create
@@ -15,6 +19,11 @@ module Api
       else
         render json: @contact.errors, status: :bad_request
       end
+    end
+
+    def show
+      @contacts = @current_user.contacts
+      render json: @contacts, each_serializer: ContactSerializer
     end
     
     private
