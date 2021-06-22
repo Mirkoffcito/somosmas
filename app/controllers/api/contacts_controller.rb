@@ -4,18 +4,13 @@ module Api
 
     def index
      @contacts =  @contacts = @current_user.contacts
-      if @contacts != nil?
-        render json: @contacts,each_serializer: ContactSerializer, status: :ok
-      else 
-        render json: @contacts.errors, status: :unprocessable_entity
-      end
+      render json: @contacts,each_serializer: ContactSerializer, status: :ok
     end
 
     def create
     @contact = Contact.new(contact_params)
     @contact.user_id = @current_user.id if @current_user
       if @contact.save
-        Mailer.send_mail
         render json: @contact, status: :created
       else
         render json: @contact.errors, status: :bad_request
