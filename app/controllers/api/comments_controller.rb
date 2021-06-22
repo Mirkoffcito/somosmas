@@ -11,7 +11,6 @@ module Api
       @comment = Comment.new(comment_params)
       @comment.user_id = @current_user.id if @current_user
       if @comment.save
-        byebug
         render json: @comment, status: :created
       else
         render json: @comment.errors, status: :unprocessable_entity
