@@ -59,8 +59,8 @@ development:
 test:
   <<: *default
   database: t40_api_test
-  username: <%= ENV['T40_API_DATABASE_USERNAME'] %>
-  password: <%= ENV['T40_API_DATABASE_PASSWORD'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
   host: localhost
 
 
