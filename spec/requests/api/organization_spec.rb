@@ -1,7 +1,19 @@
 require 'rails_helper'
 
-RSpec.describe "Organizations", type: :request do
-  describe "GET /index" do
-    pending "add some examples (or delete) #{__FILE__}"
+RSpec.describe "Test of Organizations Controller", type: :request do
+
+  # initialize test data
+  let!(:organization) {create(:organization)}
+
+  # Test suite for GET #index
+  describe "GET /api/organization/public" do
+    before do
+      get ('/api/organization/public')
+    end
+
+    it "as public user, returns status ok" do
+      expect(response).to have_http_status(:success)
+    end
   end
+  
 end
