@@ -1,15 +1,16 @@
 module Api
   class ContactsController < ApplicationController
-    skip_before_action :authenticate_admin
+    before_action :authorize_request
+    skip_before_action :authenticate_admin,  only: [:index]
 
     def index
-     @contacts =  @contacts = @current_user.contacts
-      render json: @contacts,each_serializer: ContactSerializer, status: :ok
+      @contacts = @current_user.contacts
+      render json: @contacts, each_serializer: ContactSerializer, status: :ok
     end
 
     def create
-    @contact = Contact.new(contact_params)
-    @contact.user_id = @current_user.id if @current_user
+      @contact = Contact.new(contact_params)
+      @contact.user_id = @current_user.id if @current_user
       if @contact.save
         render json: @contact, status: :created
       else
