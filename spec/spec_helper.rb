@@ -15,11 +15,10 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'support/request_helpers' 
+require 'support/database_cleaner'
+require 'support/api_helpers'
 
 RSpec.configure do |config|
-
-  config.include Request::JsonHelpers, :type => :request
-
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
@@ -99,4 +98,9 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+config.include Request::JsonHelpers, :type => :request
+config.include Request::ApiHelpers, :type => :request
+
+
 end
