@@ -1,5 +1,6 @@
 # SimpleCov Config
 require 'simplecov'
+require 'factory_bot_rails'
 SimpleCov.start do
   add_group 'Config', 'config'
   add_group 'Controllers', 'app/controllers'
