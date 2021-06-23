@@ -1,9 +1,9 @@
 module Api
   class ContactsController < ApplicationController
-    skip_before_action :authenticate_admin
+    skip_before_action :authenticate_admin, except: :index
 
     def index
-      @contacts = @current_user.contacts
+      @contacts = Contact.all
       render json: @contacts, each_serializer: ContactSerializer
     end
 
@@ -15,6 +15,11 @@ module Api
       else
         render json: @contact.errors, status: :bad_request
       end
+    end
+
+    def my_contacts
+      @contacts = @current_user.contacts
+      render json: @contacts, each_serializer: ContactSerializer
     end
     
     private
