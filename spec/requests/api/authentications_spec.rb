@@ -73,12 +73,12 @@ RSpec.describe "Authentications", type: :request do
         context 'when it fails to register a new user because of an already registered email' do
             
             before do
-                new_user = User.create!(attributes)
+                User.create! attributes
                 registration
             end
 
             it 'should return a HTTP STATUS 422' do
-                expect(response).to have_http_status(422)
+                expect(response).to have_http_status(:unprocessable_entity)
             end
 
             it 'should return a JSON detailing the error' do
