@@ -7,11 +7,14 @@ RSpec.describe 'Members', type: :request do
   describe 'POST /api/members' do
 
     context 'with validad parameters' do
+      before do
+        FactoryBot.create(:admin)
+        login_with_api
+        post '/api/members', headers:{
+          'Authorization': json_response[:user][:token]},
+          :params => { member: valid_params }
+      end
       it 'succesfully created a new member' do
-        expect do
-          post '/api/members',
-            params: {member: valid_params}, as: :json
-        end.to change(Member, :count).by(1)
         expect(response).to have_http_status(:ok)
       end
     end
