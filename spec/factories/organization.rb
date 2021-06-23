@@ -3,8 +3,8 @@ FactoryBot.define do
     name {Faker::Company.name}
     email {Faker::Internet.email}
     welcome_text {Faker::Company.catch_phrase}
-    address {"Somos mas"}
-    phone {"011123312354"}
+    address {Faker::Address.street_name}
+    phone {Faker::PhoneNumber.phone_number}
   end
 end
     
