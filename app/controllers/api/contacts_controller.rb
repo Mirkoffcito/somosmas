@@ -8,8 +8,8 @@ module Api
     end
 
     def create
-    @contact = Contact.new(contact_params)
-    @contact.user_id = @current_user.id if @current_user
+      @contact = Contact.new(contact_params)
+      @contact.user_id = @current_user.id if @current_user
       if @contact.save
         render json: @contact, status: :created
       else
