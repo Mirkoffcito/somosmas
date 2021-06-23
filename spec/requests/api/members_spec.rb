@@ -3,15 +3,15 @@ require 'rails_helper'
 RSpec.describe 'Members', type: :request do
   let (:valid_params) { attributes_for :member}
   let (:invalid_params) { attributes_for :param_missing_member}
-  let (:user) { attributes_for :admin_user }
-  let (:common_user) { attributes_for :client_user }
+  let (:user_admin) { attributes_for :admin_user }
+  let (:user_client) { attributes_for :client_user }
 
   describe 'POST /api/members' do
 
     context 'with validad parameters' do
       before do
         FactoryBot.create(:admin)
-        login_with_api(user)
+        login_with_api(user_admin)
         post '/api/members', headers:{
           'Authorization': json_response[:user][:token]},
           :params => { member: valid_params }
@@ -24,7 +24,7 @@ RSpec.describe 'Members', type: :request do
     context 'with invalid parameters' do
       before do
         FactoryBot.create(:admin)
-        login_with_api(user)
+        login_with_api(user_admin)
         post '/api/members', headers:{
           'Authorization': json_response[:user][:token]},
           :params => { member: invalid_params }
@@ -37,7 +37,7 @@ RSpec.describe 'Members', type: :request do
     context 'with common user' do
       before do
         FactoryBot.create(:client)
-        login_with_api(common_user)
+        login_with_api(user_client)
         post '/api/members', headers:{
           'Authorization': json_response[:user][:token]},
           :params => { member: invalid_params }
@@ -48,5 +48,35 @@ RSpec.describe 'Members', type: :request do
     end
 
   end
+
+  describe 'GET /api/members' do
+
+    context 'with admin_user' do
+      before do
+        FactoryBot.create(:member)
+        FactoryBot.create(:admin)
+        login_with_api(user_admin)
+        get '/api/members', headers:{'Authorization': json_response[:user][:token]}
+      end
+      it 'request with admin authorization' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response[:member])
+      end
+    end
+
+    context 'with client_user' do
+      before do
+        FactoryBot.create(:member)
+        FactoryBot.create(:client)
+        login_with_api(user_client)
+        get '/api/members', headers:{'Authorization': json_response[:user][:token]}
+      end
+      it 'request with admin authorization' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response[:member])
+      end
+    end
+  end
+  
 
 end

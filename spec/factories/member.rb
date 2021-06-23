@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :member do
+  factory :member, class: 'Member' do
     name {Faker::Name.first_name}
     facebook_url {Faker::Internet.url}
     instagram_url {Faker::Internet.url}
