@@ -27,12 +27,9 @@ module Api
     end
 
     def destroy
-      if comment && comment.user_id == @current_user.id || @current_user.role.admin?
-        comment.delete
-        render json: { message: 'Succesfully deleted' }, status: :ok
-      else 
-        render json: { message: 'Unauthorized access.' }, status: :unauthorized
-      end  
+      comment.user_id == @current_user.id || @current_user.role.admin?
+      comment.delete
+      render json: { message: 'Succesfully deleted' }, status: :ok
     end 
 
     private
