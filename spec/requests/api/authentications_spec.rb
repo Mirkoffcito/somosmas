@@ -6,10 +6,11 @@ RSpec.describe "Authentications", type: :request do
         create(:admin)
     end
 
+    let (:attributes) { attributes_for :user }
+
     describe "POST api/auth/register" do
 
         let (:registration) {register_with_api(attributes)}
-        let (:attributes) { attributes_for :user }
 
         context 'when succesfully registers a new user' do
 
@@ -85,6 +86,7 @@ RSpec.describe "Authentications", type: :request do
                 expect(json_response[:email]).to eq(["has already been taken"])
             end
         end
+    end
 
     describe "POST api/auth/login" do
 
@@ -167,5 +169,4 @@ RSpec.describe "Authentications", type: :request do
 
     end
 
-    end
 end
