@@ -21,7 +21,7 @@ module Api
       end
     end
 
-    def show
+    def my_contacts
       @contacts = @current_user.contacts
       render json: @contacts, each_serializer: ContactSerializer
     end
