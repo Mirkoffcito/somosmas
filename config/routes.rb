@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     delete 'users/:id', to: 'users#destroy'
     patch 'organization/public', to: 'organizations#update'
     get 'backoffice/contacts', to: 'contacts#index'
-    get 'contacts', to: 'contacts#my_contacts'
+    get 'my_contacts', to: 'contacts#my_contacts'
 
     resources :news, only: [:show, :destroy, :create, :update]
     resources :slides, only: [:index, :update, :destroy, :show, :create]

@@ -1,14 +1,10 @@
 module Api
   class ContactsController < ApplicationController
-    skip_before_action :authenticate_admin
+    skip_before_action :authenticate_admin, except: :index
 
     def index
-      if @current_user.role.admin?
-        @contacts = Contact.all
-        render json: @contacts, each_serializer: ContactSerializer
-      else
-        render json: { message: 'Unauthorized access.' }, status: :unauthorized
-      end
+      @contacts = Contact.all
+      render json: @contacts, each_serializer: ContactSerializer
     end
 
     def create
