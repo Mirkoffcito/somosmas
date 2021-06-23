@@ -17,6 +17,11 @@ module Api
         render json: @contact.errors, status: :bad_request
       end
     end
+
+    def my_contacts
+      @contacts = @current_user.contacts
+      render json: @contacts, each_serializer: ContactSerializer
+    end
     
     private
 
