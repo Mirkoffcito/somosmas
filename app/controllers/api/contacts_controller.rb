@@ -1,10 +1,9 @@
 module Api
   class ContactsController < ApplicationController
-    before_action :authorize_request
-    skip_before_action :authenticate_admin,  only: [:index]
+    skip_before_action :authenticate_admin, except: :index
 
     def index
-      @contacts = @current_user.contacts
+      @contacts = Contact.all
       render json: @contacts, each_serializer: ContactSerializer
     end
 
