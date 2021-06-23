@@ -89,7 +89,7 @@ RSpec.describe "Authentications", type: :request do
     describe "POST api/auth/login" do
 
         before do
-            @user = User.create! attributes
+            @user = create(:user, attributes)
         end
         
         context 'when it succesfully logins' do
@@ -134,7 +134,7 @@ RSpec.describe "Authentications", type: :request do
         context 'when it succesfully renders the current user info' do
 
             before do
-                @user = User.create! attributes
+                @user = create(:user, attributes)
                 login_with_api(@user)
                 get api_auth_me_url, headers: {Authorization: json_response[:user][:token]}
             end
