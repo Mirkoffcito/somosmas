@@ -1,24 +1,24 @@
 module ApiHelpers
 
-  def login_with_api
-    register_with_api
+  def login_with_api(user)
+    register_with_api(user)
     post '/api/auth/login', params: {
       user: {
-        email: "santiago@santiago.com",
-        password: "santiago"
+        email: user[:email],
+        password: user[:password]
       }
     }
   end 
 
-  def register_with_api
+  def register_with_api(user)
     post '/api/auth/register', params: {
-      user: { 
-        first_name: "Santiago",
-        last_name: "Leon",
-        email: "santiago@santiago.com",
-        password: "santiago",
-        password_confirmation: "santiago",
-        role_id: 1
+      user:{ 
+        first_name: user[:first_name],
+        last_name: user[:last_name],
+        email: user[:email],
+        password: user[:password],
+        password_confirmation: user[:password_confirmation],
+        role_id: user[:role_id]
        }
     }
   end
