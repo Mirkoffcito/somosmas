@@ -1,101 +1,171 @@
 require 'rails_helper'
 
 RSpec.describe "Authentications", type: :request do
-  let (:valid_attributes) { attributes_for :user }
-  let (:invalid_email) { attributes_for :user_without_email }
-  let (:invalid_password) { attributes_for :user_without_password_confirmation}
 
-
-  describe "POST api/auth/register" do
-
-    context 'with valid parameters' do
-      it 'succesfuly registers a new user and returns a token' do
-        expect do
-          post api_auth_register_url,
-            params: { user: valid_attributes}, as: :json
-        end.to change(User, :count).by(1)
-        expect(response).to have_http_status(:ok)
-        expect(json_response[:user]).to have_key(:token)
-      end
+    before(:all) do
+        create(:admin)
     end
 
-    context 'with invalid parameters' do
-      it 'returns an unprocessable entity status when no email is provided' do
-        expect do
-          post api_auth_register_url,
-            params: {user: invalid_email}, as: :json
-        end.to change(User, :count).by(0)
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
+    describe "POST api/auth/register" do
 
-      it 'returns an unprocessable entity status when no password_confirmation is provided' do
-        expect do
-          post api_auth_register_url,
-            params: {user: invalid_password}, as: :json
-        end.to change(User, :count).by(0)
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
+        let (:registration) {register_with_api(attributes)}
+        let (:attributes) { attributes_for :user }
+
+        context 'when succesfully registers a new user' do
+
+            before do |example|
+                unless example.metadata[:skip_before]
+                    registration
+                end
+            end
+
+            it 'should change Users count by 1', skip_before: true do
+                expect{registration}.to change(User, :count).by(1)
+            end
+
+            it 'should return a HTTP STATUS 200' do
+                expect(response).to have_http_status(:ok)
+            end
+
+            it 'should return a TOKEN' do
+                expect(json_response[:user]).to have_key(:token)
+            end
+
+            it 'should return the users info' do
+                new_user = User.new(attributes)
+                compare(json_response, new_user)
+            end
+        
+        end
+
+        context 'when it fails to register a new user' do
+
+            before do |example|
+                attributes[:password_confirmation] = nil
+                unless example.metadata[:skip_before]
+                    registration
+                end
+            end
+
+            it 'should not change Users count' do
+                expect{registration}.not_to change(User, :count)
+            end
+
+            it 'should return a HTPP STATUS 422' do
+                expect(response).to have_http_status(:unprocessable_entity)
+            end
+
+        end
+
+        context 'when it fails to register a new user because of incorrect password_confirmation' do
+
+            before do
+                attributes[:password_confirmation] = nil
+                registration
+            end
+
+            it 'should return a HTPP STATUS 422' do
+                expect(response).to have_http_status(:unprocessable_entity)
+            end
+
+        end
+
+        context 'when it fails to register a new user because of an already registered email' do
+            
+            before do
+                new_user = User.create!(attributes)
+                registration
+            end
+
+            it 'should return a HTTP STATUS 422' do
+                expect(response).to have_http_status(422)
+            end
+
+            it 'should return a JSON detailing the error' do
+                expect(json_response[:email]).to eq(["has already been taken"])
+            end
+        end
+
+    describe "POST api/auth/login" do
+
+        before do
+            @user = User.create! attributes
+        end
+        
+        context 'when it succesfully logins' do
+            
+            before do
+                login_with_api(@user)
+            end
+
+            it 'should return a HTTP STATUS 200' do
+                expect(response).to have_http_status(:ok)
+            end
+
+            it 'should return the users info' do
+                compare(json_response, @user)
+            end
+
+            it 'should return a TOKEN' do
+                expect(json_response[:user]).to have_key(:token)
+            end
+
+        end
+
+        context 'when it fails to login' do
+            before do
+                @user[:email] = "guido1234gmail.com"
+                login_with_api(@user) 
+            end
+            
+            it 'should return a HTTP STATUS 400' do
+                expect(response).to have_http_status(:bad_request)
+            end
+
+            it 'should return a message error' do
+                expect(json_response[:error]).to eq("Invalid user or password")
+            end
+        end
 
     end
 
-    context 'with an already registered email' do
-      let (:existing_user) { attributes_for :user }
+    describe "GET api/auth/me" do
+        
+        context 'when it succesfully renders the current user info' do
 
-      it 'returns an unprocessable entity status when the email is taken already' do
-        registered_user = User.create! valid_attributes
-        existing_user[:email] = registered_user[:email]
-        post api_auth_register_url, params: {user: existing_user}, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-    end
+            before do
+                @user = User.create! attributes
+                login_with_api(@user)
+                get api_auth_me_url, headers: {Authorization: json_response[:user][:token]}
+            end
 
-  end
+            it 'returns a HTTP STATUS 200' do
+                expect(response).to have_http_status(:ok)
+            end
 
-  describe "POST api/auth/login" do
-    
-    context 'succesfully login' do
-      it 'returns an OK(200) http status and a token' do
-        new_user = User.create! valid_attributes
-        login_with_api(new_user)
-        expect(response).to have_http_status(:ok)
-        expect(json_response[:user]).to have_key(:token)
-      end
-    end
+            it 'returns the current user info' do
+                compare(json_response, @user)
+            end
 
-    context 'failed to login' do
-      it 'returns a bad request(400) http status and renders an error if the credentials are invalid' do
-        new_user = User.new valid_attributes
-        post api_auth_login_url, params: {user: {email: new_user.email, password: new_user.password}}
-        expect(response).to have_http_status(:bad_request)
-        expect(json_response[:error]).to eq("Invalid user or password")
-      end
-    end
+        end
 
-  end
+        context 'when it fails to render current user info because of bad token' do
 
-  describe "GET api/auth/me" do
-  
-    context 'succesfully renders the current user info' do
+            before do
+                get api_auth_me_url, headers: {Authorization: "123456789"}
+            end
+        
+            it 'should return a HTTP STATUS 401' do
+                expect(response).to have_http_status(:unauthorized)
+            end
 
-      it 'returns an OK(200) http status and renders the current user info' do
-        new_user = User.create! valid_attributes
-        login_with_api(new_user)
-        get api_auth_me_url, headers: {Authorization: json_response[:user][:token]}
-        expect(response).to have_http_status(:ok)
-        expect(json_response[:user][:email]).to eq(new_user.email)
-      end
-    end
-      
-    context "fails to get user's info because of bad token" do
+            it 'should return a message error' do
+                expect(json_response[:message]).to eq("Unauthorized access.")
+            end
 
-      it 'returns an 401(unauthorized) http status and renders an error' do
-        get api_auth_me_url, headers: {Authorization: "123456789"}
-        expect(response).to have_http_status(:unauthorized)
-        expect(json_response[:message]).to eq("Unauthorized access.")
-      end
+        end
 
     end
-  
-  end
 
+    end
 end
