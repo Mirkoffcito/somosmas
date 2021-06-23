@@ -1,15 +1,11 @@
 module Api
   class ContactsController < ApplicationController
     before_action :authorize_request
-    skip_before_action :authenticate_admin
+    skip_before_action :authenticate_admin,  only: [:index, :create]
 
     def index
       @contacts = @current_user.contacts
-      if @contacts != nil?
-        render json: @contacts, each_serializer: ContactSerializer, status: :ok
-      else 
-        render json: @contacts.errors, status: :unprocessable_entity
-      end
+      render json: @contacts, each_serializer: ContactSerializer, status: :ok
     end
 
     def create
