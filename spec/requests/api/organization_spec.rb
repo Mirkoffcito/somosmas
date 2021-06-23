@@ -1,38 +1,48 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "Test of Organizations Controller", type: :request do
+RSpec.describe 'Organizations', type: :request do
+  let (:organization) {create(:organization)}
+  let (:user_admin) { attributes_for :admin_user }
+  let (:user_client) { attributes_for :client_user }
 
-  describe "GET /api/organization/public" do
-    let!(:organization) {create(:organization)}
-
-    it "as public user, returns status ok" do
-      get ('/api/organization/public')
-      expect(response).to have_http_status(:success)
+  describe 'GET /api/organization/public' do
+    
+    context 'with admin user' do
+      before do
+        FactoryBot.create(:admin)
+        login_with_api(user_admin)
+        get '/api/organization/public', headers:{'Authorization': json_response[:user][:token]}
+      end
+      it 'request with admin authorization' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response[:organization])
+      end
     end
 
-  end
-
-  describe "PATCH /api/organization/public" do
-    let!(:organization) {create(:organization)}
-    let!(:role) {create(:role)}
-    let!(:user) {create(:user)}
-
-    it "as admin, returns status ok" do
-      patch ('/api/organization/public')
-      login_with_api(user)
-      expect(response).to have_http_status(:success)
-    end
-  end
-
-  describe "PATCH /api/organization/public" do
-    let!(:organization) {create(:organization)}
-
-    it "as public user, returns status unauthorized" do
-      patch ('/api/organization/public')
-      expect(response).to have_http_status(:unauthorized)
+    context 'with client_user' do
+      before do
+        FactoryBot.create(:member)
+        FactoryBot.create(:client)
+        login_with_api(user_client)
+        get '/api/organization/public', headers:{'Authorization': json_response[:user][:token]}
+      end
+      it 'request with admin authorization' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response[:member])
+      end
     end
 
+    context 'with public user' do
+      before do
+        FactoryBot.create(:client)
+        login_with_api(user_client)
+        get '/api/organization/public'
+      end
+      it 'request with public permissions' do
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
-
-
 end
