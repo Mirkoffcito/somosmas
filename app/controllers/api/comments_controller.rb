@@ -1,6 +1,6 @@
 module Api
   class CommentsController < ApplicationController
-    skip_before_action :authenticate_admin, only: [:create, :update]
+    skip_before_action :authenticate_admin, only: [:create, :update, :destroy]
 
     def index
       @comments = Comment.all
@@ -25,6 +25,12 @@ module Api
         render json: { message: 'Unauthorized access.' }, status: :unauthorized
       end
     end
+
+    def destroy
+      comment.user_id == @current_user.id || @current_user.role.admin?
+      comment.delete
+      render json: { message: 'Succesfully deleted' }, status: :ok
+    end 
 
     private
 
