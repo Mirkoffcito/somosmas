@@ -73,7 +73,7 @@ RSpec.describe "Authentications", type: :request do
         context 'when it fails to register a new user because of an already registered email' do
             
             before do
-                User.create! attributes
+                create(:user, attributes)
                 registration
             end
 
