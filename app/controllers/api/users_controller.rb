@@ -33,7 +33,7 @@ module Api
       @user = User.find(params[:id])
 
       if @current_user.id == @user.id
-        @user.update!(user_update_params)
+        @user.update(user_update_params)
         render json: @user
       else
         render json: @user.errors, status: :unauthorized
