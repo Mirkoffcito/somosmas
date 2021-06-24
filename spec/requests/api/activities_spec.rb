@@ -162,5 +162,37 @@ RSpec.describe "Activities", type: :request do
             end
         end
 
+        context 'when an ADMIN tries to DELETE an activity' do
+            before do
+                admin_user = create(:admin_user)
+                login_with_api(admin_user)
+                @token = json_response[:user][:token]
+                @json_response = nil
+            end
+
+            context 'when activity is succesfully deleted' do
+                before {delete_activity(@activity.id, @token)}
+
+                it 'should return HTTP STATUS 200' do
+                    expect(response).to have_http_status(:ok)
+                end
+
+                it 'should return a success message' do
+                    expect(json_response[:message]).to eq("Succesfully deleted")
+                end
+            end
+
+            context "when activity doesn't exist" do
+                before {delete_activity(100, @token)}
+
+                it 'should return HTTP STATUS 404' do
+                    expect(response).to have_http_status(:not_found)
+                end
+
+                it 'should return an activity not found message' do
+                    expect(json_response[:error]).to eq("activity not found")
+                end
+            end
+        end
     end
 end
