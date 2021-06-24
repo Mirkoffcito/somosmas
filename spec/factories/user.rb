@@ -6,7 +6,13 @@ FactoryBot.define do
         last_name {Faker::Name.last_name}
         password { Faker::Internet.password }
         password_confirmation {password}
-        role_id { Role.where(name: 'admin').first&.id}
     end
 
+    factory :admin_user, parent: :user do
+        role { create(:admin) }
+    end 
+
+    factory :client_user, parent: :user do
+        role { create(:client) }
+    end
 end

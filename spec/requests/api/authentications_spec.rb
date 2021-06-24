@@ -1,15 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "Authentications", type: :request do
-
-    before(:all) do
-        create(:admin)
-    end
-
-    let (:attributes) { attributes_for :user }
-
+    
+    let (:attributes) { attributes_for :admin_user }
     describe "POST api/auth/register" do
-
         let (:registration) {register_with_api(attributes)}
 
         context 'when succesfully registers a new user' do
@@ -39,10 +33,10 @@ RSpec.describe "Authentications", type: :request do
         
         end
 
-        context 'when it fails to register a new user' do
+        context 'when email param is incorrect' do
 
             before do |example|
-                attributes[:password_confirmation] = nil
+                attributes[:email] = 'guido10mdgmail.com'
                 unless example.metadata[:skip_before]
                     registration
                 end
@@ -58,7 +52,7 @@ RSpec.describe "Authentications", type: :request do
 
         end
 
-        context 'when it fails to register a new user because of incorrect password_confirmation' do
+        context 'when password_confirmation param is incorrect' do
 
             before do
                 attributes[:password_confirmation] = nil
@@ -71,7 +65,7 @@ RSpec.describe "Authentications", type: :request do
 
         end
 
-        context 'when it fails to register a new user because of an already registered email' do
+        context 'when email sent as param is already registered' do
             
             before do
                 create(:user, attributes)
@@ -89,16 +83,11 @@ RSpec.describe "Authentications", type: :request do
     end
 
     describe "POST api/auth/login" do
+        before {@user = create(:user, attributes)}
 
-        before do
-            @user = create(:user, attributes)
-        end
-        
-        context 'when it succesfully logins' do
+        context 'when login is succesful' do
             
-            before do
-                login_with_api(@user)
-            end
+            before {login_with_api(@user)}
 
             it 'should return a HTTP STATUS 200' do
                 expect(response).to have_http_status(:ok)
@@ -114,7 +103,7 @@ RSpec.describe "Authentications", type: :request do
 
         end
 
-        context 'when it fails to login' do
+        context 'when login fails because of bad credentials' do
             before do
                 @user[:email] = "guido1234gmail.com"
                 login_with_api(@user) 
@@ -128,12 +117,11 @@ RSpec.describe "Authentications", type: :request do
                 expect(json_response[:error]).to eq("Invalid user or password")
             end
         end
-
     end
 
     describe "GET api/auth/me" do
         
-        context 'when it succesfully renders the current user info' do
+        context "when current user's info is returned" do
 
             before do
                 @user = create(:user, attributes)
@@ -141,21 +129,18 @@ RSpec.describe "Authentications", type: :request do
                 get api_auth_me_url, headers: {Authorization: json_response[:user][:token]}
             end
 
-            it 'returns a HTTP STATUS 200' do
+            it 'should return a HTTP STATUS 200' do
                 expect(response).to have_http_status(:ok)
             end
 
-            it 'returns the current user info' do
+            it 'should return the current user info' do
                 compare(json_response, @user)
             end
 
         end
 
-        context 'when it fails to render current user info because of bad token' do
-
-            before do
-                get api_auth_me_url, headers: {Authorization: "123456789"}
-            end
+        context "when current user's info fails to return because of bad token" do
+            before { get api_auth_me_url, headers: {Authorization: "123456789"} }
         
             it 'should return a HTTP STATUS 401' do
                 expect(response).to have_http_status(:unauthorized)
@@ -164,9 +149,6 @@ RSpec.describe "Authentications", type: :request do
             it 'should return a message error' do
                 expect(json_response[:message]).to eq("Unauthorized access.")
             end
-
         end
-
     end
-
 end
