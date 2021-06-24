@@ -33,7 +33,7 @@ RSpec.describe "Activities", type: :request do
             end
 
             it 'should return an array of activities' do
-                expect(json_response[:activities]).to be_an_instance_of(Array)
+                expect(json_response[:activities].length).to eq(10)
             end
 
             it 'each activity should have a name, content and image' do
@@ -71,8 +71,14 @@ RSpec.describe "Activities", type: :request do
             end
             context 'when it succesfully POSTS' do
 
-                before do
-                    create_activity(attributes, @token)
+                before do |example|
+                    unless example.metadata[:skip_before]
+                        create_activity(attributes, @token)
+                    end
+                end
+
+                it 'should add 1 activity to the database', :skip_before do
+                    expect{create_activity(attributes, @token)}.to change(Activity, :count).by(1)
                 end
 
                 it 'should return a HTTP STATUS 200' do
@@ -85,7 +91,7 @@ RSpec.describe "Activities", type: :request do
                 end
             end
 
-            context 'when it fails to POST because of bad params being sent' do
+            context 'when POST fails because of bad params' do
                 before do
                     attributes[:name] = nil
                     create_activity(attributes, @token)
@@ -120,7 +126,7 @@ RSpec.describe "Activities", type: :request do
                 @token = json_response[:user][:token]
                 @json_response = nil
             end
-            context 'when update is succesful' do
+            context 'when UPDATE is succesful' do
                 before{ update_activity(@activity.id, @token, attributes) }
                 it 'should return a HTTP STATUS 200' do
                     expect(response).to have_http_status(:ok)
@@ -132,7 +138,7 @@ RSpec.describe "Activities", type: :request do
                 end
             end
 
-            context 'when update fails because no params are sent' do
+            context 'when UPDATE fails because no params are sent' do
                 before{ update_activity(@activity.id, @token, '') }
 
                 it 'should return a HTTP STATUS 400' do
@@ -171,7 +177,15 @@ RSpec.describe "Activities", type: :request do
             end
 
             context 'when activity is succesfully deleted' do
-                before {delete_activity(@activity.id, @token)}
+                before do |example|
+                    unless example.metadata[:skip_before]
+                        delete_activity(@activity.id, @token)
+                    end
+                end
+
+                it 'should remove the activity from the database', :skip_before do
+                    expect{delete_activity(@activity.id, @token)}.to change(Activity, :count).by(-1)
+                end
 
                 it 'should return HTTP STATUS 200' do
                     expect(response).to have_http_status(:ok)
@@ -180,9 +194,10 @@ RSpec.describe "Activities", type: :request do
                 it 'should return a success message' do
                     expect(json_response[:message]).to eq("Succesfully deleted")
                 end
+
             end
 
-            context "when activity doesn't exist" do
+            context "when activity is not found" do
                 before {delete_activity(100, @token)}
 
                 it 'should return HTTP STATUS 404' do
