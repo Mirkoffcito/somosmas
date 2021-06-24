@@ -1,8 +1,12 @@
 require 'rails_helper'
 
+# The custom methods(compare_user, register_with_api, )
+# used in this file can be found in
+# spec/support/auth_helpers.rb
+
 RSpec.describe "Authentications", type: :request do
     
-    let (:attributes) { attributes_for :admin_user }
+    let (:attributes) { attributes_for(:user, :admin_user) }
     describe "POST api/auth/register" do
         let (:registration) {register_with_api(attributes)}
 
@@ -81,7 +85,7 @@ RSpec.describe "Authentications", type: :request do
     describe "POST api/auth/login" do
         before {@user = create(:user, attributes)}
 
-        context 'when login is succesful' do
+        context 'when credentials are correct' do
             
             before {login_with_api(@user)}
 
@@ -99,7 +103,7 @@ RSpec.describe "Authentications", type: :request do
 
         end
 
-        context 'when login fails because of bad credentials' do
+        context 'when credentials are incorrect' do
             before do
                 @user[:email] = "guido1234gmail.com"
                 login_with_api(@user) 
@@ -117,7 +121,7 @@ RSpec.describe "Authentications", type: :request do
 
     describe "GET api/auth/me" do
         
-        context "when current user's info is returned" do
+        context "when the token is valid" do
 
             before do
                 @user = create(:user, attributes)
@@ -135,7 +139,7 @@ RSpec.describe "Authentications", type: :request do
 
         end
 
-        context "when current user's info fails to return because of bad token" do
+        context "when the token is invalid" do
             before { get api_auth_me_url, headers: {Authorization: "123456789"} }
         
             it 'returns a HTTP STATUS 401' do
