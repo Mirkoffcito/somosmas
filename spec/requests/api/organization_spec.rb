@@ -7,15 +7,32 @@ RSpec.describe 'Organizations', type: :request do
   let (:admin_user) { attributes_for :admin_user }
   let (:client_user) { attributes_for :client_user }
 
-  describe 'PATCH /api/organization/public' do
+  before { create(:organization) }
 
-    before { FactoryBot.create(:organization) }
+  before do
+    create(:admin_role)
+    create(:admin_user)
+    create(:client_role)
+    create(:client_user)
+    register_with_api(admin_user)
+  end 
+  
+
+  describe 'GET /api/organization/public' do
+
+    context 'when user is public' do
+      it 'should return an HTTP STATUS 200' do
+        get '/api/organization/public'
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+  end
+
+  describe 'PATCH /api/organization/public' do
 
     context 'when user is admin, with empty parameters' do
       before do
-        create(:admin_role)
-        create(:admin_user)
-        register_with_api(admin_user)
         token = json_response[:user][:token]
         @json_response = nil
         patch '/api/organization/public', headers: {'Authorization': token}
@@ -30,20 +47,16 @@ RSpec.describe 'Organizations', type: :request do
 
     context 'when user is admin, with parameters' do
       before do
-        create(:admin_role)
-        create(:admin_user)
-        register_with_api(admin_user)
-        # VER SI PUEDO METER FAKER PARA LOS DATOS DEL PUT
+        token = json_response[:user][:token]
+        @json_response = nil
 
-        organization_params =
+        organization_update = 
           { "organization": {
           "name":"Somos Mas",
           "address":"1234124" } }
           
-        token = json_response[:user][:token]
-        @json_response = nil
-        patch '/api/organization/public', headers: {'Authorization': token}, params: organization_params
-        puts response.body
+        patch '/api/organization/public', headers: {'Authorization': token}, params: organization_update
+        # puts response.body
       end
       it 'should return an HTTP STATUS 200' do
         expect(response).to have_http_status(:ok)
@@ -52,8 +65,6 @@ RSpec.describe 'Organizations', type: :request do
 
     context 'when user is client' do
       before do
-        create(:client_role)
-        create(:client_user)
         register_with_api(client_user)
         token = json_response[:user][:token]
         @json_response = nil
@@ -79,47 +90,6 @@ RSpec.describe 'Organizations', type: :request do
       end
     end
 
+  # end
   end
 end
-
-#   describe 'GET /api/organization/public' do
-
-#     before (:all) do
-#       FactoryBot.create(:organization)
-#     end
-
-#     context 'when user is admin' do
-#       before do
-#         FactoryBot.create(:admin_role)
-#         FactoryBot.create(:admin_user)
-#         register_with_api(admin_user)
-#         login_with_api(admin_user)
-#         get '/api/organization/public', headers: {'Authorization': json_response[:user][:token]}
-#       end
-#       it 'should return an HTTP STATUS 200' do
-#         expect(response).to have_http_status(:ok)
-#       end
-#     end
-
-#     context 'when user is client' do
-#       before do
-#         FactoryBot.create(:client_role)
-#         FactoryBot.create(:client_user)
-#         register_with_api(client_user)
-#         login_with_api(client_user)
-#         get '/api/organization/public', headers: {'Authorization': json_response[:user][:token]}
-#       end
-#       it 'should return an HTTP STATUS 200' do
-#         expect(response).to have_http_status(:ok)
-#       end
-#     end
-
-#     context 'when user is public' do
-#       it 'should return an HTTP STATUS 200' do
-#         get '/api/organization/public'
-#         expect(response).to have_http_status(:ok)
-#       end
-#     end
-#   end
-# end
-
