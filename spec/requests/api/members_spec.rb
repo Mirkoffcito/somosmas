@@ -41,7 +41,7 @@ RSpec.describe 'Members', type: :request do
   describe '.create' do
     context "when user's admin'" do
       before do
-        admin_user = create(:admin_user)
+        admin_user = create(:user, :admin_user)
         login_with_api(admin_user)
         @token = json_response[:user][:token]
         @json_response = nil
@@ -110,7 +110,7 @@ RSpec.describe 'Members', type: :request do
 
     context "when user's admin" do
       before do
-        admin_user = create(:admin_user)
+        admin_user = create(:user, :admin_user)
         login_with_api(admin_user)
         @token = json_response[:user][:token]
         @json_response = nil
@@ -160,7 +160,7 @@ RSpec.describe 'Members', type: :request do
 
     context 'when user is admin' do
       before do
-        admin_user = create(:admin_user)
+        admin_user = create(:user, :admin_user)
         login_with_api(admin_user)
         @token = json_response[:user][:token]
         @json_response = nil

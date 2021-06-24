@@ -9,12 +9,11 @@ FactoryBot.define do
     password_confirmation { password }
   end
 
-  factory :admin_user, parent: :user do
-    role { create(:admin) }
-  end
-  
-  factory :client_user, parent: :user do
-    role { create(:client) }
+  trait :admin_user do
+    association :role, factory: :admin
   end
 
+  trait :client_user do
+    association :role, factory: :client
+  end
 end
