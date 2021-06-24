@@ -26,7 +26,7 @@ RSpec.describe "Authentications", type: :request do
 
             it 'returns the users info' do
                 new_user = User.new(attributes)
-                compare(json_response, new_user)
+                compare_user(json_response, new_user)
             end
         
         end
@@ -90,7 +90,7 @@ RSpec.describe "Authentications", type: :request do
             end
 
             it 'returns the users info' do
-                compare(json_response, @user)
+                compare_user(json_response, @user)
             end
 
             it 'returns a TOKEN' do
@@ -130,7 +130,7 @@ RSpec.describe "Authentications", type: :request do
             end
 
             it 'returns the current user info' do
-                compare(json_response, @user)
+                compare_user(json_response, @user)
             end
 
         end
