@@ -6,87 +6,87 @@ RSpec.describe 'Organizations', type: :request do
 
   let (:admin) { attributes_for :admin_user }
   let (:client) { attributes_for :client_user }
-
   before { create(:organization) }
-
-  before do
-    create(:admin_role)
-    create(:admin_user)
-    create(:client_role)
-    create(:client_user)
-    register_with_api(admin)
-  end 
   
-
-  describe 'GET /api/organization/public' do
-
-    context 'when user is public' do
-      it 'should return an HTTP STATUS 200' do
+  describe '.index' do
+    context 'when Organization exist' do
+      it 'returns an HTTP STATUS 200' do
         get '/api/organization/public'
         expect(response).to have_http_status(:ok)
       end
     end
-
   end
 
-  describe 'PATCH /api/organization/public' do
-
-    context 'when user is admin, with empty parameters' do
+  describe '.update' do
+    context 'when user is admin' do
       before do
-        token = json_response[:user][:token]
-        @json_response = nil
-        patch '/api/organization/public', headers: {'Authorization': token}
+        create(:admin_role)
+        create(:admin_user)
+        register_with_api(admin)
       end
-      it 'should return an HTTP STATUS 400' do
-        expect(response).to have_http_status(:bad_request)
-      end
-      it 'should return a message error' do
-        expect(json_response[:error]).to eq('Parameter is missing or its value is empty')
-      end
-    end
 
-    context 'when user is admin, with parameters' do
-      before do
-        token = json_response[:user][:token]
-        @json_response = nil
-
-        organization_update = 
-          { "organization": {
-          "name":"Somos Mas",
-          "address":"1234124" } }
+      context 'with valids parameters' do
+        before do
+          token = json_response[:user][:token]
+          @json_response = nil
+          organization_update = 
+            { "organization": {
+            "name":"Somos Mas",
+            "address":"1234124" } }
           
-        patch '/api/organization/public', headers: {'Authorization': token}, params: organization_update
-        # puts response.body
+          patch '/api/organization/public', headers: {'Authorization': token}, params: organization_update
+        end
+        it 'returns an HTTP STATUS 200' do
+          expect(response).to have_http_status(:ok)
+        end
       end
-      it 'should return an HTTP STATUS 200' do
-        expect(response).to have_http_status(:ok)
+
+      context 'with invalid parameters' do
+        before do
+          token = json_response[:user][:token]
+          @json_response = nil
+          patch '/api/organization/public', headers: {'Authorization': token}
+        end
+        it 'returns an HTTP STATUS 400' do
+          expect(response).to have_http_status(:bad_request)
+        end
+        it 'returns a message error' do
+          expect(json_response[:error]).to eq('Parameter is missing or its value is empty')
+        end
       end
     end
 
-    context 'when user is client' do
+    context 'when user not admin' do
       before do
-        register_with_api(client)
-        token = json_response[:user][:token]
-        @json_response = nil
-        patch '/api/organization/public', headers: {'Authorization': token}
+        create(:client_role)
+        create(:client_user)
       end
-      it 'should return an HTTP STATUS 401' do
-        expect(response).to have_http_status(:unauthorized)
-      end
-      it 'should return a message error' do
-        expect(json_response[:error]).to eq("You are not an administrator")
-      end
-    end
 
-    context 'when user is public' do
-      before do
-        patch '/api/organization/public'
+      context 'with client user' do
+        before do
+          register_with_api(client)
+          token = json_response[:user][:token]
+          @json_response = nil
+          patch '/api/organization/public', headers: {'Authorization': token}
+        end
+        it 'returns an HTTP STATUS 401' do
+          expect(response).to have_http_status(:unauthorized)
+        end
+        it 'returns a message error' do
+          expect(json_response[:error]).to eq("You are not an administrator") 
+        end
       end
-      it 'should return an HTTP STATUS 401' do
-        expect(response).to have_http_status(:unauthorized)
-      end
-      it 'should return a message error' do
-        expect(json_response[:message]).to eq("Unauthorized access.")
+
+      context 'with public user' do
+        before do
+          patch '/api/organization/public'
+        end
+        it 'returns an HTTP STATUS 401' do
+          expect(response).to have_http_status(:unauthorized)
+        end
+        it 'returns a message error' do
+          expect(json_response[:message]).to eq("Unauthorized access.")
+        end
       end
     end
   end
