@@ -3,6 +3,7 @@
 module Api
   class MembersController < ApplicationController
     skip_before_action :authenticate_admin, only: [:index]
+    skip_before_action :authorize_request, only: [:index]
 
     def index
       @members = Member.all
@@ -14,14 +15,13 @@ module Api
       @member = Member.new(member_params)
 
       if @member.save
-        render json: @member
+        render json: @member, status: :created
       else
         render json: @member.errors, status: :bad_request
       end
     end
 
     def update
-      byebug
       if member.update(member_params)
         render json: @member, serializer: MemberSerializer, status: :ok
       else
