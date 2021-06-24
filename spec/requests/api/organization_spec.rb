@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'Organizations', type: :request do
 
-  let (:admin_user) { attributes_for :admin_user }
-  let (:client_user) { attributes_for :client_user }
+  let (:admin) { attributes_for :admin_user }
+  let (:client) { attributes_for :client_user }
 
   before { create(:organization) }
 
@@ -14,7 +14,7 @@ RSpec.describe 'Organizations', type: :request do
     create(:admin_user)
     create(:client_role)
     create(:client_user)
-    register_with_api(admin_user)
+    register_with_api(admin)
   end 
   
 
@@ -65,7 +65,7 @@ RSpec.describe 'Organizations', type: :request do
 
     context 'when user is client' do
       before do
-        register_with_api(client_user)
+        register_with_api(client)
         token = json_response[:user][:token]
         @json_response = nil
         patch '/api/organization/public', headers: {'Authorization': token}
@@ -89,7 +89,5 @@ RSpec.describe 'Organizations', type: :request do
         expect(json_response[:message]).to eq("Unauthorized access.")
       end
     end
-
-  # end
   end
 end
