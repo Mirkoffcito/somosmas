@@ -33,6 +33,10 @@ module Api
       end
     end
 
+    def destroy
+      render json: { message: 'Succesfully deleted' }, status: :ok if activity.destroy
+    end
+
     private
 
     def activity
