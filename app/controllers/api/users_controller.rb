@@ -31,7 +31,7 @@ module Api
         if user.update(user_update_params)
           render json: user
         else
-          render json: user.errors
+          render json: user.errors, status: :bad_request
         end
       else
         render json: { message: 'Unauthorized' }, status: :unauthorized

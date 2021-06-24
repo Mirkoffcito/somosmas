@@ -63,19 +63,25 @@ RSpec.describe "Users", type: :request do
         @headers = { 'Authorization' => json_response[:user][:token] }
       end
       
-      it 'update first name correctly' do
+      it 'update first name: Success' do
         json_response[:user][:first_name] = 'Jose'
         @params = { "user":{ "first_name": json_response[:user][:first_name] }}
         patch "/api/users/#{@id}", :params => @params, :headers => @headers
         expect(json_response[:user][:first_name]).to eq('Jose')
       end
 
-      it 'update first name other id' do
+      it 'update first name other id: Unauthorized' do
         @client_user.first_name = 'Pedro'
         @params = { "user":{ "first_name": @client_user.first_name }}
         patch "/api/users/#{@client_user.id}", :params => @params, :headers => @headers
-
         expect(response.status).to eq(401)
+      end
+
+      it 'update last name with nil: bad request' do
+        json_response[:user][:last_name] = ' '
+        @params = { "user":{ "last_name": json_response[:user][:last_name] }}
+        patch "/api/users/#{@id}", :params => @params, :headers => @headers
+        expect(response.body).to include("can't be blank")
       end
     end
 
@@ -86,7 +92,7 @@ RSpec.describe "Users", type: :request do
         @headers = { 'Authorization' => json_response[:user][:token] }
       end
       
-      it 'update first name correctly' do
+      it 'update first name: Success' do
         json_response[:user][:first_name] = 'Jose'
         @params = { "user":{ "first_name": json_response[:user][:first_name] }}
         patch "/api/users/#{@id}", :params => @params, :headers => @headers
@@ -94,12 +100,19 @@ RSpec.describe "Users", type: :request do
         expect(json_response[:user][:first_name]).to eq('Jose')
       end
       
-      it 'update without token, unauthorized' do
+      it 'update without token: Unauthorized' do
         json_response[:user][:first_name] = Faker::Name.first_name
         @params = { "user":{ "first_name": json_response[:user][:first_name] }} 
         patch "/api/users/#{@id}", :params => @params
   
         expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'update params no valid: email is invalid ' do
+        json_response[:user][:email] = 'correo-no-valido'
+        @params = { "user":{ "email": json_response[:user][:email] }}
+        patch "/api/users/#{@id}", :params => @params, :headers => @headers
+        expect(response.body).to include("is invalid")
       end
     end
   end
