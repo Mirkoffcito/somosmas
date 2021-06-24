@@ -69,7 +69,7 @@ RSpec.describe "Activities", type: :request do
                 @token = json_response[:user][:token]
                 @json_response = nil
             end
-            context 'when it succesfully POSTS' do
+            context 'when POST is succesful' do
 
                 before do |example|
                     unless example.metadata[:skip_before]
