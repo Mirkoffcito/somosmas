@@ -20,7 +20,7 @@ RSpec.describe 'Members', type: :request do
 
     context "when member's table is not empty" do
       before do
-        10.times { create(:member, attributes) }
+        create_list(:member, 10, attributes)
         get '/api/members'
       end
 
