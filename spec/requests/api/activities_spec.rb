@@ -81,9 +81,7 @@ RSpec.describe "Activities", type: :request do
 
                 it "should return the created activity's name, content and image" do
                     activity = Activity.new(attributes)
-                    expect(json_response[:activity][:name]).to eq(activity.name)
-                    expect(json_response[:activity][:content]).to eq(activity.content)
-                    #expect(json_response[:activity][:image]).to eq(activity.image)
+                    compare_activity(json_response, activity)
                 end
             end
 
@@ -116,23 +114,53 @@ RSpec.describe "Activities", type: :request do
         end
 
         context 'when an ADMIN user UPDATES an activity' do
-            context 'when it succesfully updates an activity' do
-                before do
-                    admin_user = create(:admin_user)
-                    login_with_api(admin_user)
-                    token = json_response[:user][:token]
-                    @json_response = nil
-                    @updated_activity = Activity.new(attributes)
-                    update_activity(@activity.id, token, attributes)
-                end
+            before do
+                admin_user = create(:admin_user)
+                login_with_api(admin_user)
+                @token = json_response[:user][:token]
+                @json_response = nil
+            end
+            context 'when update is succesful' do
+                before{ update_activity(@activity.id, @token, attributes) }
                 it 'should return a HTTP STATUS 200' do
                     expect(response).to have_http_status(:ok)
                 end
 
                 it "should return the activity's updated info" do
-                    compare_activity(json_response, @updated_activity)
+                    updated_activity = Activity.new(attributes)
+                    compare_activity(json_response, updated_activity)
+                end
+            end
+
+            context 'when update fails because no params are sent' do
+                before{ update_activity(@activity.id, @token, '') }
+
+                it 'should return a HTTP STATUS 400' do
+                    expect(response).to have_http_status(:bad_request)
+                end
+
+                it 'should return an error message' do
+                    expect(json_response[:error]).to eq("Parameter is missing or its value is empty")
                 end
             end
         end
+    end
+
+    describe "DELETE api/activities/:id" do
+        before do
+            @activity = create(:activity, attributes)
+        end
+
+        context 'when a NON-ADMIN tries to DELETE an activity' do
+            before {delete_activity(@activity.id, '123512323')}
+            it 'should return a HTTP STATUS 401' do
+                expect(response).to have_http_status(:unauthorized)
+            end
+
+            it 'should return a message error' do
+                expect(json_response[:message]).to eq("Unauthorized access.")
+            end
+        end
+
     end
 end
