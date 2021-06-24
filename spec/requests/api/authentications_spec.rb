@@ -9,24 +9,22 @@ RSpec.describe "Authentications", type: :request do
         context 'when succesfully registers a new user' do
 
             before do |example|
-                unless example.metadata[:skip_before]
-                    registration
-                end
+                registration unless example.metadata[:skip_before]
             end
 
-            it 'should change Users count by 1', skip_before: true do
+            it 'changes Users count by 1', skip_before: true do
                 expect{registration}.to change(User, :count).by(1)
             end
 
-            it 'should return a HTTP STATUS 200' do
+            it 'returns a HTTP STATUS 200' do
                 expect(response).to have_http_status(:ok)
             end
 
-            it 'should return a TOKEN' do
+            it 'returns a TOKEN' do
                 expect(json_response[:user]).to have_key(:token)
             end
 
-            it 'should return the users info' do
+            it 'returns the users info' do
                 new_user = User.new(attributes)
                 compare(json_response, new_user)
             end
@@ -37,16 +35,14 @@ RSpec.describe "Authentications", type: :request do
 
             before do |example|
                 attributes[:email] = 'guido10mdgmail.com'
-                unless example.metadata[:skip_before]
-                    registration
-                end
+                registration unless example.metadata[:skip_before]
             end
 
-            it 'should not change Users count' do
+            it 'does not change Users count' do
                 expect{registration}.not_to change(User, :count)
             end
 
-            it 'should return a HTPP STATUS 422' do
+            it 'returns a HTPP STATUS 422' do
                 expect(response).to have_http_status(:unprocessable_entity)
             end
 
@@ -59,7 +55,7 @@ RSpec.describe "Authentications", type: :request do
                 registration
             end
 
-            it 'should return a HTPP STATUS 422' do
+            it 'returns a HTPP STATUS 422' do
                 expect(response).to have_http_status(:unprocessable_entity)
             end
 
@@ -72,11 +68,11 @@ RSpec.describe "Authentications", type: :request do
                 registration
             end
 
-            it 'should return a HTTP STATUS 422' do
+            it 'returns a HTTP STATUS 422' do
                 expect(response).to have_http_status(:unprocessable_entity)
             end
 
-            it 'should return a JSON detailing the error' do
+            it 'returns a JSON detailing the error' do
                 expect(json_response[:email]).to eq(["has already been taken"])
             end
         end
@@ -89,15 +85,15 @@ RSpec.describe "Authentications", type: :request do
             
             before {login_with_api(@user)}
 
-            it 'should return a HTTP STATUS 200' do
+            it 'returns a HTTP STATUS 200' do
                 expect(response).to have_http_status(:ok)
             end
 
-            it 'should return the users info' do
+            it 'returns the users info' do
                 compare(json_response, @user)
             end
 
-            it 'should return a TOKEN' do
+            it 'returns a TOKEN' do
                 expect(json_response[:user]).to have_key(:token)
             end
 
@@ -109,11 +105,11 @@ RSpec.describe "Authentications", type: :request do
                 login_with_api(@user) 
             end
             
-            it 'should return a HTTP STATUS 400' do
+            it 'returns a HTTP STATUS 400' do
                 expect(response).to have_http_status(:bad_request)
             end
 
-            it 'should return a message error' do
+            it 'returns a message error' do
                 expect(json_response[:error]).to eq("Invalid user or password")
             end
         end
@@ -129,11 +125,11 @@ RSpec.describe "Authentications", type: :request do
                 get api_auth_me_url, headers: {Authorization: json_response[:user][:token]}
             end
 
-            it 'should return a HTTP STATUS 200' do
+            it 'returns a HTTP STATUS 200' do
                 expect(response).to have_http_status(:ok)
             end
 
-            it 'should return the current user info' do
+            it 'returns the current user info' do
                 compare(json_response, @user)
             end
 
@@ -142,11 +138,11 @@ RSpec.describe "Authentications", type: :request do
         context "when current user's info fails to return because of bad token" do
             before { get api_auth_me_url, headers: {Authorization: "123456789"} }
         
-            it 'should return a HTTP STATUS 401' do
+            it 'returns a HTTP STATUS 401' do
                 expect(response).to have_http_status(:unauthorized)
             end
 
-            it 'should return a message error' do
+            it 'returns a message error' do
                 expect(json_response[:message]).to eq("Unauthorized access.")
             end
         end
