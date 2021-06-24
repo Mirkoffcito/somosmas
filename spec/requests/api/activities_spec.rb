@@ -7,9 +7,7 @@ RSpec.describe "Activities", type: :request do
         
         context 'when there are no activities in the database' do
 
-            before do
-                get api_activities_url
-            end
+            before{ get '/api/activities' }
 
             it 'should return a HTTP STATUS 200' do
                 expect(response).to have_http_status(:ok)
@@ -25,7 +23,7 @@ RSpec.describe "Activities", type: :request do
 
             before do
                 10.times do create(:activity, attributes) end
-                get api_activities_url
+                get '/api/activities'
             end
 
             it 'should return a HTTP STATUS 200' do
@@ -37,9 +35,7 @@ RSpec.describe "Activities", type: :request do
             end
 
             it 'each activity should have a name, content and image' do
-                expect(json_response[:activities].first).to have_key(:name)
-                expect(json_response[:activities].first).to have_key(:content)
-                expect(json_response[:activities].first).to have_key(:image)
+                check_keys(json_response[:activities])
             end
         end
     end
@@ -48,9 +44,7 @@ RSpec.describe "Activities", type: :request do
 
         context 'when a NON-ADMIN user tries to POST' do
 
-            before do
-                create_activity(attributes, "1234567")
-            end
+            before{ create_activity(attributes, "1234567") }
         
             it 'should return a HTTP STATUS 401' do
                 expect(response).to have_http_status(:unauthorized)
@@ -108,7 +102,7 @@ RSpec.describe "Activities", type: :request do
         before {@activity = create(:activity, attributes)}
 
         context 'when a NON-ADMIN tries to UPDATE an activity' do
-            before {update_activity(@activity.id, '1234', attributes)}
+            before { update_activity(@activity.id, '1234', attributes) }
 
             it 'should return a HTTP STATUS 401' do
                 expect(response).to have_http_status(:unauthorized)
@@ -153,12 +147,13 @@ RSpec.describe "Activities", type: :request do
     end
 
     describe "DELETE api/activities/:id" do
-        before do
-            @activity = create(:activity, attributes)
-        end
+
+        before{ @activity = create(:activity, attributes) }
 
         context 'when a NON-ADMIN tries to DELETE an activity' do
+
             before {delete_activity(@activity.id, '123512323')}
+
             it 'should return a HTTP STATUS 401' do
                 expect(response).to have_http_status(:unauthorized)
             end
@@ -198,7 +193,7 @@ RSpec.describe "Activities", type: :request do
             end
 
             context "when activity is not found" do
-                before {delete_activity(100, @token)}
+                before { delete_activity(100, @token) }
 
                 it 'should return HTTP STATUS 404' do
                     expect(response).to have_http_status(:not_found)
