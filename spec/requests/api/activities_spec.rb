@@ -1,13 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "Activities", type: :request do
-
-    before {create(:admin)}
-
     let (:attributes) {attributes_for :activity}
 
     describe "GET activities" do
-
+        
         context 'when there are no activities in the database' do
 
             before do
