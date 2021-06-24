@@ -21,6 +21,7 @@ module Api
     end
 
     def update
+      byebug
       if member.update(member_params)
         render json: @member, serializer: MemberSerializer, status: :ok
       else

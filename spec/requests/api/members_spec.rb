@@ -12,7 +12,7 @@ RSpec.describe 'Members', type: :request do
   describe '.create' do
     context 'when is valid' do
       before do
-        FactoryBot.create(:admin_role)
+        create(:admin_role)
         login_with_api(user_admin)
         post '/api/members',
           headers:
@@ -25,7 +25,7 @@ RSpec.describe 'Members', type: :request do
 
     context 'when is invalid' do
       before do
-        FactoryBot.create(:admin_role)
+        create(:admin_role)
         login_with_api(user_admin)
         post '/api/members',
           headers:
@@ -37,7 +37,7 @@ RSpec.describe 'Members', type: :request do
 
     context "when user's not admin" do
       before do
-        FactoryBot.create(:client_role)
+        create(:client_role)
         login_with_api(user_client)
         post '/api/members',
           headers:
@@ -51,8 +51,8 @@ RSpec.describe 'Members', type: :request do
   describe '.index' do
     context "when user's admin" do
       before do
-        FactoryBot.create(:member)
-        FactoryBot.create(:admin_role)
+        create(:member)
+        create(:admin_role)
         login_with_api(user_admin)
         get '/api/members',
           headers:
@@ -66,8 +66,8 @@ RSpec.describe 'Members', type: :request do
 
     context "when user's not admin" do
       before do
-        FactoryBot.create(:member)
-        FactoryBot.create(:client_role)
+        create(:member)
+        create(:client_role)
         login_with_api(user_client)
         get '/api/members',
           headers:
@@ -83,8 +83,8 @@ RSpec.describe 'Members', type: :request do
   describe '.update' do
     context "when user's admin" do
       before do
-        @old_member = FactoryBot.create(:member)
-        FactoryBot.create(:admin_role)
+        @old_member = create(:member)
+        create(:admin_role)
         login_with_api(user_admin)
         put "/api/members/#{@old_member.id}",
           headers:
@@ -99,16 +99,28 @@ RSpec.describe 'Members', type: :request do
 
     context "when user's not admin" do
       before do
-        @old_member = FactoryBot.create(:member)
-        FactoryBot.create(:client_role)
+        create(:client_role)
         login_with_api(user_client)
+        @old_member = create(:member)
+        @new_member = create(:member)
+        @json_response = nil
         put "/api/members/#{@old_member.id}",
           headers:
             { 'Authorization': json_response[:user][:token] },
-          params: { member: new_member }
+          params: { member: @new_member.description }
       end
       it { expect(response).to have_http_status(401) }
-      it { expect(Member.find(@old_member.id)).to eq(@old_member) }
+      it { expect(Member.find(@old_member.id).description).to eq(@new_member.description) }
     end
   end
+
+  # describe '.destroy' do
+  #   contest "when user is admin" do
+  #     before do
+  #       FactoryBot.create(:member)
+  #       FactoryBot.create(:admin_role)
+  #       login_with_api(user_admin)
+  #     end
+  #   end
+  # end
 end
