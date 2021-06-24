@@ -6,14 +6,14 @@ FactoryBot.define do
     last_name {Faker::Name.last_name}
     password { Faker::Internet.password }
     password_confirmation {password}
-  end
 
-  factory :admin_user, parent: :user do
-      role { create(:admin) }
-  end 
+    trait :admin_user do
+      association :role, factory: :admin
+    end
 
-  factory :client_user, parent: :user do
-      role { create(:client) }
+    trait :client_user do
+      association :role, factory: :client
+    end
+    
   end
-  
 end

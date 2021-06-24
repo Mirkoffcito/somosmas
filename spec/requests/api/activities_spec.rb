@@ -1,5 +1,9 @@
 require 'rails_helper'
 
+# Custom method used here (compare_activity, check_keys,
+# create_activity, update_activity, delete_activity)
+# are found inside /spec/support/activity_helpers.rb
+
 RSpec.describe "Activities", type: :request do
     let (:attributes) {attributes_for :activity}
 
@@ -22,7 +26,7 @@ RSpec.describe "Activities", type: :request do
         context 'when there are activities in the database' do
 
             before do
-                10.times do create(:activity, attributes) end
+                create_list(:activity, 10)
                 get '/api/activities'
             end
 
@@ -34,7 +38,7 @@ RSpec.describe "Activities", type: :request do
                 expect(json_response[:activities].length).to eq(10)
             end
 
-            it 'each activity has keys name, content and image' do
+            it 'checks that each activity has keys "name", "content" and "image"' do
                 check_keys(json_response[:activities])
             end
         end
@@ -58,7 +62,7 @@ RSpec.describe "Activities", type: :request do
 
         context 'when an ADMIN user tries to POST' do
             before do
-                admin_user = create(:admin_user)
+                admin_user = create(:user, :admin_user)
                 login_with_api(admin_user)
                 @token = json_response[:user][:token]
                 @json_response = nil
@@ -113,12 +117,12 @@ RSpec.describe "Activities", type: :request do
 
         context 'when an ADMIN user UPDATES an activity' do
             before do
-                admin_user = create(:admin_user)
+                admin_user = create(:user, :admin_user)
                 login_with_api(admin_user)
                 @token = json_response[:user][:token]
                 @json_response = nil
             end
-            context 'when UPDATE is succesful' do
+            context 'when correct params are sent' do
                 before{ update_activity(@activity.id, @token, attributes) }
                 it 'should return a HTTP STATUS 200' do
                     expect(response).to have_http_status(:ok)
@@ -130,7 +134,7 @@ RSpec.describe "Activities", type: :request do
                 end
             end
 
-            context 'when UPDATE fails because no params are sent' do
+            context 'when no params are sent' do
                 before{ update_activity(@activity.id, @token, '') }
 
                 it 'returns a HTTP STATUS 400' do
@@ -139,6 +143,18 @@ RSpec.describe "Activities", type: :request do
 
                 it 'returns an error message' do
                     expect(json_response[:error]).to eq("Parameter is missing or its value is empty")
+                end
+            end
+
+            context " when activity's 'id' is not found " do
+                before{ update_activity(2, @token, attributes) }
+
+                it 'returns a HTTP STATUS 404' do
+                    expect(response).to have_http_status(:not_found)
+                end
+
+                it 'returns an activity not found message' do
+                    expect(json_response[:error]).to eq("activity not found")
                 end
             end
         end
@@ -163,13 +179,13 @@ RSpec.describe "Activities", type: :request do
 
         context 'when an ADMIN tries to DELETE an activity' do
             before do
-                admin_user = create(:admin_user)
+                admin_user = create(:user, :admin_user)
                 login_with_api(admin_user)
                 @token = json_response[:user][:token]
                 @json_response = nil
             end
 
-            context 'when activity is succesfully deleted' do
+            context "when activity's id is found" do
                 before do |example|
                     delete_activity(@activity.id, @token) unless example.metadata[:skip_before]
                 end
@@ -188,7 +204,7 @@ RSpec.describe "Activities", type: :request do
 
             end
 
-            context "when activity is not found" do
+            context "when activity's 'id' is not found" do
                 before { delete_activity(100, @token) }
 
                 it 'returns HTTP STATUS 404' do
