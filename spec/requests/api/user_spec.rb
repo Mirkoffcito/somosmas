@@ -1,20 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe "Users", type: :request do
-  let!(:admin_user) { attributes_for :admin_user }
-  let!(:client_user) { attributes_for :client_user }
+  let!(:user) { attributes_for :user }
   
   before(:all) do
-    FactoryBot.create(:admin)
-    @admin_user = create(:admin_user)
-    FactoryBot.create(:client)
-    @client_user = create(:client_user)
+    @admin_user = create(:user, :admin_user)
+    @client_user = create(:user, :client_user)
   end
 
   describe 'GET /index' do
     context 'colletion all users' do
       let(:users) { create_list(:user, 8) }
       context 'as admin' do
+
         before do
           login_with_api(@admin_user)
           @headers = { 'Authorization' => json_response[:user][:token] }
@@ -43,7 +41,6 @@ RSpec.describe "Users", type: :request do
         
         it "status 401, unauthorized" do
           get '/api/users', :headers => @headers 
-
           expect(response).to have_http_status(:unauthorized)
         end
       end
@@ -70,7 +67,6 @@ RSpec.describe "Users", type: :request do
         json_response[:user][:first_name] = 'Jose'
         @params = { "user":{ "first_name": json_response[:user][:first_name] }}
         patch "/api/users/#{@id}", :params => @params, :headers => @headers
-
         expect(json_response[:user][:first_name]).to eq('Jose')
       end
 
