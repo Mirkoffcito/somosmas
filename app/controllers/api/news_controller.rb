@@ -16,7 +16,7 @@ module Api
 
     def index 
       @news = New.all
-      render json: @news, each_serializer: NewSerializer, status: :ok
+      paginate @news, per_page: 10, each_serializer: NewSerializer
     end 
 
     def show
