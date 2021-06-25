@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Members', type: :request do
   let (:attributes) { attributes_for :member }
 
-  describe '.index' do
+  describe "GET /api/members" do
     context "when member's table is empty" do
       before { get '/api/members' }
 
@@ -38,7 +38,7 @@ RSpec.describe 'Members', type: :request do
     end
   end
 
-  describe '.create' do
+  describe 'POST /api/members' do
     context "when user's admin'" do
       before do
         admin_user = create(:user, :admin_user)
@@ -93,7 +93,7 @@ RSpec.describe 'Members', type: :request do
     end
   end
 
-  describe '.update' do
+  describe 'PUT /api/members' do
     before { @member = create(:member, attributes) }
 
     context "when user's not admin" do
@@ -143,7 +143,7 @@ RSpec.describe 'Members', type: :request do
     end
   end
 
-  describe '.destroy' do
+  describe 'DELETE /api/members' do
     before { @member = create(:member, attributes) }
 
     context "when user's not admin" do
