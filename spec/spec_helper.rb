@@ -17,7 +17,6 @@
 require 'support/request_helpers'
 require 'support/database_cleaner'
 require 'support/api_helpers'
-require 'support/auth_helpers'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -101,5 +100,4 @@ RSpec.configure do |config|
 =end
   config.include Request::JsonHelpers, :type => :request
   config.include Request::ApiHelpers, :type => :request
-  config.include Request::AuthHelpers, :type => :request
 end

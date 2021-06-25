@@ -1,12 +1,20 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
-# The custom methods(compare_user, register_with_api, )
-# used in this file can be found in
-# spec/support/auth_helpers.rb
-
 RSpec.describe 'Authentications', type: :request do
+
+  shared_examples "compares user from returned JSON with current user" do |subject|
+    let(:token) { json_response[:user][:token] } # gets the token
+    let(:decoded) { JsonWebToken.decode(token) } # decodes it
+    let(:current_user) { User.find(decoded[:user_id]) } # findes the user from the token
+
+    it "returns the #{subject} user info" do
+      expect(json_response[:user][:id]).to eq(current_user.id)
+      expect(json_response[:user][:email]).to eq(current_user.email)
+      expect(json_response[:user][:first_name]).to eq(current_user.first_name)
+      expect(json_response[:user][:last_name]).to eq(current_user.last_name)
+    end
+  end
+
   let(:attributes) { attributes_for(:user, :admin_user) }
   describe 'POST api/auth/register' do
     subject(:registration) do
@@ -30,10 +38,7 @@ RSpec.describe 'Authentications', type: :request do
         expect(json_response[:user]).to have_key(:token)
       end
 
-      it 'returns the users info' do
-        new_user = User.new(attributes)
-        compare_user(json_response, new_user)
-      end
+      include_examples "compares user from returned JSON with current user", 'created'
     end
 
     context 'when email param is incorrect' do
@@ -79,28 +84,26 @@ RSpec.describe 'Authentications', type: :request do
   end
 
   describe 'POST api/auth/login' do
-    before { @user = create(:user, attributes) }
+    let(:user) { create(:user, attributes) }
 
     context 'when credentials are correct' do
-      before { login_with_api(@user) }
+      before { login_with_api(user) }
 
       it 'returns a HTTP STATUS 200' do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns the users info' do
-        compare_user(json_response, @user)
-      end
-
       it 'returns a TOKEN' do
         expect(json_response[:user]).to have_key(:token)
       end
+
+      include_examples "compares user from returned JSON with current user", 'logged'
     end
 
     context 'when credentials are incorrect' do
       before do
-        @user[:email] = 'guido1234gmail.com'
-        login_with_api(@user)
+        user[:email] = 'guido1234gmail.com'
+        login_with_api(user)
       end
 
       it 'returns a HTTP STATUS 400' do
@@ -118,19 +121,16 @@ RSpec.describe 'Authentications', type: :request do
 
     context 'when the token is valid' do
       let(:token) { json_response[:user][:token] }
+      let(:user) { create(:user, attributes) }
       before do
-        @user = create(:user, attributes)
-        login_with_api(@user)
+        login_with_api(user)
         get_me
       end
-
       it 'returns a HTTP STATUS 200' do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns the current user info' do
-        compare_user(json_response, @user)
-      end
+      include_examples "compares user from returned JSON with current user", 'current'
     end
 
     context 'when the token is invalid' do
