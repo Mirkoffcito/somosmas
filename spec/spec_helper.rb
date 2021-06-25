@@ -14,16 +14,10 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-<<<<<<< HEAD
 require 'support/request_helpers' 
 require 'support/database_cleaner'
 require 'support/api_helpers'
 require 'support/organization_helpers'
-=======
-require 'support/request_helpers'
-require 'support/database_cleaner'
-require 'support/api_helpers'
->>>>>>> 1537460e723d22c08e4d274bbb19cbb9f36281b2
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
