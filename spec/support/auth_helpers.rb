@@ -1,11 +1,5 @@
 module Request
     module AuthHelpers
-        def register_with_api(attributes)
-            post api_auth_register_url, params: {
-                user: attributes, as: :json
-            }
-        end
-
         def compare_user(response, user)
             expect(response[:user][:id]).to eq(user.id) if user.id
             expect(response[:user][:email]).to eq(user.email)

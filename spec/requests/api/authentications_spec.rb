@@ -8,7 +8,10 @@ RSpec.describe "Authentications", type: :request do
     
     let (:attributes) { attributes_for(:user, :admin_user) }
     describe "POST api/auth/register" do
-        let (:registration) {register_with_api(attributes)}
+
+        subject(:registration) {
+            post api_auth_register_url, params: { user: attributes, as: :json } 
+        }
 
         context 'when succesfully registers a new user' do
 
@@ -121,14 +124,15 @@ RSpec.describe "Authentications", type: :request do
 
     describe "GET api/auth/me" do
         
-        context "when the token is valid" do
+        subject(:get_me) {get api_auth_me_url, headers: {Authorization: token}}
 
+        context "when the token is valid" do
             before do
                 @user = create(:user, attributes)
                 login_with_api(@user)
-                get api_auth_me_url, headers: {Authorization: json_response[:user][:token]}
+                get_me
             end
-
+            let(:token) { json_response[:user][:token] }
             it 'returns a HTTP STATUS 200' do
                 expect(response).to have_http_status(:ok)
             end
@@ -140,7 +144,8 @@ RSpec.describe "Authentications", type: :request do
         end
 
         context "when the token is invalid" do
-            before { get api_auth_me_url, headers: {Authorization: "123456789"} }
+            before { get_me }
+            let(:token) { "1231251231231" }
         
             it 'returns a HTTP STATUS 401' do
                 expect(response).to have_http_status(:unauthorized)
