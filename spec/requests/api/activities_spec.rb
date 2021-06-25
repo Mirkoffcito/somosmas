@@ -8,11 +8,11 @@ RSpec.describe "Activities", type: :request do
     let (:attributes) {attributes_for :activity}
 
     describe "GET activities" do
-        
+        subject(:get_news) { get '/api/activities' }
         context 'when there are no activities in the database' do
 
-            before{ get '/api/activities' }
-
+            #before{ get '/api/activities' }
+            before {get_news}
             it 'returns a HTTP STATUS 200' do
                 expect(response).to have_http_status(:ok)
             end
@@ -27,7 +27,7 @@ RSpec.describe "Activities", type: :request do
 
             before do
                 create_list(:activity, 10)
-                get '/api/activities'
+                get_news
             end
 
             it 'returns a HTTP STATUS 200' do
