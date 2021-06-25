@@ -39,9 +39,11 @@ module Api
     end
 
     private
+
     def user
       @user ||= User.find(params[:id])
     end
+
     # TODO: method to validates and change user password
     def user_update_params
       params.require(:user).permit(:first_name, :last_name, :email, :image)
