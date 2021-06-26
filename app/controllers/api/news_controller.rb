@@ -31,7 +31,7 @@ module Api
       end
     end
 
-    def comments_new_index
+    def list_comment_news
       @comments = Comment.where(new_id: params[:new_id])
     end
 
