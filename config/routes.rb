@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     patch 'organization/public', to: 'organizations#update'
     get 'backoffice/contacts', to: 'contacts#index'
     get 'my_contacts', to: 'contacts#my_contacts'
-    get 'news/:id/comments', to: 'news#comments_new_index'
+    get 'news/:id/comments', to: 'news#list_comment_news'
 
     resources :news, only: [:show, :destroy, :create, :update, :index]
     resources :slides, only: [:index, :update, :destroy, :show, :create]
