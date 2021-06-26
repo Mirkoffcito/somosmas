@@ -22,7 +22,7 @@ RSpec.describe 'Testimonials', type: :request do
           expect(response).to have_http_status(:ok)
         end
 
-        it 'returns a list with all of comments' do
+        it 'returns a list of all testimonials' do
           subject
           expect(json_response[:testimonials].length).to eq(5)
         end
@@ -31,32 +31,36 @@ RSpec.describe 'Testimonials', type: :request do
       context 'when user is registered' do
         subject { get '/api/testimonials', headers: @headers }
 
-        it 'as client returns a status ok' do
-          login_with_api(@client_user)
-          @headers = { 'Authorization' => json_response[:user][:token] }
-          subject
-          expect(response).to have_http_status(:ok)
+        context 'when user is client' do
+          it 'returns a status ok' do
+            login_with_api(@client_user)
+            @headers = { 'Authorization' => json_response[:user][:token] }
+            subject
+            expect(response).to have_http_status(:ok)
+          end
+
+          it 'returns a list of all testimonials' do
+            login_with_api(@client_user)
+            @headers = { 'Authorization' => json_response[:user][:token] }
+            subject
+            expect(response.body).to include('testimonials')
+          end
         end
 
-        it 'returns a list with all of comments' do
-          login_with_api(@client_user)
-          @headers = { 'Authorization' => json_response[:user][:token] }
-          subject
-          expect(response.body).to include('testimonials')
-        end
+        context 'when user is admin' do
+          it 'returns a status ok' do
+            login_with_api(@admin_user)
+            @headers = { 'Authorization' => json_response[:user][:token] }
+            subject
+            expect(response).to have_http_status(:ok)
+          end
 
-        it 'as admin returns a status ok' do
-          login_with_api(@admin_user)
-          @headers = { 'Authorization' => json_response[:user][:token] }
-          subject
-          expect(response).to have_http_status(:ok)
-        end
-
-        it 'returns a list with all of comments' do
-          login_with_api(@admin_user)
-          @headers = { 'Authorization' => json_response[:user][:token] }
-          subject
-          expect(response.body).to include('testimonials')
+          it 'returns a list of all testimonials' do
+            login_with_api(@admin_user)
+            @headers = { 'Authorization' => json_response[:user][:token] }
+            subject
+            expect(response.body).to include('testimonials')
+          end
         end
       end
     end
@@ -75,7 +79,7 @@ RSpec.describe 'Testimonials', type: :request do
     context 'when user is registered' do
       subject { post '/api/testimonials', params: { testimonial: testimonial }, headers: @headers }
 
-      context 'as client' do
+      context 'when user is client' do
         it 'returns a status unauthorized' do
           login_with_api(@client_user)
           @headers = { 'Authorization' => json_response[:user][:token] }
@@ -84,14 +88,14 @@ RSpec.describe 'Testimonials', type: :request do
         end
       end
 
-      context 'as admin' do
+      context 'when user is admin' do
         before do
           login_with_api(@admin_user)
           @headers = { 'Authorization' => json_response[:user][:token] }
         end
 
         it 'returns a status created' do
-          post '/api/testimonials', params: { testimonial: testimonial }, headers: @headers
+          subject
           expect(response).to have_http_status(:created)
         end
 
@@ -101,13 +105,13 @@ RSpec.describe 'Testimonials', type: :request do
           end.to change { Testimonial.count }.by(1)
         end
 
-        it 'without params returns a status 400' do
+        it 'returns a status bad request without params' do
           post '/api/testimonials', headers: @headers
-          expect(response.status).to eq(400)
+          expect(response).to have_http_status(:bad_request)
         end
 
-        it "with a param in blank returns message can't be blank" do
-          post '/api/testimonials', params: { testimonial: { content: 'prueba de falla' } }, headers: @headers
+        it 'returns a error message  with one param in blank' do
+          post '/api/testimonials', params: { testimonial: { content: ' ' } }, headers: @headers
           expect(response.body).to include("can't be blank")
         end
       end
@@ -128,7 +132,7 @@ RSpec.describe 'Testimonials', type: :request do
     end
 
     context 'when user is registered' do
-      context 'as client' do
+      context 'when user is client' do
         it 'returns a status unauthorized' do
           login_with_api(@client_user)
           @headers = { 'Authorization' => json_response[:user][:token] }
@@ -137,22 +141,22 @@ RSpec.describe 'Testimonials', type: :request do
         end
       end
 
-      context 'as admin' do
+      context 'when user is admin' do
         before do
           login_with_api(@admin_user)
           @headers = { 'Authorization' => json_response[:user][:token] }
         end
 
-        it 'returns name changed to: Other name' do
+        it 'changes the name correctly' do
           put "/api/testimonials/#{@id}", params: { testimonial: { name: 'Other name' } }, headers: @headers
           res = JSON.parse(response.body, symbolize_names: true)
           expect(res[:testimonial][:name]).to eq('Other name')
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(:ok)
         end
 
-        it 'returns unprocessable_entity status with name in blank ' do
+        it 'returns a status unprocessable entity with name in blank' do
           put "/api/testimonials/#{@id}", params: { testimonial: { name: ' ' } }, headers: @headers
-          expect(response.message).to eq('Unprocessable Entity')
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end
@@ -173,7 +177,7 @@ RSpec.describe 'Testimonials', type: :request do
     end
 
     context 'when user is registered' do
-      context 'as client' do
+      context 'when user is client' do
         it 'returns a status unauthorized' do
           login_with_api(@client_user)
           @headers = { 'Authorization' => json_response[:user][:token] }
@@ -182,12 +186,11 @@ RSpec.describe 'Testimonials', type: :request do
         end
       end
 
-      context 'as admin' do
-        it 'returns a status success' do
+      context 'when user is admin' do
+        it 'returns a status ok' do
           login_with_api(@admin_user)
           @headers = { 'Authorization' => json_response[:user][:token] }
-          subject
-          expect(response).to have_http_status(:success)
+          expect(response).to have_http_status(:ok)
         end
 
         it 'deletes a testimonial' do

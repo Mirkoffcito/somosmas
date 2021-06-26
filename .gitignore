@@ -72,3 +72,5 @@ Thumbs.db
 
 # Ignore environment variables config
 .env
+
+.rubocop.yml
