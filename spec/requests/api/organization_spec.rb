@@ -8,7 +8,7 @@ RSpec.describe 'Organizations', type: :request do
   describe 'GET /api/organization/public' do
     context "when organization's table is empty" do
       before { get '/api/organization/public' }
-      it 'does return a HTTP STATUS 200' do
+      it 'returns a HTTP STATUS 200' do
         expect(response).to have_http_status(:ok)
       end
       it 'returns an empty array' do
