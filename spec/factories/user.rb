@@ -14,6 +14,6 @@ FactoryBot.define do
     trait :client_user do
       association :role, factory: :client
     end
-    
+  
   end
 end
