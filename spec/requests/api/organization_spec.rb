@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Organizations', type: :request do
-  let (:attributes) { attributes_for :organization }
+  let(:attributes) { attributes_for :organization }
 
   describe 'GET /api/organization/public' do
     context "when organization's table is empty" do
@@ -69,7 +69,7 @@ RSpec.describe 'Organizations', type: :request do
         @token = json_response[:user][:token]
         @json_response = nil
       end
-    
+
       context 'when params are valid' do
         before { update_organization(attributes, @token) }
         it 'returns a HTTP STATUS 200' do

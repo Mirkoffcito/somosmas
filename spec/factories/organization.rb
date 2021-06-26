@@ -8,8 +8,8 @@ FactoryBot.define do
     email { Faker::Internet.email }
     welcome_text { Faker::Company.catch_phrase }
     about_us_text { Faker::Company.bs }
-    facebook_url {Faker::Internet.url}
-    instagram_url {Faker::Internet.url}
-    linkedin_url {Faker::Internet.url}
+    facebook_url { Faker::Internet.url }
+    instagram_url { Faker::Internet.url }
+    linkedin_url { Faker::Internet.url }
   end
 end
