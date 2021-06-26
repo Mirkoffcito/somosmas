@@ -1,18 +1,34 @@
 require 'rails_helper'
 
-# Custom method used here (compare_activity, check_keys,
-# create_activity, update_activity, delete_activity)
-# are found inside /spec/support/activity_helpers.rb
-
 RSpec.describe "Activities", type: :request do
+    shared_examples 'checks keys' do
+        it 'checks that each activity has keys "name", "content" and "image"' do
+            json_response[:activities].each do |activity|
+                expect(activity).to have_key(:name)
+                expect(activity).to have_key(:content)
+                expect(activity).to have_key(:image)
+            end
+        end    
+    end
+
+    shared_examples 'compares activities' do |subject|
+        let(:updated_activity) { Activity.new(attributes) }
+        it "returns the #{subject}'s' name, content and image" do
+            updated_activity.name = 'ACTIVIDAD TEST'
+            updated_activity.content = 'CONTENIDO TEST'
+            expect(json_response[:activity][:name]).to eq(updated_activity.name)
+            expect(json_response[:activity][:content]).to eq(updated_activity.content)
+            expect(json_response[:activity]).to have_key(:image)
+        end
+    end
+
     let (:attributes) {attributes_for :activity}
 
     describe "GET activities" do
-        subject(:get_news) { get '/api/activities' }
+        subject(:get_activities) { get '/api/activities' }
         context 'when there are no activities in the database' do
+            before {get_activities}
 
-            #before{ get '/api/activities' }
-            before {get_news}
             it 'returns a HTTP STATUS 200' do
                 expect(response).to have_http_status(:ok)
             end
@@ -24,10 +40,9 @@ RSpec.describe "Activities", type: :request do
         end
 
         context 'when there are activities in the database' do
-
             before do
                 create_list(:activity, 10)
-                get_news
+                get_activities
             end
 
             it 'returns a HTTP STATUS 200' do
@@ -38,17 +53,19 @@ RSpec.describe "Activities", type: :request do
                 expect(json_response[:activities].length).to eq(10)
             end
 
-            it 'checks that each activity has keys "name", "content" and "image"' do
-                check_keys(json_response[:activities])
-            end
+            include_examples 'checks keys'
         end
     end
 
     describe "POST api/activities" do
+        subject(:creates_activity) { 
+            post '/api/activities', 
+            headers:{ 'Authorization': token },
+            :params => { activity: attributes } }
 
         context 'when a NON-ADMIN user tries to POST' do
-
-            before{ create_activity(attributes, "1234567") }
+            let(:token) {'12312312323'}
+            before{ creates_activity }
         
             it 'returns a HTTP STATUS 401' do
                 expect(response).to have_http_status(:unauthorized)
@@ -57,54 +74,65 @@ RSpec.describe "Activities", type: :request do
             it 'returns a message error' do
                 expect(json_response[:message]).to eq("Unauthorized access.")
             end
-        
         end
 
         context 'when an ADMIN user tries to POST' do
+            let(:admin_user) { create(:user, :admin_user) }
+            let(:token) { json_response[:user][:token] }
             before do
-                admin_user = create(:user, :admin_user)
                 login_with_api(admin_user)
-                @token = json_response[:user][:token]
+                token
                 @json_response = nil
             end
             context 'when POST is succesful' do
 
                 before do |example|
-                    create_activity(attributes, @token) unless example.metadata[:skip_before]
+                    attributes[:name] = 'ACTIVIDAD TEST'
+                    attributes[:content] = 'CONTENIDO TEST'
+                    creates_activity unless example.metadata[:skip_before]
                 end
 
                 it 'adds 1 activity to the database', :skip_before do
-                    expect{create_activity(attributes, @token)}.to change(Activity, :count).by(1)
+                    expect{creates_activity}.to change(Activity, :count).by(1)
                 end
 
                 it 'returns a HTTP STATUS 200' do
                     expect(response).to have_http_status(:created)
                 end
 
-                it "returns the created activity's name, content and image" do
-                    activity = Activity.new(attributes)
-                    compare_activity(json_response, activity)
-                end
+                include_examples 'compares activities', 'created activity'
             end
 
             context 'when POST fails because of bad params' do
                 before do
                     attributes[:name] = nil
-                    create_activity(attributes, @token)
+                    creates_activity
                 end
                 
                 it 'returns a HTTP STATUS 400' do
                     expect(response).to have_http_status(:bad_request)
+                end
+
+                it 'returns a message error' do
+                    expect(json_response[:name]).to eq(["can't be blank"])
                 end
             end
         end
     end
 
     describe "PUT api/activities/:id" do
-        before {@activity = create(:activity, attributes)}
+        let!(:activity) { create(:activity, attributes) }
+
+        subject(:updates_activity) { 
+            put "/api/activities/#{id}", headers:{
+                'Authorization': token},
+                :params => { activity: attributes }
+         }
 
         context 'when a NON-ADMIN tries to UPDATE an activity' do
-            before { update_activity(@activity.id, '1234', attributes) }
+            let(:token) { '12315123125123' }
+            let(:id) { activity.id }
+            before { updates_activity }
 
             it 'returns a HTTP STATUS 401' do
                 expect(response).to have_http_status(:unauthorized)
@@ -116,26 +144,32 @@ RSpec.describe "Activities", type: :request do
         end
 
         context 'when an ADMIN user UPDATES an activity' do
+            let(:admin_user) { create(:user, :admin_user) }
+            let(:token) { json_response[:user][:token] }
             before do
-                admin_user = create(:user, :admin_user)
                 login_with_api(admin_user)
-                @token = json_response[:user][:token]
+                token
                 @json_response = nil
             end
             context 'when correct params are sent' do
-                before{ update_activity(@activity.id, @token, attributes) }
+                let(:id) { activity.id }
+                before do
+                    attributes[:name] = 'ACTIVIDAD TEST'
+                    attributes[:content] = 'CONTENIDO TEST'
+                    updates_activity 
+                end
+
                 it 'should return a HTTP STATUS 200' do
                     expect(response).to have_http_status(:ok)
                 end
 
-                it "returns the activity's updated info" do
-                    updated_activity = Activity.new(attributes)
-                    compare_activity(json_response, updated_activity)
-                end
+                include_examples "compares activities", 'updated activity'
             end
 
             context 'when no params are sent' do
-                before{ update_activity(@activity.id, @token, '') }
+                let(:id) { activity.id }
+                let(:attributes) {  }
+                before{ updates_activity }
 
                 it 'returns a HTTP STATUS 400' do
                     expect(response).to have_http_status(:bad_request)
@@ -147,7 +181,8 @@ RSpec.describe "Activities", type: :request do
             end
 
             context " when activity's 'id' is not found " do
-                before{ update_activity(2, @token, attributes) }
+                let(:id) { 2 }
+                before{ updates_activity }
 
                 it 'returns a HTTP STATUS 404' do
                     expect(response).to have_http_status(:not_found)
@@ -161,12 +196,16 @@ RSpec.describe "Activities", type: :request do
     end
 
     describe "DELETE api/activities/:id" do
-
-        before{ @activity = create(:activity, attributes) }
+        let!(:activity) { create(:activity, attributes) }
+        let(:id) { activity.id }
+        subject(:deletes_activity) {
+            delete "/api/activities/#{id}", headers:{
+                'Authorization': token}
+        }
 
         context 'when a NON-ADMIN tries to DELETE an activity' do
-
-            before {delete_activity(@activity.id, '123512323')}
+            let(:token) { '125623441231' }
+            before { deletes_activity }
 
             it 'returns a HTTP STATUS 401' do
                 expect(response).to have_http_status(:unauthorized)
@@ -178,20 +217,21 @@ RSpec.describe "Activities", type: :request do
         end
 
         context 'when an ADMIN tries to DELETE an activity' do
+            let(:token) { json_response[:user][:token] }
+            let(:admin_user) { create(:user, :admin_user) }
             before do
-                admin_user = create(:user, :admin_user)
                 login_with_api(admin_user)
-                @token = json_response[:user][:token]
+                token
                 @json_response = nil
             end
 
             context "when activity's id is found" do
                 before do |example|
-                    delete_activity(@activity.id, @token) unless example.metadata[:skip_before]
+                    deletes_activity unless example.metadata[:skip_before]
                 end
 
                 it 'removes the activity from the database', :skip_before do
-                    expect{delete_activity(@activity.id, @token)}.to change(Activity, :count).by(-1)
+                    expect{ deletes_activity }.to change(Activity, :count).by(-1)
                 end
 
                 it 'returns HTTP STATUS 200' do
@@ -205,7 +245,8 @@ RSpec.describe "Activities", type: :request do
             end
 
             context "when activity's 'id' is not found" do
-                before { delete_activity(100, @token) }
+                let(:id) { '12' }
+                before { deletes_activity }
 
                 it 'returns HTTP STATUS 404' do
                     expect(response).to have_http_status(:not_found)
@@ -217,4 +258,6 @@ RSpec.describe "Activities", type: :request do
             end
         end
     end
+
+
 end
