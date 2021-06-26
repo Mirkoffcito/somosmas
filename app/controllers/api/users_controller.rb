@@ -22,7 +22,7 @@ module Api
       if user.id == @current_user.id
         render json: { message: 'Succesfully deleted' } if user.destroy
       else
-        render json: { message: 'User not found' }, status: :not_found
+        render json: { message: 'You do not have permission' }, status: :forbidden
       end
     end
 
@@ -34,7 +34,7 @@ module Api
           render json: user.errors, status: :bad_request
         end
       else
-        render json: { message: 'User not found' }, status: :not_found
+        render json: { message: 'You do not have permission' }, status: :forbidden
       end
     end
 
