@@ -123,6 +123,12 @@ RSpec.describe 'Users', type: :request do
           expect(response).to have_http_status(:ok)
         end
 
+        it 'deletes a user' do
+          expect do
+            subject
+          end.to change { User.count }.by(0)
+        end
+
         it 'returns a status forbidden for other :id' do
           delete "/api/users/#{@admin_user.id}", headers: @headers
           expect(response.body).to include('You do not have permission')
