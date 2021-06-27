@@ -361,10 +361,7 @@ RSpec.describe 'Authentications', type: :request do
         end
 
         context 'when new has comments' do
-          let(:comment_attributes) { attributes_for :comments }
           before do
-            comment_attributes[:new_id] = article.id
-            comment_attributes[:user_id] = admin_user.id
             create_list(:comments, 10, new_id: article.id, user_id: admin_user.id)
             get_comments
           end
