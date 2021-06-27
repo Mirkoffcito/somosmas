@@ -2,7 +2,8 @@
 
 module Api
   class NewsController < ApplicationController
-    skip_before_action :authenticate_admin, only: [:index]
+    skip_before_action :authenticate_admin, only: [:index, :show]
+    skip_before_action :authorize_request, only: [:index, :show]
 
     def create
       @new = New.new(new_params)
