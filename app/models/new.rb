@@ -5,4 +5,5 @@ class New < ApplicationRecord
   has_one_attached :image
   belongs_to :category
   validates :name, :content, presence: true
+  has_many :comments
 end

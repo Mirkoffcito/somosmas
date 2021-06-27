@@ -33,7 +33,8 @@ module Api
     end
 
     def list_comment_news
-      @comments = Comment.where(new_id: params[:new_id])
+      @comments = Comment.where(new_id: params[:id])
+      render json: @comments if article
     end
 
     def destroy
