@@ -6,8 +6,6 @@ RSpec.describe 'Activities', type: :request do
   shared_examples 'compares activities' do |subject|
     let(:updated_activity) { Activity.new(attributes) }
     it "returns the #{subject}'s' name, content and image" do
-      updated_activity.name = 'ACTIVIDAD TEST'
-      updated_activity.content = 'CONTENIDO TEST'
       expect(json_response[:activity][:name]).to eq(updated_activity.name)
       expect(json_response[:activity][:content]).to eq(updated_activity.content)
       expect(json_response[:activity]).to have_key(:image)
@@ -82,7 +80,7 @@ RSpec.describe 'Activities', type: :request do
         token
         @json_response = nil
       end
-      context 'when POST is succesful' do
+      context 'when params are valid' do
         before do |example|
           attributes[:name] = 'ACTIVIDAD TEST'
           attributes[:content] = 'CONTENIDO TEST'
@@ -100,7 +98,7 @@ RSpec.describe 'Activities', type: :request do
         include_examples 'compares activities', 'created activity'
       end
 
-      context 'when POST fails because of bad params' do
+      context 'when name param is blank' do
         before do
           attributes[:name] = nil
           creates_activity
@@ -114,6 +112,21 @@ RSpec.describe 'Activities', type: :request do
           expect(json_response[:name]).to eq(["can't be blank"])
         end
       end
+
+      context 'when content param is blank' do
+        before do
+          attributes[:content] = nil
+          creates_activity
+        end
+
+        it 'returns a HTTP STATUS 400' do
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'returns a message error' do
+          expect(json_response[:content]).to eq(["can't be blank"])
+        end
+      end
     end
   end
 
@@ -122,9 +135,8 @@ RSpec.describe 'Activities', type: :request do
 
     subject(:updates_activity) do
       put "/api/activities/#{id}", headers: {
-        'Authorization': token
-      },
-                                   params: { activity: attributes }
+        'Authorization': token },
+        params: { activity: attributes }
     end
 
     context 'when a NON-ADMIN tries to UPDATE an activity' do
@@ -157,7 +169,7 @@ RSpec.describe 'Activities', type: :request do
           updates_activity
         end
 
-        it 'should return a HTTP STATUS 200' do
+        it 'returns a HTTP STATUS 200' do
           expect(response).to have_http_status(:ok)
         end
 
