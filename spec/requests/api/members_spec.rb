@@ -3,30 +3,22 @@
 require 'rails_helper'
 
 RSpec.describe 'Members', type: :request do
-  shared_examples 'check key' do
-    it 'check that each member has keys name and description' do
-      json_response[:members].each do |member|
-        expect(member).to have_key(:name)
-        expect(member).to have_key(:description)
-      end
-    end
-  end
-
   shared_examples 'compares members' do |subject|
     let(:update_member) { Member.new(attributes) }
-    it "returns the #{ subject } name and description" do
+    it "returns the #{subject} name and description" do
       expect(json_response[:member][:name]).to eq(update_member.name)
       expect(json_response[:member][:description]).to eq(update_member.description)
     end
   end
 
-  let (:attributes) { attributes_for :member }
+  let(:attributes) { attributes_for :member }
 
-  describe "GET /api/members" do
+  describe 'GET /api/members' do
     subject(:get_members) { get '/api/members' }
 
     context "when member's table is empty" do
       before { get_members }
+
       it 'returns an empty array' do
         expect(json_response[:members]).to eq([])
       end
@@ -51,21 +43,23 @@ RSpec.describe 'Members', type: :request do
       end
 
       it 'returns correct name and description for each member' do
-        check_keys(json_response[:members])
+        expect(json_response[:members]).to all(have_key(:name))
+        expect(json_response[:members]).to all(have_key(:description))
       end
     end
   end
 
   describe 'POST /api/members' do
-    subject(:create_member) {
-      post '/api/members',
-      headers:{ 'Authorization': token },
-      params:{ member: attributes }
-     }
+    subject(:create_member) do
+      post '/api/members', headers:
+      { 'Authorization': token }, params:
+      { member: attributes }
+    end
 
     context "when user's admin'" do
       let(:admin_user) { create(:user, :admin_user) }
       let(:token) { json_response[:user][:token] }
+
       before do
         login_with_api(admin_user)
         token
@@ -80,7 +74,7 @@ RSpec.describe 'Members', type: :request do
         end
 
         it 'adds a member to database', :skip_before do
-          expect{ create_member }.to change(Member, :count).by(1)
+          expect { create_member }.to change(Member, :count).by(1)
         end
 
         it 'returns a HTTP STATUS 200' do
@@ -108,6 +102,7 @@ RSpec.describe 'Members', type: :request do
 
     context "when user's not admin" do
       let(:token) { 'client_token' }
+
       before { create_member }
 
       it 'returns a HTTP STATUS 401' do
@@ -121,16 +116,18 @@ RSpec.describe 'Members', type: :request do
   end
 
   describe 'PUT /api/members/:id' do
+    subject(:updates_member) do
+      put "/api/members/#{id}", headers:
+      { 'Authorization': token }, params:
+      { member: attributes }
+    end
+
     let!(:member) { create(:member, attributes) }
 
-    subject(:updates_member) {
-      put "/api/members/#{id}",
-        headers: { 'Authorization': token },
-        params: { member: attributes }
-    }
     context "when user's not admin" do
       let(:token) { 'client_token' }
       let(:id) { member.id }
+
       before { updates_member }
 
       it 'returns a HTTP STATUS 401' do
@@ -145,6 +142,7 @@ RSpec.describe 'Members', type: :request do
     context "when user's admin" do
       let(:admin_user) { create(:user, :admin_user) }
       let(:token) { json_response[:user][:token] }
+
       before do
         login_with_api(admin_user)
         token
@@ -153,6 +151,7 @@ RSpec.describe 'Members', type: :request do
 
       context 'when params are valid' do
         let(:id) { member.id }
+
         before do
           attributes[:name] = 'Random name'
           attributes[:description] = 'Random description'
@@ -163,13 +162,14 @@ RSpec.describe 'Members', type: :request do
           expect(response).to have_http_status(:ok)
         end
 
-        include_examples "compares members", 'updated member'
+        include_examples 'compares members', 'updated member'
       end
 
       context 'when params are empty' do
         let(:id) { member.id }
-        let(:attributes) { }
-        before{ updates_member }
+        let(:attributes) {}
+
+        before { updates_member }
 
         it 'returns a HTTP STATUS 400' do
           expect(response).to have_http_status(:bad_request)
@@ -183,16 +183,19 @@ RSpec.describe 'Members', type: :request do
   end
 
   describe 'DELETE /api/members' do
-    let (:member) { create(:member, attributes) }
-    let (:id) { member.id }
-    subject(:delete_member) {
-      delete "/api/members/#{id}",
-        headers: { 'Authorization': token }
-    }
+    subject(:delete_member) do
+      delete "/api/members/#{id}", headers:
+      { 'Authorization': token }
+    end
+
+    let!(:member) { create(:member, attributes) }
+    let(:id) { member.id }
+
     context "when user's not admin" do
       let(:token) { 'client_token' }
+
       before { delete_member }
-      
+
       it 'returns a HTTP STATUS 401' do
         expect(response).to have_http_status(:unauthorized)
       end
@@ -205,8 +208,8 @@ RSpec.describe 'Members', type: :request do
     context 'when user is admin' do
       let(:token) { json_response[:user][:token] }
       let(:admin_user) { create(:user, :admin_user) }
+
       before do
-        member
         login_with_api(admin_user)
         token
         @json_response = nil
@@ -218,7 +221,7 @@ RSpec.describe 'Members', type: :request do
         end
 
         it 'deletes member from database', :skip_before do
-          expect{ delete_member }.to change(Member, :count).by(-1)
+          expect { delete_member }.to change(Member, :count).by(-1)
         end
 
         it 'returns HTTP STATUS 200' do
@@ -232,6 +235,7 @@ RSpec.describe 'Members', type: :request do
 
       context "when member's not found" do
         let(:id) { 99 }
+
         before { delete_member }
 
         it 'returns a HTTP STATUS 404' do
