@@ -31,6 +31,10 @@ module Api
       end
     end
 
+    def list_comment_news
+      @comments = Comment.where(new_id: params[:new_id])
+    end
+
     def destroy
       render json: { message: 'Successfully deleted' }, status: :ok if article.destroy
     end
