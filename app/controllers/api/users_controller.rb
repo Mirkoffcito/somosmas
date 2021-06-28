@@ -22,7 +22,7 @@ module Api
       if user.id == @current_user.id
         render json: { message: 'Succesfully deleted' } if user.destroy
       else
-        render json: { message: 'Unauthorized' }, status: :unauthorized
+        render json: { message: 'You do not have permission' }, status: :forbidden
       end
     end
 
@@ -31,17 +31,19 @@ module Api
         if user.update(user_update_params)
           render json: user
         else
-          render json: user.errors
+          render json: user.errors, status: :bad_request
         end
       else
-        render json: { message: 'Unauthorized' }, status: :unauthorized
+        render json: { message: 'You do not have permission' }, status: :forbidden
       end
     end
 
     private
+
     def user
       @user ||= User.find(params[:id])
     end
+
     # TODO: method to validates and change user password
     def user_update_params
       params.require(:user).permit(:first_name, :last_name, :email, :image)
