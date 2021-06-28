@@ -6,8 +6,7 @@ module Api
 
     def index
       @testimonials = Testimonial.all
-
-      render json: @testimonials
+      paginate @testimonials, per_page: 10, each_serializer: TestimonialSerializer
     end
 
     def create

@@ -70,6 +70,9 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Rubocop yml
+.rubocop.yml
+
 # Ignore environment variables config
 .env
 
