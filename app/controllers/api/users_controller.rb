@@ -19,28 +19,30 @@ module Api
     end
 
     def destroy
-      @user = User.find(params[:id])
-
-      if @user.id == @current_user.id
-        @user.destroy
-        render json: { message: 'Succesfully deleted' }
+      if user.id == @current_user.id
+        render json: { message: 'Succesfully deleted' } if user.destroy
       else
-        render json: @user.errors, status: :unauthorized
+        render json: { message: 'You do not have permission' }, status: :forbidden
       end
     end
 
     def update
-      @user = User.find(params[:id])
-
-      if @current_user.id == @user.id
-        @user.update!(user_update_params)
-        render json: @user
+      if user.id == @current_user.id
+        if user.update(user_update_params)
+          render json: user
+        else
+          render json: user.errors, status: :bad_request
+        end
       else
-        render json: @user.errors, status: :unauthorized
+        render json: { message: 'You do not have permission' }, status: :forbidden
       end
     end
 
     private
+
+    def user
+      @user ||= User.find(params[:id])
+    end
 
     # TODO: method to validates and change user password
     def user_update_params
