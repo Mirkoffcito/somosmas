@@ -59,7 +59,7 @@ RSpec.describe 'Activities', type: :request do
            params: { activity: attributes }
     end
 
-    context 'when a NON-ADMIN user tries to POST' do
+    context 'when user is NOT an admin' do
       let(:token) { '12312312323' }
       before { creates_activity }
 
@@ -72,7 +72,7 @@ RSpec.describe 'Activities', type: :request do
       end
     end
 
-    context 'when an ADMIN user tries to POST' do
+    context 'when user IS admin' do
       let(:admin_user) { create(:user, :admin_user) }
       let(:token) { json_response[:user][:token] }
       before do
@@ -139,7 +139,7 @@ RSpec.describe 'Activities', type: :request do
         params: { activity: attributes }
     end
 
-    context 'when a NON-ADMIN tries to UPDATE an activity' do
+    context 'when the user is NOT an admin' do
       let(:token) { '12315123125123' }
       let(:id) { activity.id }
       before { updates_activity }
@@ -153,7 +153,7 @@ RSpec.describe 'Activities', type: :request do
       end
     end
 
-    context 'when an ADMIN user UPDATES an activity' do
+    context 'when user IS admin' do
       let(:admin_user) { create(:user, :admin_user) }
       let(:token) { json_response[:user][:token] }
       before do
@@ -190,7 +190,7 @@ RSpec.describe 'Activities', type: :request do
         end
       end
 
-      context " when activity's 'id' is not found " do
+      context " when activity's 'id' exists " do
         let(:id) { 2 }
         before { updates_activity }
 
@@ -214,7 +214,7 @@ RSpec.describe 'Activities', type: :request do
       }
     end
 
-    context 'when a NON-ADMIN tries to DELETE an activity' do
+    context 'when user is NOT an admin' do
       let(:token) { '125623441231' }
       before { deletes_activity }
 
@@ -227,7 +227,7 @@ RSpec.describe 'Activities', type: :request do
       end
     end
 
-    context 'when an ADMIN tries to DELETE an activity' do
+    context 'when user IS admin' do
       let(:token) { json_response[:user][:token] }
       let(:admin_user) { create(:user, :admin_user) }
       before do
@@ -236,7 +236,7 @@ RSpec.describe 'Activities', type: :request do
         @json_response = nil
       end
 
-      context "when activity's id is found" do
+      context "when activity's id exists" do
         before do |example|
           deletes_activity unless example.metadata[:skip_before]
         end
@@ -254,7 +254,7 @@ RSpec.describe 'Activities', type: :request do
         end
       end
 
-      context "when activity's 'id' is not found" do
+      context "when activity's 'id' doesn't exist" do
         let(:id) { '12' }
         before { deletes_activity }
 
