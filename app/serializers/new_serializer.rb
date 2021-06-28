@@ -1,4 +1,4 @@
-class NewSerializer < ActiveModel::Serializer
-    attributes :name, :content
+class NewSerializer < CustomActiveModelSerializer
+    attributes :id, :name, :content, :image
   end
   
