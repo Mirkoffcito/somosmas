@@ -81,7 +81,7 @@ RSpec.describe 'Authentications', type: :request do
     end
   end
 
-  describe 'POST /api/news' do
+  describe 'POST /api/news (Create)' do
     let(:attributes) { attributes_for :article }
     subject(:create_new) do
       post '/api/news',
@@ -89,7 +89,7 @@ RSpec.describe 'Authentications', type: :request do
            params: { new: attributes }
     end
 
-    context 'when a NON-ADMIN user tries to create a new' do
+    context 'when user is NOT an admin' do
       let(:token) { '123124123152' }
       before { create_new }
 
@@ -102,7 +102,7 @@ RSpec.describe 'Authentications', type: :request do
       end
     end
 
-    context 'when an ADMIN user tries to create a new' do
+    context 'when user IS an admin' do
       let(:admin_user) { create(:user, :admin_user) }
       let(:token) { json_response[:user][:token] }
       before do
@@ -176,7 +176,7 @@ RSpec.describe 'Authentications', type: :request do
     end
   end
 
-  describe 'PUT /api/news/:id' do
+  describe 'PUT /api/news/:id (UPDATE)' do
     let(:attributes) { attributes_for :article }
     subject(:update_new) do
       put "/api/news/#{id}",
@@ -184,7 +184,7 @@ RSpec.describe 'Authentications', type: :request do
           params: { new: attributes }
     end
 
-    context 'when a NON ADMIN user tries to update an activity' do
+    context 'when user is NOT an admin' do
       let(:token) { '123124123152' }
       let(:id) { 3 }
       before { update_new }
@@ -198,7 +198,7 @@ RSpec.describe 'Authentications', type: :request do
       end
     end
 
-    context 'when an ADMIN user tries to update an activity' do
+    context 'when user IS an admin' do
       let(:admin_user) { create(:user, :admin_user) }
       let(:token) { json_response[:user][:token] }
       before do
@@ -255,7 +255,7 @@ RSpec.describe 'Authentications', type: :request do
     end
   end
 
-  describe 'DELETE /api/news/:id' do
+  describe 'DELETE /api/news/:id ' do
     let(:attributes) { attributes_for :article }
     let!(:article) { create(:article, attributes) }
     let(:id) { article.id }
@@ -264,7 +264,7 @@ RSpec.describe 'Authentications', type: :request do
         'Authorization': token
       }
     end
-    context 'when a NON-ADMIN tries to DELETE a new' do
+    context 'when user is NOT an admin' do
       let(:token) { '125623441231' }
       before { deletes_new }
 
@@ -277,7 +277,7 @@ RSpec.describe 'Authentications', type: :request do
       end
     end
 
-    context 'when an ADMIN tries to delete a new' do
+    context 'when user IS an admin' do
       let(:token) { json_response[:user][:token] }
       let(:admin_user) { create(:user, :admin_user) }
       before do
@@ -286,7 +286,7 @@ RSpec.describe 'Authentications', type: :request do
         @json_response = nil
       end
 
-      context " when new's id is found" do
+      context " when new's id exists" do
         before do |example|
           deletes_new unless example.metadata[:skip_before]
         end
@@ -304,7 +304,7 @@ RSpec.describe 'Authentications', type: :request do
         end
       end
 
-      context "when new's id is not found" do
+      context "when new's id doesn't exist" do
         let(:id) { 12 }
         before { deletes_new }
 
@@ -349,7 +349,7 @@ RSpec.describe 'Authentications', type: :request do
         @json_response = nil
       end
 
-      context "when new's id is found" do
+      context "when new's id exists" do
         context 'when new has no comments' do
           before { get_comments }
           it 'returns a HTTP STATUS 200' do
@@ -376,7 +376,7 @@ RSpec.describe 'Authentications', type: :request do
         end
       end
 
-      context "when new's id is not found" do
+      context "when new's id doesn't exist" do
         let(:id) { 3 }
         before { get_comments }
         it 'returns a HTTP STATUS 404' do
