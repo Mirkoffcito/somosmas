@@ -2,6 +2,8 @@
 
 module Api
   class SlidesController < ApplicationController
+    skip_before_action :authenticate_admin, only: [:index, :show]
+    skip_before_action :authorize_request, only: [:index, :show]
     def index
       @slides = Slide.all.order(:order)
 
