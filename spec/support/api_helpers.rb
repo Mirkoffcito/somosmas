@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Request
   module ApiHelpers
-
     def login_with_api(user)
       post '/api/auth/login', params: {
         user: {
@@ -9,6 +10,5 @@ module Request
         }
       }
     end 
-  
   end
 end

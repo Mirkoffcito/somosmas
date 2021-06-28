@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :admin, class: 'Role' do
+  factory :admin, class: Role do
     name { 'admin' }
     description { 'administrador' }
   end
 
-  factory :client, class: 'Role' do
+  factory :client, class: Role do
     name { 'client' }
     description { 'cliente' }
   end
 end
+  

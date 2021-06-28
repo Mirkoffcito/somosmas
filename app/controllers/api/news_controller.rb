@@ -2,7 +2,8 @@
 
 module Api
   class NewsController < ApplicationController
-    skip_before_action :authenticate_admin, only: [:index]
+    skip_before_action :authenticate_admin, only: [:index, :show]
+    skip_before_action :authorize_request, only: [:index, :show]
 
     def create
       @new = New.new(new_params)
@@ -32,7 +33,8 @@ module Api
     end
 
     def list_comment_news
-      @comments = Comment.where(new_id: params[:new_id])
+      @comments = Comment.where(new_id: params[:id])
+      render json: @comments if article
     end
 
     def destroy
