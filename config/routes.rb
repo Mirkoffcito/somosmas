@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
   namespace 'api' do
-    get 'organization/public' => 'organizations#index'
+    get 'organization/public' => 'organizations#get_organization'
     post 'auth/register', to: 'authentications#register'
     post 'auth/login', to: 'authentications#login'
     get 'auth/me', to: 'users#show'
