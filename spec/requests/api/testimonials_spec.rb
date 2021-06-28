@@ -18,15 +18,14 @@ RSpec.describe 'Testimonials', type: :request do
         before do
           get '/api/testimonials'
         end
-        
-        it 'returns a list of all testimonials' do
-          expect(json_response[:testimonials].length).to eq(5)
-        end
 
         it 'returns a status ok' do
           expect(response).to have_http_status(:ok)
         end
 
+        it 'returns a list of all testimonials' do
+          expect(json_response[:testimonials].length).to eq(5)
+        end
       end
 
       context 'when user is registered' do
@@ -36,11 +35,11 @@ RSpec.describe 'Testimonials', type: :request do
             @headers = { 'Authorization' => json_response[:user][:token] }
             get '/api/testimonials', headers: @headers
           end
-          
+
           it 'returns a status ok' do
             expect(response).to have_http_status(:ok)
           end
-          
+
           it 'returns a list of all testimonials' do
             expect(response.body).to include('testimonials')
           end
@@ -99,7 +98,7 @@ RSpec.describe 'Testimonials', type: :request do
               subject
             end.to change { Testimonial.count }.by(1)
           end
-          
+
           it 'returns a status created' do
             subject
             expect(response).to have_http_status(:created)
@@ -155,6 +154,9 @@ RSpec.describe 'Testimonials', type: :request do
             put "/api/testimonials/#{@id}", params: { testimonial: { name: 'Other name' } }, headers: @headers
             res = JSON.parse(response.body, symbolize_names: true)
             expect(res[:testimonial][:name]).to eq('Other name')
+          end
+
+          it 'returns a status ok' do
             expect(response).to have_http_status(:ok)
           end
         end
@@ -199,16 +201,30 @@ RSpec.describe 'Testimonials', type: :request do
       end
 
       context 'when user is admin' do
-        it 'returns a status ok' do
+        before do
           login_with_api(@admin_user)
           @headers = { 'Authorization' => json_response[:user][:token] }
-          expect(response).to have_http_status(:ok)
         end
 
-        it 'deletes a testimonial' do
-          expect do
+        context 'when correct params' do
+          it 'returns a status ok' do
             subject
-          end.to change { Testimonial.count }.by(0)
+            expect(response).to have_http_status(:ok)
+          end
+
+          it 'deletes a testimonial' do
+            expect do
+              subject
+            end.to change { Testimonial.count }.by(-1)
+          end
+        end
+
+        context 'when invalid or missing params' do
+          it 'returns a status not found' do
+            id = 74
+            delete "/api/testimonials/#{id}", headers: @headers
+            expect(response).to have_http_status(:not_found)
+          end
         end
       end
     end
