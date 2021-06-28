@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class ActivitySerializer < CustomActiveModelSerializer
-  attributes :name, :content, :image
+  attributes :id, :name, :content, :image
 end

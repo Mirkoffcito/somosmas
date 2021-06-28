@@ -3,6 +3,7 @@
 module Api
   class ActivitiesController < ApplicationController
     skip_before_action :authenticate_admin, only: :index
+    skip_before_action :authorize_request, only: [:index]
     
     def index
       @activities = Activity.all
@@ -30,6 +31,10 @@ module Api
       else
         render json: activity.errors, status: :unprocessable_entity
       end
+    end
+
+    def destroy
+      render json: { message: 'Succesfully deleted' }, status: :ok if activity.destroy
     end
 
     private
