@@ -6,7 +6,7 @@ module Api
     skip_before_action :authenticate_admin
 
     def register
-      @user = User.create(user_params)
+      @user = User.new(user_params)
       if @user.save
         login
       else
