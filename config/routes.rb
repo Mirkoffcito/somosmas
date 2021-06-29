@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
   namespace 'api' do
     get 'organization/public' => 'organizations#get_organization'
     post 'auth/register', to: 'authentications#register'
