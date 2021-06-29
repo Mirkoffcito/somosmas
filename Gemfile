@@ -38,6 +38,7 @@ group :development, :test do
   gem "faker", "~> 2.18"
   gem 'rspec-rails', '~> 5.0', '>= 5.0.1'
   gem "factory_bot_rails", "~> 6.2"
+  gem "rswag-specs", "~> 2.4"
 end
 
 group :development do
@@ -66,3 +67,7 @@ gem 'aws-sdk-s3', '~> 1.95', '>= 1.95.1'
 gem "pager_api", "~> 0.3.2"
 
 gem "pagy", "~> 4.8"
+
+gem "rswag-api", "~> 2.4"
+
+gem "rswag-ui", "~> 2.4"
