@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   class TestimonialsController < ApplicationController
     skip_before_action :authenticate_admin, only: :index
@@ -6,18 +8,6 @@ module Api
     def index
       @testimonials = Testimonial.all
       paginate @testimonials, per_page: 10, each_serializer: TestimonialSerializer
-    end
-
-    def destroy
-      render json: { message: 'Succesfully deleted' }, status: :ok if testimonial.destroy
-    end
-
-    def update
-      if testimonial.update(testimonial_params)
-        render json: testimonial, status: :ok
-      else
-        render json: testimonial.errors, status: :unprocessable_entity
-      end
     end
 
     def create
@@ -29,8 +19,20 @@ module Api
       end
     end
 
+    def update
+      if testimonial.update(testimonial_params)
+        render json: testimonial, status: :ok
+      else
+        render json: testimonial.errors, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      render json: { message: 'Succesfully deleted' }, status: :ok if testimonial.destroy
+    end
+
     private
-    
+
     def testimonial
       @testimonial ||= Testimonial.find(params[:id])
     end

@@ -36,5 +36,11 @@ module T40Api
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    if Rails.env.test?
+      RSpec.configure do |config|
+        config.swagger_dry_run = false
+      end
+    end
   end
 end
