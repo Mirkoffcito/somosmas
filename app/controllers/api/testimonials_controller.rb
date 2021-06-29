@@ -2,7 +2,8 @@
 
 module Api
   class TestimonialsController < ApplicationController
-    skip_before_action :authorize_request, :authenticate_admin, only: [:index]
+    skip_before_action :authenticate_admin, only: :index
+    skip_before_action :authorize_request, only: [:index]
 
     def index
       @testimonials = Testimonial.all
