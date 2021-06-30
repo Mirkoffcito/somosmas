@@ -1,3 +1,4 @@
+User.skip_callback(:create, :after, :send_mail)
 users = User.all
 
 users.each do |user|
