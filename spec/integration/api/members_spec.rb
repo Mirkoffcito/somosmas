@@ -12,6 +12,7 @@ RSpec.describe '../integration/api/members', type: :request do
     
         tags 'Members'
         consumes 'application/json'
+        produces 'application/json'
         security [Bearer: {}]
         parameter name: :Authorization, in: :header, type: :string
         parameter name: :member, in: :body, schema: {
@@ -152,7 +153,7 @@ RSpec.describe '../integration/api/members', type: :request do
         parameter name: :Authorization, in: :header, type: :string
         parameter name: :id, in: :path, type: :string
 
-        response '200', 'updated successfully' do
+        response '200', 'deleted successfully' do
           run_test!
         end
 

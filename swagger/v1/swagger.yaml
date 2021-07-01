@@ -19,6 +19,31 @@ paths:
       responses:
         '201':
           description: member created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  member:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        facebook_url:
+                          type: string
+                          nullable: true
+                        linkedin_url:
+                          type: string
+                          nullable: true
+                        instagram_url:
+                          type: string
+                          nullable: true
+                        description:
+                          type: string
+                          nullable: true
         '401':
           description: unauthorized
         '422':
@@ -172,7 +197,7 @@ paths:
           type: string
       responses:
         '200':
-          description: updated successfully
+          description: deleted successfully
         '401':
           description: unauthorized
         '404':
