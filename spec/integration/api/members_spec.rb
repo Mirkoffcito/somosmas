@@ -2,8 +2,6 @@ require 'swagger_helper'
 
 RSpec.describe '../integration/api/members', type: :request do
 
-  let(:Authorization) { "Bearer #{access_token}" }
-
   describe 'Members API' do
   
     path '/api/members' do
