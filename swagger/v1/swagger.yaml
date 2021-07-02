@@ -4,6 +4,156 @@ info:
   title: API V1
   version: v1
 paths:
+  "/api/activities":
+    get:
+      summary: Lists all activities
+      tags:
+      - " Activities"
+      responses:
+        '200':
+          description: lists activities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activities:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: string
+                        image:
+                          type: string
+                      required:
+                      - id
+                      - name
+                      - content
+    post:
+      summary: Creates an activity
+      tags:
+      - " Activities"
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Activity created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activity:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      content:
+                        type: string
+                      image:
+                        type: string
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                activity:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    content:
+                      type: string
+                    image:
+                      type: image
+                  required:
+                  - name
+                  - content
+  "/api/activities/{id}":
+    put:
+      summary: Updates an activity
+      tags:
+      - " Activities"
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: updated succesfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activity:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      content:
+                        type: string
+                      image:
+                        type: string
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+        '404':
+          description: not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                content:
+                  type: string
+                image:
+                  type: image
+    delete:
+      summary: Deletes an activity
+      tags:
+      - " Activities"
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: deleted succesfully
+        '401':
+          description: unauthorized
+        '404':
+          description: not found
   "/blogs":
     post:
       summary: Creates a blog
@@ -77,7 +227,13 @@ paths:
         '406':
           description: unsupported accept header
 servers:
-- url: https://localhost:3000
+- url: http://localhost:3000
   variables:
     defaultHost:
       default: www.example.com
+components:
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+      name: Authorize
