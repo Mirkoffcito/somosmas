@@ -135,6 +135,7 @@ paths:
                   linkedin_url:
                     type: string
                 required:
+<<<<<<< HEAD
                 - name
                 - email
                 - welcome_text
@@ -159,6 +160,118 @@ paths:
           description: Unauthorized access.
 servers:
 - url: https://localhost:3000
+=======
+                - id
+                - title
+                - content
+        '404':
+          description: blog not found
+        '406':
+          description: unsupported accept header
+  "/api/testimonials":
+    get:
+      summary: all testimonials
+      tags:
+      - Testimonials
+      parameters:
+      - name: page
+        in: query
+        description: Parameter used for paging
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: success status when getting all users (no token required)
+    post:
+      summary: creates a testimonial
+      tags:
+      - Testimonials
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '201':
+          description: testimonial created
+        '400':
+          description: bad request status if not pass the required parameters or sends
+            some invalid parameter
+        '401':
+          description: unauthorized status if you do not have a token or are a client
+            user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                content:
+                  type: string
+              required:
+              - name
+              - content
+  "/api/testimonials/{testimonial_id}":
+    put:
+      summary: update an existing testimonial
+      tags:
+      - Testimonials
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: testimonial_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: success status when testimonial updeted
+        '401':
+          description: unauthorized status if not have a token or are a client user
+        '404':
+          description: 'not found status if testimonial do not exist '
+        '422':
+          description: unprocessable entity status if not pass the required parameters
+            or sends some invalid parameter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                content:
+                  type: string
+              required:
+              - name
+              - content
+    delete:
+      summary: delete an existing testimonial
+      tags:
+      - Testimonials
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: testimonial_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: success status when testimonial deleted
+        '401':
+          description: unauthorized status if not have a token or are a client user
+        '404':
+          description: 'not found status if testimonial do not exist '
+servers:
+- url: http://localhost:3000
+  variables:
+    defaultHost:
+      default: www.example.com
+>>>>>>> dca00718f7fc0f135d293fedd4ba6f8213d5eb89
 components:
   securitySchemes:
     bearer_auth:
