@@ -36,6 +36,15 @@ RSpec.configure do |config|
             name: 'Authorize'
           }
         }
+      },
+      components: {
+        securitySchemes: {
+          bearer_auth: {
+            type: :http,
+            scheme: :bearer,
+            name: 'Authorize'
+          }
+        }
       }
     }
   }
