@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'factory_bot_rails'
 
 RSpec.configure do |config|
   # Specify a root folder where Swagger JSON files are generated
@@ -33,7 +34,7 @@ RSpec.configure do |config|
             type: :http,
             scheme: :bearer,
             name: 'Authorize'
-          } 
+          }
         }
       }
     }
