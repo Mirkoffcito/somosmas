@@ -17,7 +17,7 @@ RSpec.describe '../integration/api/members', type: :request do
           type: :object,
           properties: {
             member: {
-              type: :array,
+              type: :object,
               items: {
                 properties: {
                   id: { type: :integer },
@@ -38,7 +38,7 @@ RSpec.describe '../integration/api/members', type: :request do
           schema type: :object,
             properties: {
               member: {
-                type: :array,
+                type: :object,
                 items:{
                   properties: {
                     id: { type: :integer },
@@ -72,7 +72,7 @@ RSpec.describe '../integration/api/members', type: :request do
           schema type: :object,
             properties: {
                 members: {
-                  type: :array,
+                  type: :object,
                   items:{
                     properties: {
                       id: { type: :integer },
@@ -114,7 +114,7 @@ RSpec.describe '../integration/api/members', type: :request do
           schema type: :object,
             properties: {
               member: {
-                type: :array,
+                type: :object,
                 items:{
                   properties: {
                     id: { type: :integer },

@@ -97,7 +97,7 @@ paths:
                 type: object
                 properties:
                   member:
-                    type: array
+                    type: object
                     items:
                       properties:
                         id:
@@ -127,7 +127,7 @@ paths:
               type: object
               properties:
                 member:
-                  type: array
+                  type: object
                   items:
                     properties:
                       id:
@@ -161,7 +161,7 @@ paths:
                 type: object
                 properties:
                   members:
-                    type: array
+                    type: object
                     items:
                       properties:
                         id:
@@ -206,7 +206,7 @@ paths:
                 type: object
                 properties:
                   member:
-                    type: array
+                    type: object
                     items:
                       properties:
                         id:
