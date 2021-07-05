@@ -46,7 +46,7 @@ RSpec.describe '../integration/api/activities', type: :request do
               properties: {
                 name: { type: :string },
                 content: { type: :string },
-                image: { type: :image }
+                image: { type: :string }
               },
               required: %w[name content]
             }
@@ -92,7 +92,7 @@ RSpec.describe '../integration/api/activities', type: :request do
           properties: {
             name: { type: :string },
             content: { type: :string },
-            image: { type: :image }
+            image: { type: :string }
           }
         }
         
