@@ -4,6 +4,9 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
+# Ignore SimpleCov Folder
+/coverage
+
 # Ignore bundler config.
 /.bundle
 
@@ -67,5 +70,10 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Rubocop yml
+.rubocop.yml
+
 # Ignore environment variables config
 .env
+
+.rubocop.yml
