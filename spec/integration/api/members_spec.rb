@@ -72,7 +72,7 @@ RSpec.describe '../integration/api/members', type: :request do
           schema type: :object,
             properties: {
                 members: {
-                  type: :object,
+                  type: :array,
                   items:{
                     properties: {
                       id: { type: :integer },
