@@ -4,6 +4,99 @@ info:
   title: API V1
   version: v1
 paths:
+  "/api/categories":
+    post:
+      summary: Post a category
+      tags:
+      - Categories
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Category created
+        '401':
+          description: Unauthorized
+        '422':
+          description: Invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+              required:
+              - name
+    get:
+      summary: Get all categories
+      tags:
+      - Categories
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of categories
+  "/api/categories/{id}":
+    put:
+      summary: Updates a category
+      tags:
+      - Categories
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Updated successfully
+        '401':
+          description: Unauthorized
+        '422':
+          description: Invalid request
+        '404':
+          description: Not found
+    delete:
+      summary: Delete a category
+      tags:
+      - Categories
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
   "/api/organization/public":
     get:
       summary: Gets an Organization
