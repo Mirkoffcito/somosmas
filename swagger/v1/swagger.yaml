@@ -4,15 +4,67 @@ info:
   title: API V1
   version: v1
 paths:
-  "/blogs":
-    post:
-      summary: Creates a blog
+  "/api/activities":
+    get:
+      summary: Lists all activities
       tags:
-      - Blogs
-      parameters: []
+      - " Activities"
+      responses:
+        '200':
+          description: lists activities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activities:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: string
+                        image:
+                          type: string
+                      required:
+                      - id
+                      - name
+                      - content
+    post:
+      summary: Creates an activity
+      tags:
+      - " Activities"
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
       responses:
         '201':
-          description: blog created
+          description: Activity created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activity:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      content:
+                        type: string
+                      image:
+                        type: string
+        '401':
+          description: unauthorized
         '422':
           description: invalid request
       requestBody:
@@ -21,19 +73,122 @@ paths:
             schema:
               type: object
               properties:
-                title:
+                activity:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    content:
+                      type: string
+                    image:
+                      type: image
+                  required:
+                  - name
+                  - content
+  "/api/activities/{id}":
+    put:
+      summary: Updates an activity
+      tags:
+      - " Activities"
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: updated succesfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  activity:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      content:
+                        type: string
+                      image:
+                        type: string
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+        '404':
+          description: not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
                   type: string
                 content:
                   type: string
-              required:
-              - title
-              - content
-  "/blogs/{id}":
-    get:
-      summary: Retrieves a blog
+                image:
+                  type: image
+    delete:
+      summary: Deletes an activity
       tags:
-      - Blogs
-      - Another Tag
+      - " Activities"
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: deleted succesfully
+        '401':
+          description: unauthorized
+        '404':
+          description: not found
+  "/api/categories":
+    post:
+      summary: Post a category
+      tags:
+      - Categories
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Category created
+        '401':
+          description: Unauthorized
+        '422':
+          description: Invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+              required:
+              - name
+    get:
+      summary: Get all categories
+      tags:
+      - Categories
       parameters:
       - name: id
         in: path
@@ -42,36 +197,212 @@ paths:
           type: string
       responses:
         '200':
-          description: blog found
+          description: List of categories
+  "/api/categories/{id}":
+    put:
+      summary: Updates a category
+      tags:
+      - Categories
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Updated successfully
+        '401':
+          description: Unauthorized
+        '422':
+          description: Invalid request
+        '404':
+          description: Not found
+    delete:
+      summary: Delete a category
+      tags:
+      - Categories
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+  "/api/organization/public":
+    get:
+      summary: Gets an Organization
+      tags:
+      - Organization
+      parameters:
+      - name: organization
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Organization found
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  id:
-                    type: integer
-                  title:
+                  name:
                     type: string
-                  content:
+                  adress:
+                    type: string
+                  phone:
+                    type: integer
+                  email:
+                    type: string
+                  welcome_text:
+                    type: text
+                  about_us_text:
+                    type: text
+                  facebook_url:
+                    type: string
+                  instagram_url:
+                    type: string
+                  linkedin_url:
                     type: string
                 required:
-                - id
-                - title
-                - content
-            application/xml:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  title:
-                    type: string
-                  content:
-                    type: string
-                required:
-                - id
-                - title
-                - content
+                - name
+                - email
+                - welcome_text
+    put:
+      summary: Updates an Organization
+      tags:
+      - Organization
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: organization
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Organization updated
+        '400':
+          description: Parameter is missing or its value is empty
+        '401':
+          description: Unauthorized access.
+  "/api/testimonials":
+    get:
+      summary: all testimonials
+      tags:
+      - Testimonials
+      parameters:
+      - name: page
+        in: query
+        description: Parameter used for paging
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: success status when getting all users (no token required)
+    post:
+      summary: creates a testimonial
+      tags:
+      - Testimonials
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '201':
+          description: testimonial created
+        '400':
+          description: bad request status if not pass the required parameters or sends
+            some invalid parameter
+        '401':
+          description: unauthorized status if you do not have a token or are a client
+            user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                content:
+                  type: string
+              required:
+              - name
+              - content
+  "/api/testimonials/{testimonial_id}":
+    put:
+      summary: update an existing testimonial
+      tags:
+      - Testimonials
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: testimonial_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: success status when testimonial updeted
+        '401':
+          description: unauthorized status if not have a token or are a client user
+        '404':
+          description: 'not found status if testimonial do not exist '
+        '422':
+          description: unprocessable entity status if not pass the required parameters
+            or sends some invalid parameter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                content:
+                  type: string
+              required:
+              - name
+              - content
+    delete:
+      summary: delete an existing testimonial
+      tags:
+      - Testimonials
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: testimonial_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: success status when testimonial deleted
+        '401':
+          description: unauthorized status if not have a token or are a client user
         '404':
           description: blog not found
         '406':
@@ -276,9 +607,6 @@ paths:
           description: not found
 servers:
 - url: http://localhost:3000
-  variables:
-    defaultHost:
-      default: www.example.com
 components:
   securitySchemes:
     bearer_auth:
