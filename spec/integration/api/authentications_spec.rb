@@ -29,6 +29,23 @@ RSpec.describe '../integration/api/authentications', type: :request do
                 }
 
                 response '200', 'returns new registered user' do
+
+                    examples 'application/json' => {
+                            user: {
+                                id: 23,
+                                first_name: 'Guido',
+                                last_name: "Medina",
+                                email: "guido@gmail.com",
+                                role: {
+                                    id: 1,
+                                    name: "admin",
+                                    description: 'null'
+                                },
+                                image: "www.myimage.com/image.jpg",
+                                token: "jhaskdhJKASDAjakAHSuioS2JS8ns"
+                            }
+                    }
+
                     schema type: :object,
                     properties: {
                         user: {
@@ -85,6 +102,23 @@ RSpec.describe '../integration/api/authentications', type: :request do
                 }
 
                 response '200', 'logins a new user' do
+
+                    examples 'application/json' => {
+                        user: {
+                            id: 23,
+                            first_name: 'Guido',
+                            last_name: "Medina",
+                            email: "guido@gmail.com",
+                            role: {
+                                id: 1,
+                                name: "admin",
+                                description: 'null'
+                            },
+                            image: "www.myimage.com/image.jpg",
+                            token: "jhaskdhJKASDAjakAHSuioS2JS8ns"
+                        }
+                    }
+
                     schema type: :object,
                     properties: {
                         user: {
@@ -124,6 +158,22 @@ RSpec.describe '../integration/api/authentications', type: :request do
                 security [bearer_auth:{}]
 
                 response '200', 'returns the current user info' do
+
+                    examples 'application/json' => {
+                        user: {
+                            id: 23,
+                            first_name: 'Guido',
+                            last_name: "Medina",
+                            email: "guido@gmail.com",
+                            role: {
+                                id: 1,
+                                name: "admin",
+                                description: 'null'
+                            },
+                            image: "www.myimage.com/image.jpg"
+                        }
+                    }
+
                     schema type: :object,
                     properties: {
                         user: {

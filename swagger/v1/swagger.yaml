@@ -165,6 +165,18 @@ paths:
           description: returns new registered user
           content:
             application/json:
+              example:
+                user:
+                  id: 23
+                  first_name: Guido
+                  last_name: Medina
+                  email: guido@gmail.com
+                  role:
+                    id: 1
+                    name: admin
+                    description: 'null'
+                  image: www.myimage.com/image.jpg
+                  token: jhaskdhJKASDAjakAHSuioS2JS8ns
               schema:
                 type: object
                 properties:
@@ -198,9 +210,33 @@ paths:
           description: invalid params are sent
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: file
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+                    email:
+                      type: string
+                    role_id:
+                      type: integer
+                    image:
+                      type: string
+                    password:
+                      type: string
+                    password_confirmation:
+                      type: string
+                  requires:
+                  - first_name
+                  - last_name
+                  - email
+                  - password
+                  - password_confirmation
   "/api/auth/login":
     post:
       summary: Logins a user
@@ -212,6 +248,18 @@ paths:
           description: logins a new user
           content:
             application/json:
+              example:
+                user:
+                  id: 23
+                  first_name: Guido
+                  last_name: Medina
+                  email: guido@gmail.com
+                  role:
+                    id: 1
+                    name: admin
+                    description: 'null'
+                  image: www.myimage.com/image.jpg
+                  token: jhaskdhJKASDAjakAHSuioS2JS8ns
               schema:
                 type: object
                 properties:
@@ -269,6 +317,17 @@ paths:
           description: returns the current user info
           content:
             application/json:
+              example:
+                user:
+                  id: 23
+                  first_name: Guido
+                  last_name: Medina
+                  email: guido@gmail.com
+                  role:
+                    id: 1
+                    name: admin
+                    description: 'null'
+                  image: www.myimage.com/image.jpg
               schema:
                 type: object
                 properties:
