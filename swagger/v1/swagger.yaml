@@ -81,7 +81,7 @@ paths:
                     content:
                       type: string
                     image:
-                      type: image
+                      type: string
                   required:
                   - name
                   - content
@@ -134,7 +134,7 @@ paths:
                 content:
                   type: string
                 image:
-                  type: image
+                  type: string
     delete:
       summary: Deletes an activity
       tags:
@@ -247,6 +247,204 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+  "/api/members":
+    post:
+      summary: Creates a member
+      tags:
+      - Members
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '201':
+          description: member created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  member:
+                    type: object
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        facebook_url:
+                          type: string
+                          nullable: true
+                        linkedin_url:
+                          type: string
+                          nullable: true
+                        instagram_url:
+                          type: string
+                          nullable: true
+                        description:
+                          type: string
+                          nullable: true
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                member:
+                  type: object
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      facebook_url:
+                        type: string
+                        nullable: true
+                      linkedin_url:
+                        type: string
+                        nullable: true
+                      instagram_url:
+                        type: string
+                        nullable: true
+                      description:
+                        type: string
+                        nullable: true
+              required:
+              - name
+    get:
+      summary: Get all members
+      tags:
+      - Members
+      responses:
+        '200':
+          description: list of members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  members:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        facebook_url:
+                          type: string
+                          nullable: true
+                        linkedin_url:
+                          type: string
+                          nullable: true
+                        instagram_url:
+                          type: string
+                          nullable: true
+                        description:
+                          type: string
+                          nullable: true
+  "/api/members/{id}":
+    put:
+      summary: Updates a member
+      tags:
+      - Members
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  member:
+                    type: object
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        facebook_url:
+                          type: string
+                          nullable: true
+                        linkedin_url:
+                          type: string
+                          nullable: true
+                        instagram_url:
+                          type: string
+                          nullable: true
+                        description:
+                          type: string
+                          nullable: true
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+        '404':
+          description: not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                facebook_url:
+                  type: string
+                  nullable: true
+                linkedin_url:
+                  type: string
+                  nullable: true
+                instagram_url:
+                  type: string
+                  nullable: true
+                description:
+                  type: string
+                  nullable: true
+    delete:
+      summary: Delete a member
+      tags:
+      - Members
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: deleted successfully
+        '401':
+          description: unauthorized
+        '404':
+          description: not found
   "/api/organization/public":
     get:
       summary: Gets an Organization
@@ -404,207 +602,7 @@ paths:
         '401':
           description: unauthorized status if not have a token or are a client user
         '404':
-          description: blog not found
-        '406':
-          description: unsupported accept header
-  "/api/members":
-    post:
-      summary: Creates a member
-      tags:
-      - Members
-      security:
-      - Bearer: {}
-      parameters:
-      - name: Authorization
-        in: header
-        schema:
-          type: string
-      responses:
-        '201':
-          description: member created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  member:
-                    type: object
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        facebook_url:
-                          type: string
-                          nullable: true
-                        linkedin_url:
-                          type: string
-                          nullable: true
-                        instagram_url:
-                          type: string
-                          nullable: true
-                        description:
-                          type: string
-                          nullable: true
-        '401':
-          description: unauthorized
-        '422':
-          description: invalid request
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                member:
-                  type: object
-                  items:
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      facebook_url:
-                        type: string
-                        nullable: true
-                      linkedin_url:
-                        type: string
-                        nullable: true
-                      instagram_url:
-                        type: string
-                        nullable: true
-                      description:
-                        type: string
-                        nullable: true
-              required:
-              - name
-    get:
-      summary: Get all members
-      tags:
-      - Members
-      responses:
-        '200':
-          description: list of members
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  members:
-                    type: object
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        facebook_url:
-                          type: string
-                          nullable: true
-                        linkedin_url:
-                          type: string
-                          nullable: true
-                        instagram_url:
-                          type: string
-                          nullable: true
-                        description:
-                          type: string
-                          nullable: true
-  "/api/members/{id}":
-    put:
-      summary: Updates a member
-      tags:
-      - Members
-      security:
-      - Bearer: {}
-      parameters:
-      - name: Authorization
-        in: header
-        schema:
-          type: string
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  member:
-                    type: object
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        facebook_url:
-                          type: string
-                          nullable: true
-                        linkedin_url:
-                          type: string
-                          nullable: true
-                        instagram_url:
-                          type: string
-                          nullable: true
-                        description:
-                          type: string
-                          nullable: true
-        '401':
-          description: unauthorized
-        '422':
-          description: invalid request
-        '404':
-          description: not found
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                facebook_url:
-                  type: string
-                  nullable: true
-                linkedin_url:
-                  type: string
-                  nullable: true
-                instagram_url:
-                  type: string
-                  nullable: true
-                description:
-                  type: string
-                  nullable: true
-    delete:
-      summary: Delete a member
-      tags:
-      - Members
-      security:
-      - Bearer: {}
-      parameters:
-      - name: Authorization
-        in: header
-        schema:
-          type: string
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: deleted successfully
-        '401':
-          description: unauthorized
-        '404':
-          description: not found
+          description: 'not found status if testimonial do not exist '
 servers:
 - url: http://localhost:3000
 components:
