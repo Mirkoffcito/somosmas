@@ -247,6 +247,81 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+  "/api/comments":
+    get:
+      summary: Get all comments
+      tags:
+      - Comments
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list all comments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        content:
+                          type: string
+        '401':
+          description: unauthorized
+    post:
+      summary: "/api/comments"
+      tags:
+      - Comments
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '201':
+          description: comment created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: object
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        content:
+                          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: object
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      content:
+                        type: string
+                      new_id:
+                        type: integer
+                required:
+                - new_id
   "/api/members":
     post:
       summary: Creates a member
