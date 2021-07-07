@@ -1,6 +1,7 @@
 module Api
   class CommentsController < ApplicationController
-    skip_before_action :authenticate_admin, only: [:create, :update, :destroy]
+    skip_before_action :authenticate_admin
+    skip_before_action :authorize_request, only: [:index]
 
     def index
       @comments = Comment.all
