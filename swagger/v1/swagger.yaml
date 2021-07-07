@@ -304,6 +304,10 @@ paths:
                           type: integer
                         content:
                           type: string
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
       requestBody:
         content:
           application/json:
@@ -322,6 +326,76 @@ paths:
                         type: integer
                 required:
                 - new_id
+  "/api/comments/{id}":
+    put:
+      summary: Updates a comment
+      tags:
+      - Comments
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment:
+                    type: object
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        content:
+                          type: string
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+        '404':
+          description: not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+    delete:
+      summary: Delete a comment
+      tags:
+      - Comments
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: deleted successfully
+        '401':
+          description: unauthorized
+        '404':
+          description: not found
   "/api/members":
     post:
       summary: Creates a member
