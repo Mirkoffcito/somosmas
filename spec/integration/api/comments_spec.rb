@@ -1,23 +1,21 @@
 require 'swagger_helper'
 
 RSpec.describe '../integration/api/comments', type: :request do
-
   describe 'Comments API' do
-  
     path '/api/comments' do
       get 'Get all comments' do
         tags 'Comments'
         consumes 'application/json'
         produces 'application/json'
-        security [bearer_auth:{}]
+        security [bearer_auth: {}]
         parameter name: :Authorization, in: :header, type: :string
 
         response '200', 'list all comments' do
-          schema type: :object,
-            properties: {
+          schema type: :object, properties:
+            {
               comments: {
-                type: :array,
-                items:{
+                type: :array, items:
+                {
                   properties: {
                     id: { type: :integer },
                     content: { type: :string }
@@ -38,14 +36,14 @@ RSpec.describe '../integration/api/comments', type: :request do
         consumes 'application/json'
         produces 'application/json'
 
-        security [bearer_auth:{}]
+        security [bearer_auth: {}]
         parameter name: :Authorization, in: :header, type: :string
         parameter name: :comment, in: :body, schema: {
-          type: :object,
-          properties: {
+          type: :object, properties:
+          {
             comment: {
-              type: :object,
-              items:{
+              type: :object, items:
+              {
                 properties: {
                   id: { type: :integer },
                   content: { type: :string },
@@ -56,27 +54,25 @@ RSpec.describe '../integration/api/comments', type: :request do
             required: ['new_id']
           }
         }
-        
         response '201', 'comment created' do
-          schema type: :object,
-            properties: {
-              comments: {
-                type: :object,
-                items:{
-                  properties: {
-                    id: { type: :integer },
-                    content: { type: :string }
-                  }
+          schema type: :object, properties:
+          {
+            comments: {
+              type: :object, items:
+              {
+                properties: {
+                  id: { type: :integer },
+                  content: { type: :string }
                 }
               }
             }
+          }
           run_test!
         end
 
         response '401', 'unauthorized' do
           run_test!
         end
-    
         response '422', 'invalid request' do
           run_test!
         end
@@ -84,12 +80,11 @@ RSpec.describe '../integration/api/comments', type: :request do
     end
 
     path '/api/comments/{id}' do
-    
       put 'Updates a comment' do
         tags 'Comments'
         consumes 'application/json'
         produces 'application/json'
-        security [bearer_auth:{}]
+        security [bearer_auth: {}]
         parameter name: :Authorization, in: :header, type: :string
         parameter name: :id, in: :path, type: :integer, required: true
         parameter name: :comment, in: :body, schema: {
@@ -100,25 +95,23 @@ RSpec.describe '../integration/api/comments', type: :request do
         }
 
         response '200', 'updated successfully' do
-          schema type: :object,
-            properties: {
-              comment: {
-                type: :object,
-                items:{
-                  properties: {
-                    id: { type: :integer },
-                    content: { type: :string }
-                  }
+          schema type: :object, properties: {
+            comment: {
+              type: :object,
+              items: {
+                properties: {
+                  id: { type: :integer },
+                  content: { type: :string }
                 }
               }
             }
+          }
           run_test!
         end
 
         response '401', 'unauthorized' do
           run_test!
         end
-    
         response '422', 'invalid request' do
           run_test!
         end
@@ -126,14 +119,12 @@ RSpec.describe '../integration/api/comments', type: :request do
         response '404', 'not found' do
           run_test!
         end
-
       end
-      
       delete 'Delete a comment' do
         tags 'Comments'
         consumes 'application/json'
         produces 'application/json'
-        security [bearer_auth:{}]
+        security [bearer_auth: {}]
         parameter name: :Authorization, in: :header, type: :string
         parameter name: :id, in: :path, type: :integer, required: true
 
@@ -144,11 +135,9 @@ RSpec.describe '../integration/api/comments', type: :request do
         response '401', 'unauthorized' do
           run_test!
         end
-        
-        response '404', 'not found'do
+        response '404', 'not found' do
           run_test!
         end
-
       end
     end
   end
