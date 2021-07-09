@@ -10,11 +10,9 @@ RSpec.describe 'slides', type: :request do
 
     # context "when slide's table is empty" do
     #   before { get_slides }
-
     #   it 'returns a HTTP STATUS 200' do
     #     expect(response).to have_http_status(:ok)
     #   end
-
     #   it 'returns an empty array' do
     #     expect(json_response[:slides]).to eq([])
     #   end
@@ -22,13 +20,11 @@ RSpec.describe 'slides', type: :request do
 
     context "when slide's table is not empty" do
       let!(:organization) { create(:organization) }
-      let!(:slide) { create_list(:slide, 2, organization_id: organization.id) }
-      before { get_slide }
-      
+      let!(:slide) { create_list(:slide, 2, organization_id: ) }
+      before { get_slide }      
       it 'returns a HTTP STATUS 200' do
         expect(response).to have_http_status(:ok)
       end
-
       it 'returns an array of slides' do
         expect(json_response[:slides].length).to eq(10)
       end
