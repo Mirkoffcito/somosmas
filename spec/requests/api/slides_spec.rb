@@ -78,7 +78,6 @@ RSpec.describe 'slides', type: :request do
       end
       
       context 'when create a slide' do
-        byebug
         before do 
           create(:organization)
           create(:slide, organization_id: organization.id)

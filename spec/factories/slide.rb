@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :slide, class: 'Slide' do
     text { Faker::Lorem.paragraph(sentence_count: 2) }
-    order { :desc }
+    order {}
     image { Faker::Avatar.image }
     organization_id {}
   end
