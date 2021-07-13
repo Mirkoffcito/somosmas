@@ -70,6 +70,24 @@ RSpec.describe 'Users', type: :request do
     
     context 'when the token is valid' do
       let(:token) { json_response[:user][:token] }
+
+      context 'when user does not exist' do
+        before do
+          login_with_api(@client_user)
+          @id = 144
+          token
+          @json_response = nil
+          get_user
+        end
+
+        it 'returns a HTTP STATUS 404' do
+          expect(response).to have_http_status(:not_found)
+        end
+
+        it 'returns an user not found message' do
+          expect(json_response[:error]).to eq('user not found')
+        end
+      end
       
       context "when user is admin" do
         before do
