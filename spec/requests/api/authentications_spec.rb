@@ -116,35 +116,4 @@ RSpec.describe 'Authentications', type: :request do
     end
   end
 
-  #TODO
-  describe 'GET api/auth/me' do
-    subject(:get_me) { get api_auth_me_url, headers: { Authorization: token } }
-
-    context 'when the token is valid' do
-      let(:token) { json_response[:user][:token] }
-      let(:user) { create(:user, attributes) }
-      before do
-        login_with_api(user)
-        get_me
-      end
-      it 'returns a HTTP STATUS 200' do
-        expect(response).to have_http_status(:ok)
-      end
-
-      include_examples "compares user from returned JSON with current user", 'current'
-    end
-
-    context 'when the token is invalid' do
-      let(:token) { '1231251231231' }
-      before { get_me }
-
-      it 'returns a HTTP STATUS 401' do
-        expect(response).to have_http_status(:unauthorized)
-      end
-
-      it 'returns a message error' do
-        expect(json_response[:message]).to eq('Unauthorized access.')
-      end
-    end
-  end
 end
