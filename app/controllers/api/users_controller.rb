@@ -11,10 +11,11 @@ module Api
     end
 
     def show
-      if @current_user
-        render json: @current_user
+      byebug
+      if @current_user.role.admin?
+        render json: user, serializer: UserSerializer
       else
-        render json: @user.errors, status: :unauthorized
+        render json: user, serializer: UserClientSerializer
       end
     end
 

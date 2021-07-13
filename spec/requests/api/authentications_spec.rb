@@ -116,6 +116,7 @@ RSpec.describe 'Authentications', type: :request do
     end
   end
 
+  #TODO
   describe 'GET api/auth/me' do
     subject(:get_me) { get api_auth_me_url, headers: { Authorization: token } }
 

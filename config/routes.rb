@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     get 'organization/public' => 'organizations#get_organization'
     post 'auth/register', to: 'authentications#register'
     post 'auth/login', to: 'authentications#login'
-    get 'auth/me', to: 'users#show'
+    get 'users/:id', to: 'users#show'
     patch 'users/:id', to: 'users#update'
     get 'users', to: 'users#index'
     delete 'users/:id', to: 'users#destroy'
