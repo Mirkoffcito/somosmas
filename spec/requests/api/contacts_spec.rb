@@ -57,7 +57,7 @@ RSpec.describe "Contacts", type: :request do
         end
 
         it 'returns an empty array' do
-          expect(json_response[:contact]).to eq(nil)
+          expect(json_response[:contact]).to eq([])
         end
       end
 
@@ -118,7 +118,6 @@ RSpec.describe "Contacts", type: :request do
         end
         context "when params are invalid" do
           before do |example|
-            attributes[:name] = ''
             attributes[:message] = 'MENSAJE'
             attributes[:email] = 'test@mail.com'
             create_contact unless example.metadata[:skip_before]
@@ -175,6 +174,7 @@ RSpec.describe "Contacts", type: :request do
 
   describe "GET /my_contacts" do
 
+    let(:client_user) { create(:user, :client_user) }
     let(:token) { json_response[:user][:token] } # gets the token
     let(:decoded) { JsonWebToken.decode(token) } # decodes it
     let(:current_user) { User.find(decoded[:user_id]) } # findes the user from the token
@@ -191,7 +191,6 @@ RSpec.describe "Contacts", type: :request do
       end    
       it 'returns a unauthorized error' do
         let(:token) { '' }
-        create_list(:contact, 3, :attributes)
         expect(response).to have_http_status(:unauthorized)
       end
     end 
@@ -206,9 +205,8 @@ RSpec.describe "Contacts", type: :request do
       end 
     
       it 'validates that the current user is the contacts owner' do
-        let(:contact1) { create(:contacts, :attributes) }
+        create(:contacts, :attributes) 
         expect(Contact.user_id).to eq(current_user.id)
-        byebug
       end
 
       context "when table is empty" do
@@ -218,12 +216,12 @@ RSpec.describe "Contacts", type: :request do
         end
 
         it 'returns an empty array' do
-          expect(json_response[:contacts]).to eq(nil)
+          expect(json_response[:contacts]).to eq([])
         end
       end 
 
       context "when table is not empty" do
-        let!(:contact) {create_list(:contact, 4, user_id: current_user.id )}
+         before { create_list(:contact, 4, user_id: current_user.id )}
         
         it 'return the number of the contacts in my array' do 
           expect(json_response[:contacts].count).to eq(4)
