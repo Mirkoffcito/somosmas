@@ -154,6 +154,207 @@ paths:
           description: unauthorized
         '404':
           description: not found
+  "/api/auth/register":
+    post:
+      summary: Registers a new User
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '200':
+          description: returns new registered user
+          content:
+            application/json:
+              example:
+                user:
+                  id: 23
+                  first_name: Guido
+                  last_name: Medina
+                  email: guido@gmail.com
+                  role:
+                    id: 1
+                    name: admin
+                    description: 'null'
+                  image: www.myimage.com/image.jpg
+                  token: jhaskdhJKASDAjakAHSuioS2JS8ns
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          description:
+                            type: string
+                      image:
+                        type: string
+                      token:
+                        type: string
+        '400':
+          description: no params are sent
+        '422':
+          description: invalid params are sent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+                    email:
+                      type: string
+                    role_id:
+                      type: integer
+                    image:
+                      type: string
+                    password:
+                      type: string
+                    password_confirmation:
+                      type: string
+                  requires:
+                  - first_name
+                  - last_name
+                  - email
+                  - password
+                  - password_confirmation
+  "/api/auth/login":
+    post:
+      summary: Logins a user
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '200':
+          description: logins a new user
+          content:
+            application/json:
+              example:
+                user:
+                  id: 23
+                  first_name: Guido
+                  last_name: Medina
+                  email: guido@gmail.com
+                  role:
+                    id: 1
+                    name: admin
+                    description: 'null'
+                  image: www.myimage.com/image.jpg
+                  token: jhaskdhJKASDAjakAHSuioS2JS8ns
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          description:
+                            type: string
+                      image:
+                        type: string
+                      token:
+                        type: string
+        '400':
+          description: invalid params
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    password:
+                      type: string
+                  requires:
+                  - email
+                  - password
+  "/api/auth/me":
+    get:
+      summary: Returns the current user info
+      tags:
+      - Authentication
+      security:
+      - bearer_auth: {}
+      responses:
+        '200':
+          description: returns the current user info
+          content:
+            application/json:
+              example:
+                user:
+                  id: 23
+                  first_name: Guido
+                  last_name: Medina
+                  email: guido@gmail.com
+                  role:
+                    id: 1
+                    name: admin
+                    description: 'null'
+                  image: www.myimage.com/image.jpg
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          description:
+                            type: string
+                      image:
+                        type: string
+        '401':
+          description: unauthorized request
   "/api/categories":
     post:
       summary: Post a category
@@ -247,6 +448,155 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+  "/api/comments":
+    get:
+      summary: Get all comments
+      tags:
+      - Comments
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list all comments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        content:
+                          type: string
+        '401':
+          description: unauthorized
+    post:
+      summary: "/api/comments"
+      tags:
+      - Comments
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '201':
+          description: comment created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: object
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        content:
+                          type: string
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: object
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      content:
+                        type: string
+                      new_id:
+                        type: integer
+                required:
+                - new_id
+  "/api/comments/{id}":
+    put:
+      summary: Updates a comment
+      tags:
+      - Comments
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment:
+                    type: object
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        content:
+                          type: string
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+        '404':
+          description: not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+    delete:
+      summary: Delete a comment
+      tags:
+      - Comments
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: deleted successfully
+        '401':
+          description: unauthorized
+        '404':
+          description: not found
   "/api/members":
     post:
       summary: Creates a member
