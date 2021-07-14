@@ -3,7 +3,7 @@ class CreateMessages < ActiveRecord::Migration[6.0]
     create_table :messages do |t|
       t.integer :user_id
       t.text :detail
-      t.boolean :modified
+      t.boolean :modified, default: false
 
       t.timestamps
     end
