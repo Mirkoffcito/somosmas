@@ -11,10 +11,12 @@ module Api
     end
 
     def show
-      if @current_user.role.admin?
-        render json: user, serializer: UserSerializer
+      user
+      byebug
+      if @current_user.role.admin? || @current_user.id == user.id
+        render json: @user, serializer: UserSerializer
       else
-        render json: user, serializer: UserClientSerializer
+        render json: @user, serializer: UserClientSerializer
       end
     end
 
