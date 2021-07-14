@@ -52,8 +52,8 @@ ActiveRecord::Schema.define(version: 2021_07_14_001149) do
   end
 
   create_table "chats", force: :cascade do |t|
-    t.integer "user1"
-    t.integer "user2"
+    t.integer "user1", null: false
+    t.integer "user2", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -93,9 +93,9 @@ ActiveRecord::Schema.define(version: 2021_07_14_001149) do
   end
 
   create_table "messages", force: :cascade do |t|
-    t.integer "user_id"
-    t.text "detail"
-    t.boolean "modified"
+    t.integer "user_id", null: false
+    t.text "detail", null: false
+    t.boolean "modified", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
