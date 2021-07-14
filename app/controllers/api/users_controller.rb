@@ -12,7 +12,6 @@ module Api
 
     def show
       user
-      byebug
       if @current_user.role.admin? || @current_user.id == user.id
         render json: @user, serializer: UserSerializer
       else
