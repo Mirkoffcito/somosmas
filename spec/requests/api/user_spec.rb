@@ -83,6 +83,99 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
+  describe 'GET api/users/:id' do
+    subject(:get_user) { get "/api/users/#{@id}", headers: { Authorization: token } }
+    
+    context 'when the token is valid' do
+      let(:token) { json_response[:user][:token] }
+
+      context 'when user does not exist' do
+        before do
+          login_with_api(@client_user)
+          @id = 144
+          token
+          @json_response = nil
+          get_user
+        end
+
+        it 'returns a HTTP STATUS 404' do
+          expect(response).to have_http_status(:not_found)
+        end
+
+        it 'returns an user not found message' do
+          expect(json_response[:error]).to eq('user not found')
+        end
+      end
+      
+      context "when user is admin" do
+        before do
+          login_with_api(@admin_user)
+          @id = @admin_user.id
+          token
+          @json_response = nil
+          get_user
+        end
+
+        it 'returns a HTTP STATUS 200' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'checks user to have id, first_name, last_name, email and role keys' do
+          json_response[:user] do |user|
+            expect(user).to have_key(:id)
+            expect(user).to have_key(:first_name)
+            expect(user).to have_key(:last_name)
+            expect(user).to have_key(:email)
+            expect(user).to have_key(:role)
+          end
+        end
+
+      end
+
+      context "when user is client" do
+        before do
+          login_with_api(@client_user)
+          @id = @client_user.id
+          token
+          get_user
+          @json_response = nil
+        end
+
+        it 'returns a HTTP STATUS 200' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'checks user to have id, first_name, last_name, email' do
+          json_response[:user] do |user|
+            expect(user).to have_key(:id)
+            expect(user).to have_key(:first_name)
+            expect(user).to have_key(:last_name)
+            expect(user).to have_key(:email)
+          end
+        end
+
+        it 'checks user not to have role, password keys' do
+          expect(json_response[:user]).not_to have_key(:role)
+          expect(json_response[:user]).not_to have_key(:password)
+        end
+      end
+
+    end
+
+    context 'when the token is invalid' do
+      let(:token) { 'random_token' }
+      before { get_user }
+
+      it 'returns a HTTP STATUS 401' do
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'returns a message error' do
+        expect(json_response[:message]).to eq('Unauthorized access.')
+      end
+    end
+  end
+
   describe 'PATCH api/users/:id' do
     context 'when users is not logged' do
       it 'returns a status unauthorized' do

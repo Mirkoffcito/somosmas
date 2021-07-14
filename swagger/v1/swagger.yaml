@@ -1036,6 +1036,57 @@ paths:
                           type: string
         '401':
           description: Not a logged in user
+  "/api/users/{id}":
+    get:
+      summary: Get user
+      tags:
+      - Users
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: show user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          description:
+                            type: string
+                      image:
+                        type: string
+        '401':
+          description: unauthorized
+        '404':
+          description: not found
 servers:
 - url: http://localhost:3000
 components:

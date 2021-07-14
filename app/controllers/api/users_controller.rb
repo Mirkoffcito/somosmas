@@ -14,10 +14,10 @@ module Api
     end
 
     def show
-      if @current_user
-        render json: @current_user
+      if @current_user.role.admin? || @current_user.id == user.id
+        render json: user, serializer: UserSerializer
       else
-        render json: @user.errors, status: :unauthorized
+        render json: user, serializer: UserClientSerializer
       end
     end
 
@@ -44,7 +44,11 @@ module Api
     private
 
     def user
-      @user ||= User.find(params[:id])
+      if params[:id]
+        @user ||= User.find(params[:id])
+      else
+        @user = @current_user
+      end
     end
 
     # TODO: method to validates and change user password

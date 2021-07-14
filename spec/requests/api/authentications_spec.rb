@@ -121,7 +121,7 @@ RSpec.describe 'Authentications', type: :request do
 
     context 'when the token is valid' do
       let(:token) { json_response[:user][:token] }
-      let(:user) { create(:user, attributes) }
+      let(:user) { create(:user, :client_user) }
       before do
         login_with_api(user)
         get_me
