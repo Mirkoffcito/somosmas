@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     get 'users/:id', to: 'users#show'
     patch 'users/:id', to: 'users#update'
     get 'users', to: 'users#index'
+    get 'auth/me', to: 'users#show'
     delete 'users/:id', to: 'users#destroy'
     patch 'organization/public', to: 'organizations#update'
     get 'backoffice/contacts', to: 'contacts#index'
