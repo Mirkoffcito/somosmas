@@ -20,6 +20,7 @@ RSpec.describe 'Users', type: :request do
 
     context 'when users is logged' do
       subject { get '/api/users', headers: @headers }
+      User.skip_callback(:create, :after, :send_mail)
       let!(:users) { create_list(:user, 8) }
 
       context 'when user is admin' do
@@ -50,16 +51,33 @@ RSpec.describe 'Users', type: :request do
         before do
           login_with_api(@client_user)
           @headers = { 'Authorization' => json_response[:user][:token] }
+          @json_response = nil
+          subject
         end
 
-        it 'returns an error message' do
-          subject
-          expect(response.body).to include('You are not an administrator')
+        it 'returns a HTTP STATUS 200' do
+          expect(response).to have_http_status(:ok)
         end
 
-        it 'returns a status unauthorized' do
-          subject
-          expect(response).to have_http_status(:unauthorized)
+        it 'returns an array' do
+          expect(response).to respond_to(:to_a)
+        end
+
+        it 'returns a list of users' do
+          expect(users).to all(be_instance_of User)
+        end
+
+        it 'returns a list of all users' do
+          expect(users.length).to eq(8)
+        end
+
+        it 'returns only id, first name and last name of each user' do
+          json_response[:users].each do |user|
+            expect(user).to have_key(:id)
+            expect(user).to have_key(:first_name)
+            expect(user).to have_key(:last_name)
+            expect(user).not_to have_key(:email)
+          end
         end
       end
     end

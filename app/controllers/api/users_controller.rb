@@ -2,12 +2,15 @@
 
 module Api
   class UsersController < ApplicationController
-    skip_before_action :authenticate_admin, except: :index
+    skip_before_action :authenticate_admin
 
     def index
       @users = User.all
-
-      paginate @users, per_page: 5, each_serializer: UserSerializer
+      if @current_user.role.admin?
+        paginate @users, per_page: 10, each_serializer: UserSerializer
+      else
+        paginate @users, per_page: 10, each_serializer: UserClientIndexSerializer
+      end
     end
 
     def show

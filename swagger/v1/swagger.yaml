@@ -953,6 +953,89 @@ paths:
           description: unauthorized status if not have a token or are a client user
         '404':
           description: 'not found status if testimonial do not exist '
+  "/api/users":
+    get:
+      summary: returns all users
+      tags:
+      - Users
+      security:
+      - bearer_auth: {}
+      responses:
+        '200 ':
+          description: show all users as Admin
+          content:
+            application/json:
+              example:
+                users:
+                - id: 1
+                  first_name: Guido
+                  last_name: Medina
+                  email: guido@gmail.com
+                  role:
+                    id: 1
+                    name: admin
+                    description: 'null'
+                  image: myprofileimage.com/image.jpg
+                - id: 2
+                  first_name: Antonio
+                  last_name: Porchia
+                  email: antonio@gmail.com
+                  role:
+                    id: 1
+                    name: client
+                    description: 'null'
+                  image: myprofileimage.com/image.jpg
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        first_name:
+                          type: string
+                        last_name:
+                          type: string
+                        role:
+                          type: object
+                          items:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            description:
+                              type: string
+                        image:
+                          type: string
+        '200':
+          description: show all users as Client
+          content:
+            application/json:
+              example:
+                users:
+                - id: 1
+                  first_name: Guido
+                  last_name: Medina
+                - id: 2
+                  first_name: Antonio
+                  last_name: Porchia
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        first_name:
+                          type: string
+                        last_name:
+                          type: string
+        '401':
+          description: Not a logged in user
 servers:
 - url: http://localhost:3000
 components:
