@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_15_144221) do
+ActiveRecord::Schema.define(version: 2021_07_14_001149) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,13 @@ ActiveRecord::Schema.define(version: 2021_06_15_144221) do
     t.index ["deleted_at"], name: "index_categories_on_deleted_at"
   end
 
+  create_table "chats", force: :cascade do |t|
+    t.integer "user1"
+    t.integer "user2"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "comments", force: :cascade do |t|
     t.text "content"
     t.bigint "user_id", null: false
@@ -81,6 +88,14 @@ ActiveRecord::Schema.define(version: 2021_06_15_144221) do
     t.string "linkedin_url"
     t.string "description"
     t.datetime "deleted_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer "user_id"
+    t.text "detail"
+    t.boolean "modified"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

@@ -9,6 +9,8 @@ class User < ApplicationRecord
 
   belongs_to :role, optional: true
 
+  has_many :messages, through: :chat
+
   has_secure_password
 
   validates :first_name, presence: true
