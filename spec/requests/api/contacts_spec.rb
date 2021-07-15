@@ -200,19 +200,21 @@ RSpec.describe "Contacts", type: :request do
       end 
 
       context 'when it`s the owner' do
-
+        let!(:user) { create(:user, :client_user) }
         before do
           login_with_api(user)
           token
-          @json_response = nil
           get_my_contacts
-         
+          @json_response =  nil
         end 
-      
-        it 'validates that the current user is the contacts owner' do 
-          attributes[:user_id] = current_user.id
-          # expect(json_response[:contacts][user_id]).to eq(:user.id)
-        end
+       
+             let (:contact) {Contact.find(id).user_id}
+            # let (:contacts) {json_response[:contacts]}
+            # contacts.each do |contact|  
+            it 'validates that the current user is the contacts owner' do   
+              contact.user_id == current_user.id
+                  end
+                # end
 
         context "when table is empty" do
 
@@ -224,17 +226,18 @@ RSpec.describe "Contacts", type: :request do
             expect(json_response[:contacts]).to eq([])
           end
         end 
-      end
-      context "when table is not empty" do
-         before { create_list(:contact, 4)}
-        
-        it 'return the number of the contacts in my array' do 
-          expect(json_response[:contacts].count).to eq(4)
+      
+        context "when table is not empty" do
+            before { create_list(:contact, 4)}
+          
+          it 'return the number of the contacts in my array' do 
+            expect(json_response[:contacts].count).to eq(4)
+          end 
+          it 'returns a HTTP STATUS 200' do     
+            expect(response).to have_http_status(:ok)
+          end
         end 
-        it 'returns a HTTP STATUS 200' do     
-          expect(response).to have_http_status(:ok)
-        end
-      end 
+      end
     end
   end 
 end
