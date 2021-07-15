@@ -3,9 +3,34 @@ require 'swagger_helper'
 RSpec.describe '../integration/api/news', type: :request do
 
   describe 'News API' do
-  
+    
     path '/api/news' do
-
+      
+      get 'Get all news' do
+        tags 'New'
+        consumes 'application/json'
+        produces 'application/json'
+      
+        response '200', 'List of news' do
+          schema type: :object,
+            properties: {
+                news: {
+                  type: :array,
+                  items:{
+                    properties: {
+                      id: { type: :integer },
+                      name: { type: :string },
+                      content: { type: :text },
+                      category_id: { type: :integer }
+                    }
+                  }
+                }
+            }
+          run_test!
+        end
+      end
+    
+      
       post 'Creates a new' do
     
         tags 'New'
@@ -49,35 +74,11 @@ RSpec.describe '../integration/api/news', type: :request do
           run_test!
         end
 
-        response '401', 'unauthorized' do
+        response '401', 'Unauthorized' do
           run_test!
         end
     
-        response '422', 'invalid request' do
-          run_test!
-        end
-      end
-
-      get 'Get all news' do
-        tags 'New'
-        consumes 'application/json'
-        produces 'application/json'
-
-        response '200', 'list of news' do
-          schema type: :object,
-            properties: {
-                news: {
-                  type: :array,
-                  items:{
-                    properties: {
-                      id: { type: :integer },
-                      name: { type: :string },
-                      content: { type: :text },
-                      category_id: { type: :integer }
-                    }
-                  }
-                }
-            }
+        response '422', 'Invalid request' do
           run_test!
         end
       end
@@ -86,7 +87,7 @@ RSpec.describe '../integration/api/news', type: :request do
     path '/api/news/{id}' do
 
       put 'Updates a new' do
-        tags 'News'
+        tags 'New'
         security [Bearer: {}]
         produces 'application/json'
         consumes 'application/json'
@@ -102,7 +103,7 @@ RSpec.describe '../integration/api/news', type: :request do
           }
         }
 
-        response '200', 'updated successfully' do
+        response '200', 'Updated successfully' do
           schema type: :object,
             properties: {
               new: {
@@ -120,41 +121,75 @@ RSpec.describe '../integration/api/news', type: :request do
           run_test!
         end
 
-        response '401', 'unauthorized' do
+        response '401', 'Unauthorized' do
           run_test!
         end
     
-        response '422', 'invalid request' do
+        response '422', 'Invalid request' do
           run_test!
         end
 
-        response '404', 'not found'do
+        response '404', 'Not found'do
           run_test!
         end
       end
 
       delete 'Delete a new' do
-        tags 'News'
+        tags 'New'
         security [Bearer: {}]
         produces 'application/json'
         consumes 'application/json'
         parameter name: :Authorization, in: :header, type: :string
         parameter name: :id, in: :path, type: :string
 
-        response '200', 'deleted successfully' do
+        response '200', 'Deleted successfully' do
           run_test!
         end
 
-        response '401', 'unauthorized' do
+        response '401', 'Unauthorized' do
           run_test!
         end
         
-        response '404', 'not found'do
+        response '404', 'Not found'do
           run_test!
         end
+      end
+    end
 
+    path '/api/news/:id/comments' do
+      
+      get 'Get all comments of a new' do
+        tags 'New'
+        consumes 'application/json'
+        produces 'application/json'
+      
+        response '200', 'List of comments of a new' do
+          schema type: :object,
+            properties: {
+                news: {
+                  type: :array,
+                  items:{
+                    properties: {
+                      id: { type: :integer },
+                      name: { type: :string },
+                      content: { type: :text },
+                      category_id: { type: :integer },
+                      comments: {
+                        type: :object, items:
+                        {
+                          properties: {
+                            id: { type: :integer },
+                            content: { type: :string }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+            }
+          run_test!
+        end
       end
     end
   end
-  
 end

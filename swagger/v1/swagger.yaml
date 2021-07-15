@@ -796,6 +796,30 @@ paths:
         '404':
           description: not found
   "/api/news":
+    get:
+      summary: Get all news
+      tags:
+      - New
+      responses:
+        '200':
+          description: List of news
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  news:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: text
+                        category_id:
+                          type: integer
     post:
       summary: Creates a new
       tags:
@@ -828,9 +852,9 @@ paths:
                         category_id:
                           type: integer
         '401':
-          description: unauthorized
+          description: Unauthorized
         '422':
-          description: invalid request
+          description: Invalid request
       requestBody:
         content:
           application/json:
@@ -851,35 +875,11 @@ paths:
                         type: integer
               required:
               - name
-    get:
-      summary: Get all news
-      tags:
-      - New
-      responses:
-        '200':
-          description: list of news
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  news:
-                    type: array
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        content:
-                          type: text
-                        category_id:
-                          type: integer
   "/api/news/{id}":
     put:
       summary: Updates a new
       tags:
-      - News
+      - New
       security:
       - Bearer: {}
       parameters:
@@ -894,7 +894,7 @@ paths:
           type: string
       responses:
         '200':
-          description: updated successfully
+          description: Updated successfully
           content:
             application/json:
               schema:
@@ -913,11 +913,11 @@ paths:
                         category_id:
                           type: integer
         '401':
-          description: unauthorized
+          description: Unauthorized
         '422':
-          description: invalid request
+          description: Invalid request
         '404':
-          description: not found
+          description: Not found
       requestBody:
         content:
           application/json:
@@ -935,7 +935,7 @@ paths:
     delete:
       summary: Delete a new
       tags:
-      - News
+      - New
       security:
       - Bearer: {}
       parameters:
@@ -950,11 +950,44 @@ paths:
           type: string
       responses:
         '200':
-          description: deleted successfully
+          description: Deleted successfully
         '401':
-          description: unauthorized
+          description: Unauthorized
         '404':
-          description: not found
+          description: Not found
+  "/api/news/:id/comments":
+    get:
+      summary: Get all comments of a new
+      tags:
+      - New
+      responses:
+        '200':
+          description: List of comments of a new
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  news:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: text
+                        category_id:
+                          type: integer
+                        comments:
+                          type: object
+                          items:
+                            properties:
+                              id:
+                                type: integer
+                              content:
+                                type: string
   "/api/organization/public":
     get:
       summary: Gets an Organization
