@@ -795,6 +795,166 @@ paths:
           description: unauthorized
         '404':
           description: not found
+  "/api/news":
+    post:
+      summary: Creates a new
+      tags:
+      - New
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '201':
+          description: New created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new:
+                    type: object
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: text
+                        category_id:
+                          type: integer
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                new:
+                  type: object
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      content:
+                        type: text
+                      category_id:
+                        type: integer
+              required:
+              - name
+    get:
+      summary: Get all news
+      tags:
+      - New
+      responses:
+        '200':
+          description: list of news
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  news:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: text
+                        category_id:
+                          type: integer
+  "/api/news/{id}":
+    put:
+      summary: Updates a new
+      tags:
+      - News
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new:
+                    type: object
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: text
+                        category_id:
+                          type: integer
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+        '404':
+          description: not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                content:
+                  type: text
+                category_id:
+                  type: integer
+    delete:
+      summary: Delete a new
+      tags:
+      - News
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: deleted successfully
+        '401':
+          description: unauthorized
+        '404':
+          description: not found
   "/api/organization/public":
     get:
       summary: Gets an Organization
@@ -972,7 +1132,7 @@ paths:
           type: string
       responses:
         '200':
-          description: show user details when admin
+          description: show user details
           content:
             application/json:
               schema:
