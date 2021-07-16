@@ -101,8 +101,8 @@ ActiveRecord::Schema.define(version: 2021_07_16_174854) do
   end
 
   create_table "messages", force: :cascade do |t|
-    t.text "detail"
-    t.boolean "modified"
+    t.text "detail", null: false
+    t.boolean "modified", default: false
     t.bigint "user_id", null: false
     t.bigint "chat_id", null: false
     t.datetime "deleted_at"
