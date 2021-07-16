@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_15_174914) do
+ActiveRecord::Schema.define(version: 2021_07_16_174854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,9 +51,16 @@ ActiveRecord::Schema.define(version: 2021_07_15_174914) do
     t.index ["deleted_at"], name: "index_categories_on_deleted_at"
   end
 
+  create_table "chat_users", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "chat_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["chat_id"], name: "index_chat_users_on_chat_id"
+    t.index ["user_id"], name: "index_chat_users_on_user_id"
+  end
+
   create_table "chats", force: :cascade do |t|
-    t.integer "user1_id", null: false
-    t.integer "user2_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -96,8 +103,8 @@ ActiveRecord::Schema.define(version: 2021_07_15_174914) do
   create_table "messages", force: :cascade do |t|
     t.text "detail", null: false
     t.boolean "modified", default: false
-    t.bigint "chat_id", null: false
     t.bigint "user_id", null: false
+    t.bigint "chat_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -168,6 +175,8 @@ ActiveRecord::Schema.define(version: 2021_07_15_174914) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "chat_users", "chats"
+  add_foreign_key "chat_users", "users"
   add_foreign_key "comments", "news", column: "new_id"
   add_foreign_key "comments", "users"
   add_foreign_key "contacts", "users"
