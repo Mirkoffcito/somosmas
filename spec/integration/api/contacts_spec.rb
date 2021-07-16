@@ -36,8 +36,10 @@ RSpec.describe '../integration/api/contacts', type: :request do
             end
         end
     end
+
+    path '/api/contacts' do
       post 'Creates an contact' do
-        tags ' Activities'
+        tags ' Contacts '
         security [bearer_auth:{}]
         consumes 'application/json'
         produces 'application/json'
@@ -83,6 +85,7 @@ RSpec.describe '../integration/api/contacts', type: :request do
         end
       end
 
+    path '/api/my_contacts' do
     get 'Lists my contacts' do
         tags ' Contacts '
         produces 'application/json'
@@ -99,7 +102,6 @@ RSpec.describe '../integration/api/contacts', type: :request do
                     message: { type: :string },
                     created_at: { type: :string }
                   },
-                  required: %w[id name message created_at]
                 }
               }
             }
