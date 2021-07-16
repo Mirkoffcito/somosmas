@@ -5,5 +5,7 @@ class Message < ApplicationRecord
 
   belongs_to :chat
   belongs_to :user
-  validates :user_id, :detail, presence: true
+
+  validates_presence_of :detail, :chat_id, :user_id
+
 end
