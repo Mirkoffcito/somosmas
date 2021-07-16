@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     get 'backoffice/contacts', to: 'contacts#index'
     get 'my_contacts', to: 'contacts#my_contacts'
     get 'news/:id/comments', to: 'news#list_comment_news'
+    post 'chats/:id/messages', to: 'messages#create'
 
     resources :news, only: [:show, :destroy, :create, :update, :index]
     resources :slides, only: [:index, :update, :destroy, :show, :create]
@@ -24,6 +25,7 @@ Rails.application.routes.draw do
     resources :testimonials, only: [:create, :update, :destroy, :index]
     resources :members, only: [:index, :destroy, :create, :update]
     resources :comments, only: [:index, :create, :update, :destroy]
+    resources :messages, only: :create
     
   end
 

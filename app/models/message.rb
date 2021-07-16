@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Messages < ApplicationRecord
+class Message < ApplicationRecord
   acts_as_paranoid
 
   belongs_to :chat
