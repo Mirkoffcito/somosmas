@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Slides', type: :request do
-  let!(:attributes) { attributes_for :slide }
-  let!(:organization) { create(:organization) }
+  let(:attributes) { attributes_for :slide }
+  let(:organization) { create(:organization) }
 
   describe 'GET api/slides' do
     subject(:get_slides) { get '/api/slides' }
@@ -98,35 +98,33 @@ RSpec.describe 'Slides', type: :request do
         token
         @json_response = nil
       end
-      
-      context 'when create a slide' do
-        context 'with valid params' do
-          before do |example|
-            attributes[:organization_id] = organization.id
-            creates_slide unless example.metadata[:skip_before]
-          end
-          it 'adds 1 slide to the database', :skip_before do
-            expect { creates_slide }.to change(Slide, :count).by(1)
-          end
-          it 'returns a HTTP STATUS 201' do
-            expect(response).to have_http_status(:created)
-          end
-        end
 
-        context 'with invalid organization' do
-          before do |example|
-            attributes[:organization_id] = 2
-            creates_slide unless example.metadata[:skip_before]
-          end
-          it 'does not add a slide to the database', :skip_before do
-            expect { creates_slide }.not_to change(Slide, :count)
-          end
-          it 'returns HTTP STATUS 422' do
-            expect(response).to have_http_status(:unprocessable_entity)
-          end
-          it 'returns a message error' do
-            expect(json_response[:comment]).to eq(nil)
-          end
+      context 'with valid params' do
+        before do |example|
+          attributes[:organization_id] = organization.id
+          creates_slide unless example.metadata[:skip_before]
+        end
+        it 'adds 1 slide to the database', :skip_before do
+          expect { creates_slide }.to change(Slide, :count).by(1)
+        end
+        it 'returns a HTTP STATUS 201' do
+          expect(response).to have_http_status(:created)
+        end
+      end
+
+      context 'with invalid organization' do
+        before do |example|
+          attributes[:organization_id] = 2
+          creates_slide unless example.metadata[:skip_before]
+        end
+        it 'does not add a slide to the database', :skip_before do
+          expect { creates_slide }.not_to change(Slide, :count)
+        end
+        it 'returns HTTP STATUS 422' do
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+        it 'returns a message error' do
+          expect(json_response[:comment]).to eq(nil)
         end
       end
     end
