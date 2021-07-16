@@ -2,8 +2,8 @@ class ChatsController < ApplicationController
 
 
     def index
-        @contacts = @current_user.chats
-        paginate @testimonials, per_page: 10, each_serializer: TestimonialSerializer
+        @chats = @current_user.chats
+        paginate @chats, per_page: 10, each_serializer: ChatsSerializer
       end
 
 end
