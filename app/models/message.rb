@@ -15,15 +15,12 @@ class Message < ApplicationRecord
 
   def profanity
     test = self.detail.split(/([\-,.¿?!¡ ])/)
+    byebug
     profanities = Profanity.all
     test.each_with_index do |pal, i|
       profanities.each do |str|
         if str.word.in? pal.downcase
-          if pal.last.blank?
-            test[i] = "#{generate_string(pal.length)} "
-          else
-            test[i] = generate_string(pal.length) # reemplaza la palabra con un string
-          end
+          test[i] = generate_string(pal.length) # reemplaza la palabra con un string
         end
       end
     end
