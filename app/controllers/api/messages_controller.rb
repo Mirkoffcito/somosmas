@@ -18,7 +18,6 @@ module Api
 
     def chat 
       @chat ||= Chat.find(params[:id])
-      #rescue ActiveRecord::RecordNotFound => e
     end
 
     def message_params
