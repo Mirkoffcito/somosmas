@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe Message, type: :model do
   describe 'Creating message' do
     let(:chat) { create(:chat) }
-    let(:user1) { create(:chat_user, :with_user, chat_id:chat.id) }
-    let(:user2) { create(:chat_user, :with_user, chat_id:chat.id) }
+    let(:user1) { create(:chat_user, :with_admin_user, chat_id:chat.id) }
+    let(:user2) { create(:chat_user, :with_admin_user, chat_id:chat.id) }
     let(:profanities) { ['boludo', 'tonto', 'bobo', 'tarado'] }
     context 'message contains profanities' do
       before do

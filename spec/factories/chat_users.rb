@@ -3,8 +3,8 @@ FactoryBot.define do
     user_id {}
     chat_id {}
 
-    trait :with_user do
-      association :user, factory: :user
+    trait :with_admin_user do
+      association :user, factory: [:user, :admin_user]
       chat_id {}
     end
   end
