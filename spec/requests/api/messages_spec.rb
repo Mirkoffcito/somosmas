@@ -55,7 +55,7 @@ RSpec.describe 'Messages', type: :request do
       context 'when message exists' do
         let(:id) { message.id }
         
-        context 'when belongs to him' do
+        context 'when belongs to current user' do
          before do
           login_with_api(user)
           token
@@ -74,7 +74,7 @@ RSpec.describe 'Messages', type: :request do
           end
         end
   
-        context 'when not belongs to him' do
+        context 'when not belongs to current user' do
           let(:token) { 'random_token' }
           before do
             login_with_api(user)
