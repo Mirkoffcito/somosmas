@@ -603,7 +603,7 @@ paths:
       tags:
       - Members
       security:
-      - Bearer: {}
+      - bearer_auth: {}
       parameters:
       - name: Authorization
         in: header
@@ -707,7 +707,7 @@ paths:
       tags:
       - Members
       security:
-      - Bearer: {}
+      - bearer_auth: {}
       parameters:
       - name: Authorization
         in: header
@@ -777,7 +777,7 @@ paths:
       tags:
       - Members
       security:
-      - Bearer: {}
+      - bearer_auth: {}
       parameters:
       - name: Authorization
         in: header
@@ -795,6 +795,60 @@ paths:
           description: unauthorized
         '404':
           description: not found
+  "/api/chats/{id}/messages":
+    post:
+      summary: Sent a message
+      tags:
+      - Messages
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '201':
+          description: message created
+          content:
+            application/json:
+              schema:
+                typ: object
+                properties:
+                  message:
+                    type: object
+                    items:
+                      id:
+                        type: integer
+                      detail:
+                        type: string
+        '401':
+          description: aunauthorized
+        '422':
+          description: invalid request
+        '400':
+          description: bad request
+        '404':
+          description: chat not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: object
+                  items:
+                    properties:
+                      detail:
+                        type: string
+              required:
+              - detail
   "/api/news":
     get:
       summary: Get all news
