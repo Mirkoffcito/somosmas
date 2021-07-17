@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     get 'my_contacts', to: 'contacts#my_contacts'
     get 'news/:id/comments', to: 'news#list_comment_news'
 
+    resources :messages, only: [:show]
     resources :news, only: [:show, :destroy, :create, :update, :index]
     resources :slides, only: [:index, :update, :destroy, :show, :create]
     resources :categories, only: [:index, :create, :update, :destroy, :show]
