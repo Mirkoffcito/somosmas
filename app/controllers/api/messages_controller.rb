@@ -23,7 +23,5 @@ module Api
     def message_params
       params.require(:message).permit(:detail)
     end
-    
-  
   end
 end
