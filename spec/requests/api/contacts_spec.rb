@@ -176,71 +176,77 @@ RSpec.describe "Contacts", type: :request do
   end
 
   describe "GET /my_contacts" do
-    let(:new_contact) {create(:contact, attributes)}
+    # let(:new_contact) {create(:contact, attributes)}
 
-      subject(:get_my_contacts) do
-        get '/api/my_contacts' ,
-        headers: { 'Authorization': token }
+    subject(:get_my_contacts) do
+      get '/api/my_contacts' ,
+      headers: { 'Authorization': token }
+    end
+  
+    context "when user is not logged in" do
+
+      let(:user) { create(:user, :client_user) }
+      let(:token) { '' }
+      before do
+        login_with_api(user)
+        get_my_contacts
+      end    
+      it 'returns a unauthorized error' do  
+        expect(response).to have_http_status(:unauthorized)
       end
-    
-      context "when user is not looged in" do
+    end 
 
+    context "when the user is logged in" do
 
-        let(:user) { create(:user, :client_user) }
-        let(:token) { '' }
+      let(:user) { create(:user, :client_user) }
+      # let(:user_2) { create(:user, :client_user) }
+      let(:token) { json_response[:user][:token] } # gets the token
+      let(:decoded) { JsonWebToken.decode(token) } # decodes it
+      let(:current_user) { User.find(decoded[:user_id]) } # findes the user from the token
+      # let(:contacts) { create_list(:contact, 3, name: 'User name', message: 'User message', email:'user@mail', user_id: user.id) }
+      byebug
+      context 'when it`s the owner' do
         before do
           login_with_api(user)
-          get_my_contacts
-        end    
-        it 'returns a unauthorized error' do  
-          expect(response).to have_http_status(:unauthorized)
-        end
-      end 
-
-      context "when the user is logged in" do
-        let(:user) { create(:user, :client_user) }
-        let(:token) { json_response[:user][:token] } # gets the token
-        let(:decoded) { JsonWebToken.decode(token) } # decodes it
-        let(:current_user) { User.find(decoded[:user_id]) } # findes the user from the token
-
-        context 'when it`s the owner' do
-          let!(:user) { create(:user, :client_user) }
-          before do
-            login_with_api(user)
-            token
-            get_my_contacts
-            @json_response =  nil
+          token
+          json_response = nil
+          create_list(:contact, 3, name: 'User 2 name', message: 'Message 2', email:'user_2@mail', user_id: user_2.id)
         end 
-       
-        let! (:contacts) {Contact.all.select(contact.user_id == user.id)}
-        
-        it 'validates that the current user is the contacts owner' do  
-          contacts.each do |contact|  
-          contact.user_id == current_user.id
-              end
+    
+        it 'validates that the current user is the contacts owner' do 
+        # expect(json_response[:members]).to all(have_key(:description))
+          expect(json_response[:contacts][:user_id]).to all(eq(current_user.id))
+          byebug
         end
 
-        context "when table is empty" do
 
+     
+        context "when the table is empty" do
+        before { get_my_contacts }
           it 'returns a HTTP STATUS 200' do
             expect(response).to have_http_status(:ok)
           end
-
+  
           it 'returns an empty array' do
             expect(json_response[:contacts]).to eq([])
           end
-        end 
-      
-        context "when table is not empty" do
-            before { create_list(:contact, 4)}
-          
-          it 'return the number of the contacts in my array' do 
-            expect(json_response[:contacts].count).to eq(4)
-          end 
-          it 'returns a HTTP STATUS 200' do     
+        end
+
+        context 'when table is not empty' do
+          before do 
+            login_with_api(user)
+            token
+            json_response = nil
+            create_list(:contact, 3, name: 'Name', message: 'Message', email:'mail@mail', user_id: user.id)
+            get_my_contacts
+          end
+          it 'returns a HTTP STATUS 200' do
             expect(response).to have_http_status(:ok)
           end
-        end 
+          it 'returns all contacts' do
+            expect(json_response[:contacts].length).to eq(3)
+          end
+        end
       end
     end
   end 
