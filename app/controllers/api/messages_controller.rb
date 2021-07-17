@@ -8,7 +8,7 @@ module Api
       @message = chat.messages.new(message_params)
       @message.user_id = @current_user.id
       if @message.save
-        render json: @message, status: :created
+        render json: @message, serializer: MessageSerializer, status: :created
       else
         render json: @message.errors, status: :bad_request
       end
