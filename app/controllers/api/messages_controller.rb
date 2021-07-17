@@ -2,7 +2,7 @@
 
 module Api
   class MessagesController < ApplicationController
-    skip_before_action :authenticate_admin, only: :create
+    skip_before_action :authenticate_admin, only: [:show, :create]
 
     def show
       render json: message, serializer: MessageSerializer, status: :ok
