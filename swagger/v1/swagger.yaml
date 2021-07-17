@@ -795,6 +795,47 @@ paths:
           description: unauthorized
         '404':
           description: not found
+  "/api/messages/{id}":
+    get:
+      summary: Get a message details
+      tags:
+      - Messages
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: object
+                    items:
+                      id:
+                        type: integer
+                      detail:
+                        type: string
+                      chat:
+                        type: object
+                        items:
+                          id:
+                            type: integer
+        '404':
+          description: message not found
+        '401':
+          description: unauthorized
   "/api/chats/{id}/messages":
     post:
       summary: Sent a message
@@ -818,7 +859,7 @@ paths:
           content:
             application/json:
               schema:
-                typ: object
+                type: object
                 properties:
                   message:
                     type: object
@@ -828,7 +869,7 @@ paths:
                       detail:
                         type: string
         '401':
-          description: aunauthorized
+          description: unauthorized
         '422':
           description: invalid request
         '400':

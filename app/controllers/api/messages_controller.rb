@@ -2,7 +2,11 @@
 
 module Api
   class MessagesController < ApplicationController
-    skip_before_action :authenticate_admin, only: :create
+    skip_before_action :authenticate_admin, only: [:show, :create]
+
+    def show
+      render json: message, serializer: MessageSerializer, status: :ok
+    end
 
     def create
       @message = chat.messages.new(message_params)
@@ -15,6 +19,10 @@ module Api
     end
 
     private
+
+    def message
+      @message ||= @current_user.messages.find(params[:id])
+    end
 
     def chat 
       @chat ||= Chat.find(params[:id])

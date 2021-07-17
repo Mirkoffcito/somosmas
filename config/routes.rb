@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     get 'news/:id/comments', to: 'news#list_comment_news'
     post 'chats/:id/messages', to: 'messages#create'
 
+    resources :messages, only: [:show]
     resources :news, only: [:show, :destroy, :create, :update, :index]
     resources :slides, only: [:index, :update, :destroy, :show, :create]
     resources :categories, only: [:index, :create, :update, :destroy, :show]
