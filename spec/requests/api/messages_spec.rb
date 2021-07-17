@@ -29,27 +29,48 @@ RSpec.describe 'Messages', type: :request do
     end
 
     context 'when user is logged' do
+
       let(:user) { create(:user, :client_user) }
       let(:token) { json_response[:user][:token] }
       let(:chat) { create(:chat) }
       let!(:chat_user) { create(:chat_user, user_id: user.id, chat_id: chat.id) }
-      before do |example|
-        login_with_api(user)
-        token
-        @id = chat.id
-        @json_response = nil
-        create_message unless example.metadata[:skip_before]
-      end
-      
-      it 'adds 1 message to the database', :skip_before do
-        expect { create_message }.to change(Message, :count).by(1)
+
+      context 'when chat exists' do
+        before do |example|
+          login_with_api(user)
+          token
+          @id = chat.id
+          @json_response = nil
+          create_message unless example.metadata[:skip_before]
+        end
+        
+        it 'adds 1 message to the database', :skip_before do
+          expect { create_message }.to change(Message, :count).by(1)
+        end
+  
+        it 'returns a HTTP STATUS 201' do
+          expect(response).to have_http_status(:created)
+        end
       end
 
-      it 'returns a HTTP STATUS 201' do
-        expect(response).to have_http_status(:created)
+      context 'when chat does not exist' do
+        before do |example|
+          login_with_api(user)
+          token
+          @id = 99
+          @json_response = nil
+          create_message unless example.metadata[:skip_before]
+        end
+        
+        it 'returns a HTTP STATUS 404' do
+          expect(response).to have_http_status(:not_found)
+        end
+
+        it 'keeps database the same', :skip_before do
+          expect { create_message }.to change(Message, :count).by(0)
+        end
+        
       end
     end
-    
-    
   end
 end
