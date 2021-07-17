@@ -1,0 +1,2 @@
+class Profanity < ApplicationRecord
+end

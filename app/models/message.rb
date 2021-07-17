@@ -3,4 +3,30 @@ class Message < ApplicationRecord
 
   belongs_to :user
   belongs_to :chat
+
+  before_save :profanity
+
+  private
+  
+  def generate_string(number)
+    charset = ['&','%','$','#','*']
+    Array.new(number) { charset.sample }.join
+  end
+
+  def profanity
+    test = self.detail.split(/([\-,.¿?!¡ ])/)
+    profanities = Profanity.all
+    test.each_with_index do |pal, i|
+      profanities.each do |str|
+        if str.word.in? pal.downcase
+          if pal.last.blank?
+            test[i] = "#{generate_string(pal.length)} "
+          else
+            test[i] = generate_string(pal.length) # reemplaza la palabra con un string
+          end
+        end
+      end
+    end
+    self.detail = test.join # genera el nuevo string
+  end
 end

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :chat_user do
-    user { nil }
-    chat { nil }
+    association :user, factory: :user
+    chat_id {}
   end
 end
