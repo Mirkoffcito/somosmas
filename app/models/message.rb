@@ -15,7 +15,6 @@ class Message < ApplicationRecord
 
   def profanity
     test = self.detail.split(/([\-,.¿?!¡ ])/)
-    byebug
     profanities = Profanity.all
     test.each_with_index do |pal, i|
       profanities.each do |str|
