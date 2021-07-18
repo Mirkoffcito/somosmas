@@ -20,8 +20,8 @@ module Api
 
     def update
       @message = @current_user.messages.where(chat_id: params[:id]).last
-      if message.update(message_params)
-        message.modified = 'TRUE'
+      if message.update(message_update_params)
+        @message.update(modified: true)
         render json: message, serializer: MessageSerializer, status: :ok
       end
     end
@@ -37,6 +37,10 @@ module Api
     end
 
     def message_params
+      params.require(:message).permit(:detail)
+    end
+
+    def message_update_params
       params.require(:message).permit(:detail)
     end
   end
