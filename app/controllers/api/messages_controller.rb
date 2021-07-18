@@ -2,7 +2,7 @@
 
 module Api
   class MessagesController < ApplicationController
-    skip_before_action :authenticate_admin, only: [:show, :create]
+    skip_before_action :authenticate_admin, only: [:show, :create, :update]
 
     def show
       render json: message, serializer: MessageSerializer, status: :ok
@@ -15,6 +15,14 @@ module Api
         render json: @message, serializer: MessageSerializer, status: :created
       else
         render json: @message.errors, status: :bad_request
+      end
+    end
+
+    def update
+      @message = @current_user.messages.where(chat_id: params[:id]).last
+      if message.update(message_params)
+        message.modified = 'TRUE'
+        render json: message, serializer: MessageSerializer, status: :ok
       end
     end
 
