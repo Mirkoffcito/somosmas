@@ -8,33 +8,32 @@ RSpec.describe '../integration/api/contacts', type: :request do
   describe 'Contacts' do
     path '/api/backoffice/contacts' do
 
-        get 'Lists all contacts' do
-            tags ' Contacts'
-            produces 'application/json'
-            parameter name: :Authorization, in: :header, type: :string
-            response '200', 'lists contacts' do
-            schema type: :object,
-                properties: {
-                contacts: {
-                    type: :array,
-                    items: {
-                    properties: {
-                        id: { type: :integer },
-                        name: { type: :string },
-                        message: { type: :string },
-                        created_at: { type: :string }
-                    },
-                    required: %w[id name content]
-                    }
-                }
-                }
-            run_test!
-            end
-
-            response '401', 'unauthorized' do
-                run_test!
-            end
+      get 'Lists all contacts' do
+        tags ' Contacts'
+        produces 'application/json'
+        parameter name: :Authorization, in: :header, type: :string
+        response '200', 'lists contacts' do
+        schema type: :object,
+          properties: {
+          contacts: {
+            type: :array,
+            items: {
+            properties: {
+              id: { type: :integer },
+              name: { type: :string },
+              message: { type: :string },
+              created_at: { type: :string }
+          },
+            }
+          }
+          }
+        run_test!
         end
+
+          response '401', 'unauthorized' do
+              run_test!
+          end
+      end
     end
 
     path '/api/contacts' do
@@ -55,7 +54,7 @@ RSpec.describe '../integration/api/contacts', type: :request do
                 message: { type: :string }
               },
               required: %w[id name message created_at]
-            }
+          }
           }
         }
 
@@ -69,7 +68,7 @@ RSpec.describe '../integration/api/contacts', type: :request do
                   name: { type: :string },
                   message: { type: :string },
                   user_id { type: :integer }
-          
+        
                 },
               }
             }
@@ -84,9 +83,9 @@ RSpec.describe '../integration/api/contacts', type: :request do
           run_test!
         end
       end
-
+    end 
     path '/api/my_contacts' do
-    get 'Lists my contacts' do
+      get 'Lists my contacts' do
         tags ' Contacts '
         produces 'application/json'
         parameter name: :Authorization, in: :header, type: :string
@@ -108,9 +107,9 @@ RSpec.describe '../integration/api/contacts', type: :request do
           run_test!
         end
 
-        response '401', 'unauthorized' do
-            run_test!
-        end
+      response '401', 'unauthorized' do
+        run_test!
+      end
     end
   end
 end
