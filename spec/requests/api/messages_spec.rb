@@ -164,4 +164,73 @@ RSpec.describe 'Messages', type: :request do
       end
     end
   end
+
+  describe "PUT /api/chats/:id/messages" do
+    let(:chat_user) { create(:chat_user, user_id: user.id) }
+    let(:message) { create(:message, chat_id: chat.id, user_id: user.id) }
+
+    subject(:update_message) do
+      patch "/api/chats/#{@id}/messages",
+        headers: { 'Authorization': token },
+        params: { message: attributes }
+    end
+
+    context "when user's not logged in" do
+      let(:token) { '' }
+      before do
+        @id = 1
+        update_message
+      end
+
+      it 'returns a HTTP STATUS 401' do
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'returns an error message' do
+        expect(json_response[:message]).to eq('Unauthorized access.')
+      end
+    end
+
+    context 'when user is logged' do
+
+      let(:user) { create(:user, :client_user) }
+      let(:token) { json_response[:user][:token] }
+      let(:chat) { create(:chat) }
+      let!(:chat_user) { create(:chat_user, user_id: user.id, chat_id: chat.id) }
+
+      context 'when chat does not exist' do
+        before do |example|
+          login_with_api(user)
+          token
+          @id = 99
+          @json_response = nil
+          update_message unless example.metadata[:skip_before]
+        end
+        
+        it 'returns a HTTP STATUS 404' do
+          expect(response).to have_http_status(:not_found)
+        end
+
+        it 'keeps database the same', :skip_before do
+          expect { update_message }.to change(Message, :count).by(0)
+        end
+      end
+
+      context 'when chat exists' do
+        let(:message) { create(:message, chat_id: chat.id, user_id: user.id) }
+        before do |example|
+          login_with_api(user)
+          token
+          @id = chat.id
+          @json_response = nil
+          attributes[:detail] = 'CONTENIDO NUEVO MENSAJE TEST'
+          update_message unless example.metadata[:skip_before]
+        end
+        
+        it 'returns a HTTP STATUS 200', :skip_before do
+          expect(response).to have_http_status(:ok)
+        end
+      end
+    end
+  end
 end

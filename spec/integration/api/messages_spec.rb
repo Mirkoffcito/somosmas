@@ -98,5 +98,58 @@ RSpec.describe '../integration/api/messages', type: :request do
         end
       end
     end
+
+    path '/api/chats/{id}/messages' do
+      put 'Updates a message' do
+        tags 'Messages'
+        consumes 'application/json'
+        produces 'application/json'
+        security [bearer_auth: {}]
+        parameter name: :Authorization, in: :header, type: :string
+        parameter name: :id, in: :path, type: :integer, required: true
+        parameter name: :message, in: :body, schema: {
+          type: :object,
+          properties: {
+            message: {
+              type: :object,
+              items: {
+                properties: {
+                  detail: { type: :string }
+                }
+              }
+            }
+          },
+          required: ['detail']
+        }
+
+        response '200', 'updated successfully' do
+          schema type: :object, properties: {
+            comment: {
+              type: :object,
+          properties: {
+            message: {
+              type: :object,
+              items: {
+                properties: {
+                  detail: { type: :string }
+                  }
+                }
+              }
+            },
+          required: ['detail']
+          }
+        }
+          run_test!
+        end
+
+        response '401', 'unauthorized' do
+          run_test!
+        end
+
+        response '404', 'not found' do
+          run_test!
+        end
+      end
+    end
   end
 end
