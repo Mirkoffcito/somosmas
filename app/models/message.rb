@@ -6,6 +6,8 @@ class Message < ApplicationRecord
 
   before_save :profanity
 
+  validates :detail, presence: true
+
   private
   
   def generate_string(number)

@@ -19,14 +19,18 @@ module Api
     end
 
     def update
-      @message = @current_user.messages.where(chat_id: params[:id]).last
-      if message.update(message_update_params)
-        @message.update(modified: true)
-        render json: message, serializer: MessageSerializer, status: :ok
-      end
+      @message = chat.messages.last
+      if @message.user_id == @current_user.id
+        if @message.update(message_update_params)
+          @message.update(modified: true)
+          render json: @message, serializer: MessageSerializer, status: :ok
+        end
+      else
+        render json: {error: 'You are not the message owner'}, status: :unauthorized
+      end 
     end
 
-    private
+   private
 
     def message
       @message ||= @current_user.messages.find(params[:id])

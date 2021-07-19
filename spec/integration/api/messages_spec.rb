@@ -142,6 +142,10 @@ RSpec.describe '../integration/api/messages', type: :request do
           run_test!
         end
 
+        response '400', 'Parameter is missing or its value is empty' do
+          run_test!
+        end
+
         response '401', 'unauthorized' do
           run_test!
         end
