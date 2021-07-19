@@ -27,7 +27,7 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }, on: :create
   validates :password_confirmation, presence: true, on: :create
 
-  #after_create :send_mail
+  after_create :send_mail
 
   private
 
