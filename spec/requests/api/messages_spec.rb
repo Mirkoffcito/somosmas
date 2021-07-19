@@ -8,7 +8,7 @@ RSpec.describe 'Messages', type: :request do
   describe 'GET /api/messages/:id' do
     let(:chat) { create(:chat) }
     let(:user) { create(:user, :client_user) }
-    let(:chat_user) { create(:chat_user, user_id: user.id) }
+    let(:chat_user) { create(:chat_user, user_id: user.id, chat_id: chat.id) }
     let(:message) { create(:message, chat_id: chat.id, user_id: user.id) }
 
     subject(:get_message) do

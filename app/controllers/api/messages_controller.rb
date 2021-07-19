@@ -2,8 +2,14 @@
 
 module Api
   class MessagesController < ApplicationController
-    skip_before_action :authenticate_admin, only: [:show, :create]
+    skip_before_action :authenticate_admin, only: [:show, :create, :index]
 
+    def index
+      if chat.users.to_a.any?(@current_user)
+        paginate @chat.messages, per_page: 10, each_serializer: MessageSerializer
+      end
+    end
+    
     def show
       render json: message, serializer: MessageSerializer, status: :ok
     end
