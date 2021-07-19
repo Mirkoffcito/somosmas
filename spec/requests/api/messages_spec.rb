@@ -94,106 +94,109 @@ RSpec.describe 'Messages', type: :request do
     end
   end
 
-  describe "POST /api/chats/#{@id}/messages" do
-    subject(:create_message) do
-      post "/api/chats/#{@id}/messages",
-        headers: { 'Authorization': token },
-        params: { message: attributes }
-    end
+  # describe "POST /api/chats/#{@id}/messages" do
+  #   subject(:create_message) do
+  #     post "/api/chats/#{@id}/messages",
+  #       headers: { 'Authorization': token },
+  #       params: { message: attributes }
+  #   end
 
-    context "when user's not logged in" do
-      let(:token) { '' }
-      before do
-        @id = 1
-        create_message
-      end
+  #   context "when user's not logged in" do
+  #     let(:token) { '' }
+  #     before do
+  #       @id = 1
+  #       create_message
+  #     end
 
-      it 'returns a HTTP STATUS 401' do
-        expect(response).to have_http_status(:unauthorized)
-      end
+  #     it 'returns a HTTP STATUS 401' do
+  #       expect(response).to have_http_status(:unauthorized)
+  #     end
 
-      it 'returns an error message' do
-        expect(json_response[:message]).to eq('Unauthorized access.')
-      end
-    end
+  #     it 'returns an error message' do
+  #       expect(json_response[:message]).to eq('Unauthorized access.')
+  #     end
+  #   end
 
-    context 'when user is logged' do
+  #   context 'when user is logged' do
 
-      let(:user) { create(:user, :client_user) }
-      let(:token) { json_response[:user][:token] }
-      let(:chat) { create(:chat) }
-      let!(:chat_user) { create(:chat_user, user_id: user.id, chat_id: chat.id) }
+  #     let(:user) { create(:user, :client_user) }
+  #     let(:token) { json_response[:user][:token] }
+  #     let(:chat) { create(:chat) }
+  #     let!(:chat_user) { create(:chat_user, user_id: user.id, chat_id: chat.id) }
 
-      context 'when chat exists' do
-        before do |example|
-          login_with_api(user)
-          token
-          @id = chat.id
-          @json_response = nil
-          create_message unless example.metadata[:skip_before]
-        end
+  #     context 'when chat exists' do
+  #       before do |example|
+  #         login_with_api(user)
+  #         token
+  #         @id = chat.id
+  #         @json_response = nil
+  #         create_message unless example.metadata[:skip_before]
+  #       end
         
-        it 'adds 1 message to the database', :skip_before do
-          expect { create_message }.to change(Message, :count).by(1)
-        end
+  #       it 'adds 1 message to the database', :skip_before do
+  #         expect { create_message }.to change(Message, :count).by(1)
+  #       end
   
-        it 'returns a HTTP STATUS 201' do
-          expect(response).to have_http_status(:created)
-        end
-      end
+  #       it 'returns a HTTP STATUS 201' do
+  #         expect(response).to have_http_status(:created)
+  #       end
+  #     end
 
-      context 'when chat does not exist' do
-        before do |example|
-          login_with_api(user)
-          token
-          @id = 99
-          @json_response = nil
-          create_message unless example.metadata[:skip_before]
-        end
+  #     context 'when chat does not exist' do
+  #       before do |example|
+  #         login_with_api(user)
+  #         token
+  #         @id = 99
+  #         @json_response = nil
+  #         create_message unless example.metadata[:skip_before]
+  #       end
         
-        it 'returns a HTTP STATUS 404' do
-          expect(response).to have_http_status(:not_found)
-        end
+  #       it 'returns a HTTP STATUS 404' do
+  #         expect(response).to have_http_status(:not_found)
+  #       end
 
-        it 'keeps database the same', :skip_before do
-          expect { create_message }.to change(Message, :count).by(0)
-        end
-      end
-    end
-  end
-  
-  describe "PUT /api/chats/:id/messages" do
-    let(:chat) { create(:chat) }
+  #       it 'keeps database the same', :skip_before do
+  #         expect { create_message }.to change(Message, :count).by(0)
+  #       end
+  #     end
+  #   end
+  # end
+   
+  describe "PUT /api/chats/:id/messages/:id" do
     let(:user) { create(:user, :client_user) }
+    let(:chat) { create(:chat) }
     let(:chat_user) { create(:chat_user, user_id: user.id) }
     let(:message) { create(:message, chat_id: chat.id, user_id: user.id) }
-  
+
     subject(:update_message) do
       patch "/api/chats/#{chat_id}/messages/#{id}",
         headers: { 'Authorization': token },
         params: { message: attributes }
     end
 
-    context "when user's not logged in" do
+    context 'when user is not logged' do
       let(:token) { '' }
       let(:chat_id) { chat.id }
       let(:id) { message.id }
+
       before { update_message }
 
-      it 'returns a HTTP STATUS 401' do
+      it 'return a HTTP STATUS 401' do
         expect(response).to have_http_status(:unauthorized)
       end
+
       it 'returns an error message' do
         expect(json_response[:message]).to eq('Unauthorized access.')
       end
     end
-    
-    context 'when user is logged' do
+
+    context 'when user is logged in' do
       let(:token) { json_response[:user][:token] }
-      
+
       context 'when message does not exist' do
         let(:chat_id) { 1 }
         let(:id) { 99 }
+
         before do
           login_with_api(user)
           token
@@ -204,6 +207,7 @@ RSpec.describe 'Messages', type: :request do
         it 'returns a HTTP STATUS 404' do
           expect(response).to have_http_status(:not_found)
         end
+
         it 'returns an error message' do
           expect(json_response[:error]).to eq('message not found')
         end
@@ -213,8 +217,29 @@ RSpec.describe 'Messages', type: :request do
         let(:chat_id) { chat.id }
         let(:id) { message.id }
         
-        context 'when trying to update a message from another person' do
-          let(:token) { 'random_token' }
+        context 'when belongs to current user' do
+          before do
+            login_with_api(user)
+            token
+            @json_response = nil
+            attributes[:detail] = 'DETAIL TEST'
+            update_message
+          end
+  
+          it 'returns a HTTP STATUS 200' do
+            expect(response).to have_http_status(:ok)
+            puts json_response
+          end
+  
+          it 'check message to have id, detail, chat keys' do
+            expect(json_response[:message]).to have_key(:id)
+            expect(json_response[:message]).to have_key(:detail)
+            expect(json_response[:message]).to have_key(:chat)
+          end
+        end
+
+        context 'when owner updates with empty params' do
+          let(:attributes) {}
           before do
             login_with_api(user)
             token
@@ -222,9 +247,27 @@ RSpec.describe 'Messages', type: :request do
             update_message
           end
 
+          it 'returns a HTTP STATUS 400' do
+            expect(response).to have_http_status(:bad_request)
+          end
+
+          it 'returns a message error' do
+            expect(json_response[:error]).to eq('Parameter is missing or its value is empty')
+          end
+        end
+
+        context 'when not belongs to current user' do
+          let(:token) { 'random_token' }
+          before do
+            login_with_api(user)
+            @json_response = nil
+            update_message
+          end
+
           it 'returns a HTTP STATUS 401' do
             expect(response).to have_http_status(:unauthorized)
           end
+
           it 'returns an error message' do
             expect(json_response[:message]).to eq('Unauthorized access.')
           end
@@ -247,34 +290,7 @@ RSpec.describe 'Messages', type: :request do
             expect(json_response[:error]).to eq('message not found')
           end
         end
-
-        context 'when owner updates with params' do
-          let(:chat_id) { chat.id }
-          let(:id) { message.id }
-          before do
-            attributes[:detail] = 'DETAIL TEST'
-            update_message 
-          end
-
-          it 'returns a HTTP STATUS 200' do
-            expect(response).to have_http_status(:ok)
-          end
-        end
-
-        context 'when owner updates with empty params' do
-          let(:attributes) {}
-          
-          before { update_message }
-
-          it 'returns a HTTP STATUS 400' do
-            expect(response).to have_http_status(:bad_request)
-          end
-
-          it 'returns a message error' do
-            expect(json_response[:error]).to eq('Parameter is missing or its value is empty')
-          end
-        end
       end
     end
   end
-end 
+end
