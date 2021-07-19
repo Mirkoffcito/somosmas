@@ -603,7 +603,7 @@ paths:
       tags:
       - Members
       security:
-      - Bearer: {}
+      - bearer_auth: {}
       parameters:
       - name: Authorization
         in: header
@@ -707,7 +707,7 @@ paths:
       tags:
       - Members
       security:
-      - Bearer: {}
+      - bearer_auth: {}
       parameters:
       - name: Authorization
         in: header
@@ -777,7 +777,7 @@ paths:
       tags:
       - Members
       security:
-      - Bearer: {}
+      - bearer_auth: {}
       parameters:
       - name: Authorization
         in: header
@@ -795,6 +795,294 @@ paths:
           description: unauthorized
         '404':
           description: not found
+  "/api/messages/{id}":
+    get:
+      summary: Get a message details
+      tags:
+      - Messages
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: object
+                    items:
+                      id:
+                        type: integer
+                      detail:
+                        type: string
+                      chat:
+                        type: object
+                        items:
+                          id:
+                            type: integer
+        '404':
+          description: message not found
+        '401':
+          description: unauthorized
+  "/api/chats/{id}/messages":
+    post:
+      summary: Sent a message
+      tags:
+      - Messages
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '201':
+          description: message created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: object
+                    items:
+                      id:
+                        type: integer
+                      detail:
+                        type: string
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+        '400':
+          description: bad request
+        '404':
+          description: chat not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: object
+                  items:
+                    properties:
+                      detail:
+                        type: string
+              required:
+              - detail
+  "/api/news":
+    get:
+      summary: Get all news
+      tags:
+      - New
+      responses:
+        '200':
+          description: List of news
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  news:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: text
+                        category_id:
+                          type: integer
+    post:
+      summary: Creates a new
+      tags:
+      - New
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '201':
+          description: New created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new:
+                    type: object
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: text
+                        category_id:
+                          type: integer
+        '401':
+          description: Unauthorized
+        '422':
+          description: Invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                new:
+                  type: object
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      content:
+                        type: text
+                      category_id:
+                        type: integer
+              required:
+              - name
+  "/api/news/{id}":
+    put:
+      summary: Updates a new
+      tags:
+      - New
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new:
+                    type: object
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: text
+                        category_id:
+                          type: integer
+        '401':
+          description: Unauthorized
+        '422':
+          description: Invalid request
+        '404':
+          description: Not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                content:
+                  type: text
+                category_id:
+                  type: integer
+    delete:
+      summary: Delete a new
+      tags:
+      - New
+      security:
+      - Bearer: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+  "/api/news/:id/comments":
+    get:
+      summary: Get all comments of a new
+      tags:
+      - New
+      responses:
+        '200':
+          description: List of comments of a new
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  news:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        content:
+                          type: text
+                        category_id:
+                          type: integer
+                        comments:
+                          type: object
+                          items:
+                            properties:
+                              id:
+                                type: integer
+                              content:
+                                type: string
   "/api/organization/public":
     get:
       summary: Gets an Organization
@@ -953,6 +1241,89 @@ paths:
           description: unauthorized status if not have a token or are a client user
         '404':
           description: 'not found status if testimonial do not exist '
+  "/api/users":
+    get:
+      summary: returns all users
+      tags:
+      - Users
+      security:
+      - bearer_auth: {}
+      responses:
+        '200 ':
+          description: show all users as Admin
+          content:
+            application/json:
+              example:
+                users:
+                - id: 1
+                  first_name: Guido
+                  last_name: Medina
+                  email: guido@gmail.com
+                  role:
+                    id: 1
+                    name: admin
+                    description: 'null'
+                  image: myprofileimage.com/image.jpg
+                - id: 2
+                  first_name: Antonio
+                  last_name: Porchia
+                  email: antonio@gmail.com
+                  role:
+                    id: 1
+                    name: client
+                    description: 'null'
+                  image: myprofileimage.com/image.jpg
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        first_name:
+                          type: string
+                        last_name:
+                          type: string
+                        role:
+                          type: object
+                          items:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            description:
+                              type: string
+                        image:
+                          type: string
+        '200':
+          description: show all users as Client
+          content:
+            application/json:
+              example:
+                users:
+                - id: 1
+                  first_name: Guido
+                  last_name: Medina
+                - id: 2
+                  first_name: Antonio
+                  last_name: Porchia
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        first_name:
+                          type: string
+                        last_name:
+                          type: string
+        '401':
+          description: Not a logged in user
   "/api/users/{id}":
     get:
       summary: Get user
@@ -972,35 +1343,34 @@ paths:
           type: string
       responses:
         '200':
-          description: show user details when admin
+          description: show user details
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  users:
-                    type: array
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                        first_name:
-                          type: string
-                        last_name:
-                          type: string
-                        email:
-                          type: string
-                        role:
-                          type: object
-                          items:
-                            id:
-                              type: integer
-                            name:
-                              type: string
-                            description:
-                              type: string
-                        image:
-                          type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          description:
+                            type: string
+                      image:
+                        type: string
         '401':
           description: unauthorized
         '404':

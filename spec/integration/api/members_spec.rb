@@ -11,7 +11,7 @@ RSpec.describe '../integration/api/members', type: :request do
         tags 'Members'
         consumes 'application/json'
         produces 'application/json'
-        security [Bearer: {}]
+        security [bearer_auth: {}]
         parameter name: :Authorization, in: :header, type: :string
         parameter name: :member, in: :body, schema: {
           type: :object,
@@ -94,7 +94,7 @@ RSpec.describe '../integration/api/members', type: :request do
 
       put 'Updates a member' do
         tags 'Members'
-        security [Bearer: {}]
+        security [bearer_auth: {}]
         produces 'application/json'
         consumes 'application/json'
         parameter name: :Authorization, in: :header, type: :string
@@ -145,7 +145,7 @@ RSpec.describe '../integration/api/members', type: :request do
 
       delete 'Delete a member' do
         tags 'Members'
-        security [Bearer: {}]
+        security [bearer_auth: {}]
         produces 'application/json'
         consumes 'application/json'
         parameter name: :Authorization, in: :header, type: :string
