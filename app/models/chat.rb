@@ -6,4 +6,6 @@ class Chat < ApplicationRecord
     has_many :messages, dependent: :destroy
 
     validates_length_of :chat_users, maximum: 2
+
+    default_scope { order(created_at: :desc) }
 end
