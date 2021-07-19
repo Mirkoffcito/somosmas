@@ -173,81 +173,81 @@ RSpec.describe 'Messages', type: :request do
         params: { message: attributes }
     end
 
-    # context "when user's not logged in" do
-    #   let(:token) { '' }
-    #   let(:id) { 1 }
+    context "when user's not logged in" do
+      let(:token) { '' }
+      let(:id) { 1 }
 
-    #   before { update_message }
+      before { update_message }
 
-    #   it 'returns a HTTP STATUS 401' do
-    #     expect(response).to have_http_status(:unauthorized)
-    #   end
+      it 'returns a HTTP STATUS 401' do
+        expect(response).to have_http_status(:unauthorized)
+      end
 
-    #   it 'returns an error message' do
-    #     expect(json_response[:message]).to eq('Unauthorized access.')
-    #   end
-    # end
+      it 'returns an error message' do
+        expect(json_response[:message]).to eq('Unauthorized access.')
+      end
+    end
     
     context 'when user is logged' do
       let(:user) { create(:user, :client_user) }
       let(:token) { json_response[:user][:token] }
       
-      # context 'when message id does not exist' do
-      #   let(:id) { 99 }
+      context 'when message id does not exist' do
+        let(:id) { 99 }
 
-      #   before do
-      #     login_with_api(user)
-      #     token
-      #     @json_response = nil
-      #     update_message
-      #   end
+        before do
+          login_with_api(user)
+          token
+          @json_response = nil
+          update_message
+        end
 
-      #   it 'returns a HTTP STATUS 404' do
-      #     expect(response).to have_http_status(:not_found)
-      #   end
+        it 'returns a HTTP STATUS 404' do
+          expect(response).to have_http_status(:not_found)
+        end
 
-      #   it 'returns an error message' do
-      #     expect(json_response[:error]).to eq('message not found')
-      #   end
-      # end
+        it 'returns an error message' do
+          expect(json_response[:error]).to eq('message not found')
+        end
+      end
 
       context 'when message id exists' do
         let(:id) { message.id }
         
-        # context 'when trying to update a message from another person' do
-        #   let(:token) { 'random_token' }
-        #   before do
-        #     login_with_api(user)
-        #     @json_response = nil
-        #     update_message
-        #   end
+        context 'when trying to update a message from another person' do
+          let(:token) { 'random_token' }
+          before do
+            login_with_api(user)
+            @json_response = nil
+            update_message
+          end
 
-        #   it 'returns a HTTP STATUS 401' do
-        #     expect(response).to have_http_status(:unauthorized)
-        #   end
+          it 'returns a HTTP STATUS 401' do
+            expect(response).to have_http_status(:unauthorized)
+          end
 
-        #   it 'returns an error message' do
-        #     expect(json_response[:message]).to eq('Unauthorized access.')
-        #   end
-        # end
+          it 'returns an error message' do
+            expect(json_response[:message]).to eq('Unauthorized access.')
+          end
+        end
 
-        # context 'when trying to update a message that is not the last one' do
-        #   let(:id) { 1 }
-        #   before do
-        #     login_with_api(user)
-        #     token
-        #     @json_response = nil
-        #     update_message
-        #   end
+        context 'when trying to update a message that is not the last one' do
+          let(:id) { 1 }
+          before do
+            login_with_api(user)
+            token
+            @json_response = nil
+            update_message
+          end
 
-        #   it 'returns a HTTP STATUS 404' do
-        #     expect(response).to have_http_status(:not_found)
-        #   end
+          it 'returns a HTTP STATUS 404' do
+            expect(response).to have_http_status(:not_found)
+          end
 
-        #   it 'returns an error message' do
-        #     expect(json_response[:error]).to eq('message not found')
-        #   end
-        # end
+          it 'returns an error message' do
+            expect(json_response[:error]).to eq('message not found')
+          end
+        end
 
         context 'when owner updates with params' do
           before do
