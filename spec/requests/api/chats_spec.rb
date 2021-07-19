@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Chats", type: :request do
-  let(:attributes) { attributes_for :chat }
-
+  User.skip_callback(:create, :after, :send_mail)
   describe 'GET api/chats' do
     subject(:get_chats) do
      get '/api/chats' ,
@@ -22,15 +21,12 @@ RSpec.describe "Chats", type: :request do
       end
     end
 
-    context "when user is not admin" do 
-      let!(:client_user) { create(:user, :client_user)}
-      let(:chat) { create(:chat) }
-      let(:user1) { create(:chat_user, :with_client_user, chat_id:chat.id) }
-      let(:user2) { create(:chat_user, :with_client_user, chat_id:chat.id) }
+    context "when user is logged in" do 
+      let(:user) { create(:user) }
       let(:token) { json_response[:user][:token] }
 
       before do
-        login_with_api(client_user)
+        login_with_api(user)
         token 
         @json_response = nil
       end
@@ -49,11 +45,13 @@ RSpec.describe "Chats", type: :request do
 
       context 'when table is not empty' do
 
-        before do
-          create_list(:chat, 3, attributes)
-          get_chats
-        end
-
+        let(:chats) { create_list(:chat,3) }
+        let!(:chatuser1) { create(:chat_user, user_id:user.id, chat_id:chats[0].id) }
+        let!(:chatuser2) { create(:chat_user, user_id:user.id, chat_id:chats[1].id) }
+        let!(:chatuser3) { create(:chat_user, user_id:user.id, chat_id:chats[2].id) }
+           
+        before { get_chats } 
+          
         it 'returns a HTTP STATUS 200' do
           expect(response).to have_http_status(:ok)
         end
@@ -64,48 +62,12 @@ RSpec.describe "Chats", type: :request do
       end
     end
 
-    context "when the user is admin" do
-      let(:admin_user) { create(:user, :admin_user) }
-      let(:token) { json_response[:user][:token] }
-
-      before do
-        login_with_api(admin_user)
-        token
-        @json_response = nil
-      end
-
-      context "when the table is empty" do
-        before { get_chats }
-
-        it 'returns a HTTP STATUS 200' do
-          expect(response).to have_http_status(:ok)
-        end
-
-        it 'returns an empty array' do
-          expect(json_response[:chats]).to eq([])
-        end
-      end
-
-      context 'when table is not empty' do
-
-        before do
-          create_list(:chat, 3, attributes)
-          get_chats
-        end
-
-        it 'returns a HTTP STATUS 200' do
-          expect(response).to have_http_status(:ok)
-        end
-
-        it 'returns all chats' do
-          expect(json_response[:chats].count).to eq(3)
-        end
-      end 
-    end 
-
     context 'when the user is a participant in the chat' do
       let!(:chats) { create_list(:chat,3) }
       let(:user) { create(:user, :client_user) }
+      let!(:chatuser1) { create(:chat_user, user_id:user.id, chat_id:chats[0].id) }
+      let!(:chatuser2) { create(:chat_user, user_id:user.id, chat_id:chats[1].id) }
+      let!(:chatuser3) { create(:chat_user, user_id:user.id, chat_id:chats[2].id) }
       let(:token) { json_response[:user][:token] } # gets the token
       let(:decoded) { JsonWebToken.decode(token) } # decodes it
       let(:current_user) { User.find(decoded[:user_id]) } # findes the user from the token
@@ -117,12 +79,12 @@ RSpec.describe "Chats", type: :request do
         get_chats
       end 
 
-      it 'validates that the current user is the chats owner' do 
+      it 'validates that the current user is the chat participant' do 
         # byebug
-        expect(json_response[:chats].each do |chat|
-          expect(chat[:user_id]).to eq(current_user.id)
+        expect (json_response[:chats]).each do |chat|
+          # expect(chat[:user_id]).to eq(current_user.id)
+          expect(chat[:users].any?(current_user)).to eq(true)
         end
-        )
       end 
     end
   end
