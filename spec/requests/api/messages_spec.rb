@@ -163,10 +163,6 @@ RSpec.describe 'Messages', type: :request do
   end
   
   describe "PUT /api/chats/:id/messages" do
-    let(:chat) { create(:chat) }
-    let(:chat_user) { create(:chat_user, user_id: user.id) }
-    let(:message) { create(:message, chat_id: chat.id, user_id: user.id) }
-
     subject(:update_message) do
       patch "/api/chats/#{id}/messages",
         headers: { 'Authorization': token },
@@ -191,16 +187,17 @@ RSpec.describe 'Messages', type: :request do
     context 'when user is logged' do
       let(:user) { create(:user, :client_user) }
       let(:token) { json_response[:user][:token] }
+
+      before do
+        login_with_api(user)
+        token
+        @json_response = nil
+      end
       
       context 'when message id does not exist' do
         let(:id) { 99 }
 
-        before do
-          login_with_api(user)
-          token
-          @json_response = nil
-          update_message
-        end
+        before { update_message }
 
         it 'returns a HTTP STATUS 404' do
           expect(response).to have_http_status(:not_found)
@@ -212,15 +209,15 @@ RSpec.describe 'Messages', type: :request do
       end
 
       context 'when message id exists' do
+        let(:chat) { create(:chat) }
+        let(:chat_user) { create(:chat_user, user_id: user.id) }
+        let(:message) { create(:message, chat_id: chat.id, user_id: user.id) }
         let(:id) { message.id }
         
         context 'when trying to update a message from another person' do
           let(:token) { 'random_token' }
-          before do
-            login_with_api(user)
-            @json_response = nil
-            update_message
-          end
+
+          before { update_message }
 
           it 'returns a HTTP STATUS 401' do
             expect(response).to have_http_status(:unauthorized)
@@ -233,12 +230,8 @@ RSpec.describe 'Messages', type: :request do
 
         context 'when trying to update a message that is not the last one' do
           let(:id) { 1 }
-          before do
-            login_with_api(user)
-            token
-            @json_response = nil
-            update_message
-          end
+          
+          before { update_message }
 
           it 'returns a HTTP STATUS 404' do
             expect(response).to have_http_status(:not_found)
@@ -250,29 +243,20 @@ RSpec.describe 'Messages', type: :request do
         end
 
         context 'when owner updates with params' do
-          before do
-            login_with_api(user)
-            token
-            @json_response = nil
+          before do |example|
             attributes[:detail] = 'DETAIL TEST'
-            update_message
+            update_message unless example.metadata[:skip_before]
           end
 
-          it 'returns a HTTP STATUS 200' do
+          it 'returns a HTTP STATUS 200', :skip_before do
             expect(response).to have_http_status(:ok)
           end
         end
 
         context 'when owner updates with empty params' do
-          let(:id) { message.id }
           let(:attributes) {}
           
-          before do |example|
-           login_with_api(user)
-           token
-           @json_response = nil
-           update_message
-          end
+          before { update_message }
 
           it 'returns a HTTP STATUS 400' do
             expect(response).to have_http_status(:bad_request)
