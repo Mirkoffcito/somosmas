@@ -108,7 +108,7 @@ ActiveRecord::Schema.define(version: 2021_07_18_022346) do
     t.datetime "deleted_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "censored", default: false
+    t.boolean "censored", default: false, null: false
     t.index ["chat_id"], name: "index_messages_on_chat_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
