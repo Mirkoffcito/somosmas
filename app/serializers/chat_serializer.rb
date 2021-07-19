@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class ChatSerializer < CustomActiveModelSerializer
-    attributes :user, :create_at
+    attributes :create_at
 end
   
