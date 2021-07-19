@@ -925,6 +925,8 @@ paths:
                               type: string
                     required:
                     - detail
+        '400':
+          description: Parameter is missing or its value is empty
         '401':
           description: unauthorized
         '404':
