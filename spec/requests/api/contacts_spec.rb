@@ -169,14 +169,13 @@ RSpec.describe "Contacts", type: :request do
           expect(response).to have_http_status(:bad_request)
         end
         it 'does not add a contact to the database', :skip_before do
-          expect { create_contact }.not_to change(Contact, :count)
+          expect { create_contact }.not_to change(Contact, :count) 
         end
       end
     end
   end
 
   describe "GET /my_contacts" do
-    # let(:new_contact) {create(:contact, attributes)}
 
     subject(:get_my_contacts) do
       get '/api/my_contacts' ,
@@ -213,44 +212,43 @@ RSpec.describe "Contacts", type: :request do
         end 
     
         it 'validates that the current user is the contacts owner' do 
-          # byebug
-          expect(json_response[:contacts][:user_id]).to all(eq(current_user.id))
-          
+          expect(json_response[:contacts].each do |contact|
+            expect(contact[:user_id]).to eq(current_user.id)
+          end)
         end
-
       end
-     
-        context "when the table is empty" do
-          before do
-            login_with_api(user)
-            token
-            @json_response = nil 
-            get_my_contacts
-          end 
-          it 'returns a HTTP STATUS 200' do
-            expect(response).to have_http_status(:ok)
-          end
-  
-          it 'returns an empty array' do
-            expect(json_response[:contacts]).to eq([])
-          end
+    
+      context "when the table is empty" do
+        before do
+          login_with_api(user)
+          token
+          @json_response = nil 
+          get_my_contacts
+        end 
+        it 'returns a HTTP STATUS 200' do
+          expect(response).to have_http_status(:ok)
         end
 
-        context 'when table is not empty' do
-          before do 
-            login_with_api(user)
-            token
-            @json_response = nil
-            create_list(:contact, 3, name: 'Name', message: 'Message', email:'mail@mail', user_id: user.id)
-            get_my_contacts
-          end
-          it 'returns a HTTP STATUS 200' do
-            expect(response).to have_http_status(:ok)
-          end
-          it 'returns all contacts' do
-            expect(json_response[:contacts].length).to eq(3)
-          end
+        it 'returns an empty array' do
+          expect(json_response[:contacts]).to eq([])
         end
+      end
+
+      context 'when table is not empty' do
+        before do 
+          login_with_api(user)
+          token
+          @json_response = nil
+          create_list(:contact, 3, name: 'Name', message: 'Message', email:'mail@mail', user_id: user.id)
+          get_my_contacts
+        end
+        it 'returns a HTTP STATUS 200' do
+          expect(response).to have_http_status(:ok)
+        end
+        it 'returns all contacts' do
+          expect(json_response[:contacts].length).to eq(3)
+        end
+      end
     end
   end 
 end
