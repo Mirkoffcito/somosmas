@@ -199,30 +199,34 @@ RSpec.describe "Contacts", type: :request do
     context "when the user is logged in" do
 
       let(:user) { create(:user, :client_user) }
-      # let(:user_2) { create(:user, :client_user) }
       let(:token) { json_response[:user][:token] } # gets the token
       let(:decoded) { JsonWebToken.decode(token) } # decodes it
       let(:current_user) { User.find(decoded[:user_id]) } # findes the user from the token
-      # let(:contacts) { create_list(:contact, 3, name: 'User name', message: 'User message', email:'user@mail', user_id: user.id) }
-      byebug
+
       context 'when it`s the owner' do
+        let! (:contacts) { create_list(:contact, 3, name: 'User 2 name', message: 'Message 2', email:'user@mail', user_id: user.id) }
         before do
           login_with_api(user)
           token
-          json_response = nil
-          create_list(:contact, 3, name: 'User 2 name', message: 'Message 2', email:'user_2@mail', user_id: user_2.id)
+          @json_response = nil 
+          get_my_contacts
         end 
     
         it 'validates that the current user is the contacts owner' do 
-        # expect(json_response[:members]).to all(have_key(:description))
+          # byebug
           expect(json_response[:contacts][:user_id]).to all(eq(current_user.id))
-          byebug
+          
         end
 
-
+      end
      
         context "when the table is empty" do
-        before { get_my_contacts }
+          before do
+            login_with_api(user)
+            token
+            @json_response = nil 
+            get_my_contacts
+          end 
           it 'returns a HTTP STATUS 200' do
             expect(response).to have_http_status(:ok)
           end
@@ -236,7 +240,7 @@ RSpec.describe "Contacts", type: :request do
           before do 
             login_with_api(user)
             token
-            json_response = nil
+            @json_response = nil
             create_list(:contact, 3, name: 'Name', message: 'Message', email:'mail@mail', user_id: user.id)
             get_my_contacts
           end
@@ -247,7 +251,6 @@ RSpec.describe "Contacts", type: :request do
             expect(json_response[:contacts].length).to eq(3)
           end
         end
-      end
     end
   end 
 end
