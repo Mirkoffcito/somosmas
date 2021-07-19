@@ -914,15 +914,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  comment:
-                    type: object
-                    properties:
-                      message:
-                        type: object
-                        items:
-                          properties:
-                            detail:
-                              type: string
+                  type: object
+                  properties:
+                    message:
+                      type: object
+                      items:
+                        properties:
+                          detail:
+                            type: string
                     required:
                     - detail
         '400':

@@ -121,10 +121,9 @@ RSpec.describe '../integration/api/messages', type: :request do
           },
           required: ['detail']
         }
-
+        
         response '200', 'updated successfully' do
           schema type: :object, properties: {
-            comment: {
               type: :object,
           properties: {
             message: {
@@ -134,7 +133,6 @@ RSpec.describe '../integration/api/messages', type: :request do
                   detail: { type: :string }
                   }
                 }
-              }
             },
           required: ['detail']
           }
