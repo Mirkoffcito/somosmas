@@ -2,7 +2,7 @@
 
 class ChatSerializer < CustomActiveModelSerializer
     attributes :id, :created_at
-    has_many :users, each_serializer: UserClientIndexSerializer
+    has_many :users, serializer: UserClientIndexSerializer
 
 end
   

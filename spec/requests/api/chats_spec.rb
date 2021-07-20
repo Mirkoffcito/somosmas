@@ -81,9 +81,8 @@ RSpec.describe "Chats", type: :request do
 
       it 'validates that the current user is the chat participant' do 
         # byebug
-        expect (json_response[:chats]).each do |chat|
-          # expect(chat[:user_id]).to eq(current_user.id)
-          expect(chat[:users].any?(current_user)).to eq(true)
+          json_response[:chats].each do |chat|
+          expect(chat[:users].any? { |user| user[:id] == current_user.id }).to eq(true)
         end
       end 
     end
