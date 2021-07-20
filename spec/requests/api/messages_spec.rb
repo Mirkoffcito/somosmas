@@ -162,21 +162,24 @@ RSpec.describe 'Messages', type: :request do
     end
   end
    
-  describe "PUT /api/chats/:id/messages" do
+  describe "PUT chats/:id/messages/:message_id" do
     let(:user) { create(:user, :client_user) }
+    let(:user2) { create(:user, :admin_user) }
     let(:chat) { create(:chat) }
-    let(:chat_user) { create(:chat_user, user_id: user.id) }
+    let(:chat_user) { create(:chat_user, chat_id: chat.id, user_id: user.id) }
+    let(:chat_user2) { create(:chat_user, chat_id: chat.id, user_id: user2.id) }
     let(:message) { create(:message, chat_id: chat.id, user_id: user.id) }
 
     subject(:update_message) do
-      patch "/api/chats/#{chat_id}/messages",
+      patch "/api/chats/#{id}/messages/#{message_id}",
         headers: { 'Authorization': token },
         params: { message: attributes }
     end
 
     context 'when user is not logged' do
       let(:token) { '' }
-      let(:chat_id) { chat.id }
+      let(:id) { 1 }
+      let(:message_id) { 1 }
 
       before { update_message }
 
@@ -193,7 +196,8 @@ RSpec.describe 'Messages', type: :request do
       let(:token) { json_response[:user][:token] }
 
       context 'when message does not exist' do
-        let(:chat_id) { 99 }
+        let(:id) { chat.id }
+        let(:message_id) { 999 }
 
         before do
           login_with_api(user)
@@ -211,9 +215,10 @@ RSpec.describe 'Messages', type: :request do
         end
       end
 
-      context 'when message exists' do
-        let(:chat_id) { chat.id }
-        
+      context 'when last message exists' do
+        let(:id) { chat.id }
+        let(:message_id) { message.id }
+
         context 'when belongs to current user' do
           before do
             login_with_api(user)
@@ -225,7 +230,6 @@ RSpec.describe 'Messages', type: :request do
   
           it 'returns a HTTP STATUS 200' do
             expect(response).to have_http_status(:ok)
-            puts json_response
           end
   
           it 'check message to have id, detail, chat keys' do
@@ -243,7 +247,7 @@ RSpec.describe 'Messages', type: :request do
             @json_response = nil
             update_message
           end
-
+          
           it 'returns a HTTP STATUS 400' do
             expect(response).to have_http_status(:bad_request)
           end
@@ -254,9 +258,10 @@ RSpec.describe 'Messages', type: :request do
         end
 
         context 'when not belongs to current user' do
-          let(:token) { 'random_token' }
+          # let(:token) { json_response[:user2][:token] }
+
           before do
-            login_with_api(user)
+            login_with_api(user2)
             @json_response = nil
             update_message
           end
@@ -266,12 +271,13 @@ RSpec.describe 'Messages', type: :request do
           end
 
           it 'returns an error message' do
-            expect(json_response[:message]).to eq('Unauthorized access.')
+            expect(json_response[:message]).to eq('You are not the owner of this message')
           end
         end
 
         context 'when trying to update a message that is not the last one' do
-          let(:chat_id) { chat.id }
+          let(:id) { chat.id }
+          let(:message_id) { (message.id-1) }
           before do
             login_with_api(user)
             token

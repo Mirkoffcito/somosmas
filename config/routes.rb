@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     get 'my_contacts', to: 'contacts#my_contacts'
     get 'news/:id/comments', to: 'news#list_comment_news'
     post 'chats/:id/messages', to: 'messages#create'
-    patch 'chats/:id/messages', to: 'messages#update'
+    patch 'chats/:id/messages/:message_id', to: 'messages#update'
 
 
     resources :news, only: [:show, :destroy, :create, :update, :index]
@@ -27,7 +27,7 @@ Rails.application.routes.draw do
     resources :testimonials, only: [:create, :update, :destroy, :index]
     resources :members, only: [:index, :destroy, :create, :update]
     resources :comments, only: [:index, :create, :update, :destroy]
-    resources :messages, only: [:create, :show, :update]
+    resources :messages, only: [:create, :show]
     
   end
 

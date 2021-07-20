@@ -19,14 +19,19 @@ module Api
     end
 
     def update
-      @message = chat.messages.last
-      if message.user_id == @current_user.id
-        if @message.update(message_update_params)
-          @message.update(modified: true)
-          render json: @message, serializer: MessageSerializer, status: :ok
+      last_message = chat.messages.last
+      @message = Message.find(params[:message_id])
+      if last_message.id == message.id
+        if message.user_id == @current_user.id 
+          if @message.update(message_update_params)
+            @message.update(modified: true)
+            render json: @message, serializer: MessageSerializer, status: :ok
+          end
+        else
+          render json: {error: 'You are not the owner of this message'}, status: :unauthorized
         end
       else
-        render json: {error: 'You are not the message owner'}, status: :unauthorized
+        render json: {error: 'This is not the last message of this chat'}, status: :unauthorized
       end 
     end
 
