@@ -8,7 +8,6 @@ RSpec.describe '../integration/api/chats', type: :request do
       
       get 'Get all chats' do
         tags 'Chats'
-        consumes 'application/json'
         produces 'application/json'
         security [bearer_auth: {}]
         parameter name: :Authorization, in: :header, type: :string
@@ -16,15 +15,33 @@ RSpec.describe '../integration/api/chats', type: :request do
         response '200', 'List of chats' do
           schema type: :object,
             properties: {
-                chats: {
-                  type: :array,
-                  items:{
-                    properties: {
-                      id: { type: :integer },
-                      created_at: { type: :string }
+              chats: {
+                type: :array,
+                items:{
+                  properties: {
+                    id: { type: :integer },
+                    created_at: { type: :string },
+                    users: {
+                      type: :array,
+                      items:{
+                        properties: {
+                          id: { type: :integer },
+                          first_name: { type: :string },
+                          last_name: { type: :string },
+                          role: { type: :object,
+                                  items: {
+                                    id: { type: :integer },
+                                    name: { type: :string },
+                                    description: { type: :string }
+                                  } 
+                                },
+                          image: { type: :string }
+                        } 
+                      }
                     }
                   }
                 }
+              } 
             }
           run_test!
         end
