@@ -256,53 +256,41 @@ RSpec.describe 'Messages', type: :request do
         end
         
         context 'when not belongs to current user' do
-          # let(:token) { '' }
-          let(:user2) { create(:user, :admin_user) }
+          let!(:user2) { create(:user, :admin_user) }
           let(:chat_user2) { create(:chat_user, chat_id: chat.id, user_id: user2.id) }
-          # let(:token) { json_response[:user2][:token] }
-          # admin_user = create(:user, :admin_user)
-          # login_with_api(admin_user)
-          # @token = json_response[:user][:token]
-          # @json_response = nil
+
           before do
             login_with_api(user2)
-            # @chat_id = chat.id
-            # @user_id = user.id
+            token
             @json_response = nil
-            update_message
+            update_message 
           end
           
           it 'returns a HTTP STATUS 401' do
             expect(response).to have_http_status(:unauthorized)
-            puts json_response
           end
           
           it 'returns an error message' do
-            byebug
             expect(json_response[:message]).to eq('You are not the owner of this message')
           end
         end
 
         context 'when trying to update a message that is not the last one' do
-          let(:message1) { create(:message, chat_id: chat.id, user_id: user.id) }
-          let(:message2) { create(:message, chat_id: chat.id, user_id: user.id) }
-          let(:id) { chat.id }
-          let(:message1_id) { 1 }
-          let(:message2_id) { 2 }
-
           before do
             login_with_api(user)
             token
             @json_response = nil
-            attributes[:message_id] = message1.id
+            create(:message, chat_id: chat.id, user_id: user.id)
+            message.id = Message.first.id
             update_message
           end
 
-          it 'returns a HTTP STATUS 404' do
-            expect(response).to have_http_status(:not_found)
+          it 'returns a HTTP STATUS 401' do
+            expect(response).to have_http_status(:unauthorized)
           end
+
           it 'returns an error message' do
-            expect(json_response[:error]).to eq('This is not the last message of this chat')
+            expect(json_response[:message]).to eq('This is not the last message of this chat')
           end
         end
       end

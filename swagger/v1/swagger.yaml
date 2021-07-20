@@ -746,6 +746,8 @@ paths:
                         description:
                           type: string
                           nullable: true
+        '400':
+          description: bad request
         '401':
           description: unauthorized
         '422':
