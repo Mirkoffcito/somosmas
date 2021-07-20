@@ -448,6 +448,55 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+  "/api/chats":
+    get:
+      summary: Get all chats
+      tags:
+      - Chats
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of chats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chats:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        created_at:
+                          type: string
+                        users:
+                          type: array
+                          items:
+                            properties:
+                              id:
+                                type: integer
+                              first_name:
+                                type: string
+                              last_name:
+                                type: string
+                              role:
+                                type: object
+                                items:
+                                  id:
+                                    type: integer
+                                  name:
+                                    type: string
+                                  description:
+                                    type: string
+                              image:
+                                type: string
   "/api/comments":
     get:
       summary: Get all comments
@@ -837,6 +886,46 @@ paths:
         '401':
           description: unauthorized
   "/api/chats/{id}/messages":
+    get:
+      summary: List all chat messages
+      tags:
+      - Messages
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: array
+                    items:
+                      id:
+                        type: integer
+                      detail:
+                        type: string
+                      chat:
+                        type: object
+                        items:
+                          id:
+                            type: integer
+        '401':
+          description: unauthorized
+        '404':
+          description: chat not found
     post:
       summary: Sent a message
       tags:

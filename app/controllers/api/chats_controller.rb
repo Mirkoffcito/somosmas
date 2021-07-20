@@ -4,14 +4,18 @@ module Api
   class ChatsController < ApplicationController
     skip_before_action :authenticate_admin
 
+    def index
+      @chats = @current_user.chats
+      paginate @chats, per_page: 10, each_serializer: ChatSerializer
+    end
+
     def create
       if chat_user.blank?
-        byebug
         chat = Chat.new
         chat.chat_users.build(user_id: @current_user.id)
         chat.chat_users.build(user_id: params[:receiver])
       else
-        chat = chat_user.chat 
+        chat = chat_user.chat
       end
 
       if chat.save
@@ -22,21 +26,6 @@ module Api
     end
 
     private
-
-    # def params_attr
-    #   byebug
-    #   params.require(:chat).permit(:receiver)
-    # end
-
-    # def message_params
-    #   params_attr[:message].merge(user_id: @current_user.id)
-    # end
-
-    # def chat_params
-    #   byebug
-    #   params_attr.slice(:receiver)
-    #                   .merge(messages_attributes: [message_params])
-    # end
 
     def chat_user
       ChatUser.find_by(user_id: @current_user.id, chat_id: ChatUser.where(user_id: params[:receiver]).select(:chat_id))

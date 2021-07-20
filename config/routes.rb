@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     get 'my_contacts', to: 'contacts#my_contacts'
     get 'news/:id/comments', to: 'news#list_comment_news'
     post 'chats/:id/messages', to: 'messages#create'
+    get 'chats/:id/messages', to: 'messages#index'
 
     resources :messages, only: [:show]
     resources :news, only: [:show, :destroy, :create, :update, :index]
@@ -26,8 +27,8 @@ Rails.application.routes.draw do
     resources :testimonials, only: [:create, :update, :destroy, :index]
     resources :members, only: [:index, :destroy, :create, :update]
     resources :comments, only: [:index, :create, :update, :destroy]
-    resources :messages, only: :create
-    resources :chats, only: [:create]
+    resources :chats, only: [:index, :create]
+    resources :messages, only: [:create]
     
   end
 
