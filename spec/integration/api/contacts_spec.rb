@@ -3,13 +3,11 @@
 require 'swagger_helper'
 
 RSpec.describe '../integration/api/contacts', type: :request do
-  let(create_contacts) { create_list(:contact, 10) }
-  before {create_contacts }
+  # User.skip_callback(:create, :after, :send_mail)
   describe 'Contacts' do
     path '/api/backoffice/contacts' do
-
       get 'Lists all contacts' do
-        tags ' Contacts'
+        tags 'Contacts'
         produces 'application/json'
         security [bearer_auth: {}]
         parameter name: :Authorization, in: :header, type: :string
@@ -21,7 +19,7 @@ RSpec.describe '../integration/api/contacts', type: :request do
                 type: :array,
                 items: {
                   properties: {
-                    id: { type: :integer },
+                    user_id: { type: :integer },
                     message: { type: :string },
                     created_at: { type: :string }
                   },
@@ -38,8 +36,8 @@ RSpec.describe '../integration/api/contacts', type: :request do
     end
 
     path '/api/contacts' do
-      post 'Creates an contact' do
-        tags ' Contacts '
+      post 'Creates a contact' do
+        tags 'Contacts'
         consumes 'application/json'
         produces 'application/json'
         security [bearer_auth:{}]
@@ -86,9 +84,11 @@ RSpec.describe '../integration/api/contacts', type: :request do
     end 
     path '/api/my_contacts' do
       get 'Lists my contacts' do
-        tags ' Contacts '
+        tags 'Contacts'
         produces 'application/json'
+        security [bearer_auth: {}]
         parameter name: :Authorization, in: :header, type: :string
+
         response '200', 'lists contacts' do
           schema type: :object,
             properties: {
@@ -96,10 +96,9 @@ RSpec.describe '../integration/api/contacts', type: :request do
                 type: :array,
                 items: {
                   properties: {
-                    id: { type: :integer },
-                    name: { type: :string },
+                    user_id: { type: :integer },
+                    created_at: { type: :integer },
                     message: { type: :string },
-                    created_at: { type: :string }
                   },
                 }
               }
