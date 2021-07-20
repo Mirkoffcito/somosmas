@@ -57,7 +57,7 @@ RSpec.describe '../integration/api/contacts', type: :request do
           }
         }
 
-        response '201', 'Activity created' do
+        response '201', 'Contact created' do
           schema type: :object,
             properties: {
               contact: {
