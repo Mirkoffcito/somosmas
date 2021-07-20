@@ -25,7 +25,7 @@ module Api
     private
 
     def contact_params
-      params.require(:contact).permit(:name, :message, :email)
+      params.require(:contact).permit(:name, :message, :email, :user_id)
     end
 
   end
