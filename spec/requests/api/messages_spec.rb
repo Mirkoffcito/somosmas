@@ -94,82 +94,82 @@ RSpec.describe 'Messages', type: :request do
     end
   end
 
-  # describe "POST /api/chats/#{@id}/messages" do
-  #   subject(:create_message) do
-  #     post "/api/chats/#{@id}/messages",
-  #       headers: { 'Authorization': token },
-  #       params: { message: attributes }
-  #   end
+  describe "POST /api/chats/#{@id}/messages" do
+    subject(:create_message) do
+      post "/api/chats/#{@id}/messages",
+        headers: { 'Authorization': token },
+        params: { message: attributes }
+    end
 
-  #   context "when user's not logged in" do
-  #     let(:token) { '' }
-  #     before do
-  #       @id = 1
-  #       create_message
-  #     end
+    context "when user's not logged in" do
+      let(:token) { '' }
+      before do
+        @id = 1
+        create_message
+      end
 
-  #     it 'returns a HTTP STATUS 401' do
-  #       expect(response).to have_http_status(:unauthorized)
-  #     end
+      it 'returns a HTTP STATUS 401' do
+        expect(response).to have_http_status(:unauthorized)
+      end
 
-  #     it 'returns an error message' do
-  #       expect(json_response[:message]).to eq('Unauthorized access.')
-  #     end
-  #   end
+      it 'returns an error message' do
+        expect(json_response[:message]).to eq('Unauthorized access.')
+      end
+    end
 
-  #   context 'when user is logged' do
+    context 'when user is logged' do
 
-  #     let(:user) { create(:user, :client_user) }
-  #     let(:token) { json_response[:user][:token] }
-  #     let(:chat) { create(:chat) }
-  #     let!(:chat_user) { create(:chat_user, user_id: user.id, chat_id: chat.id) }
+      let(:user) { create(:user, :client_user) }
+      let(:token) { json_response[:user][:token] }
+      let(:chat) { create(:chat) }
+      let!(:chat_user) { create(:chat_user, user_id: user.id, chat_id: chat.id) }
 
-  #     context 'when chat exists' do
-  #       before do |example|
-  #         login_with_api(user)
-  #         token
-  #         @id = chat.id
-  #         @json_response = nil
-  #         create_message unless example.metadata[:skip_before]
-  #       end
+      context 'when chat exists' do
+        before do |example|
+          login_with_api(user)
+          token
+          @id = chat.id
+          @json_response = nil
+          create_message unless example.metadata[:skip_before]
+        end
         
-  #       it 'adds 1 message to the database', :skip_before do
-  #         expect { create_message }.to change(Message, :count).by(1)
-  #       end
+        it 'adds 1 message to the database', :skip_before do
+          expect { create_message }.to change(Message, :count).by(1)
+        end
   
-  #       it 'returns a HTTP STATUS 201' do
-  #         expect(response).to have_http_status(:created)
-  #       end
-  #     end
+        it 'returns a HTTP STATUS 201' do
+          expect(response).to have_http_status(:created)
+        end
+      end
 
-  #     context 'when chat does not exist' do
-  #       before do |example|
-  #         login_with_api(user)
-  #         token
-  #         @id = 99
-  #         @json_response = nil
-  #         create_message unless example.metadata[:skip_before]
-  #       end
+      context 'when chat does not exist' do
+        before do |example|
+          login_with_api(user)
+          token
+          @id = 99
+          @json_response = nil
+          create_message unless example.metadata[:skip_before]
+        end
         
-  #       it 'returns a HTTP STATUS 404' do
-  #         expect(response).to have_http_status(:not_found)
-  #       end
+        it 'returns a HTTP STATUS 404' do
+          expect(response).to have_http_status(:not_found)
+        end
 
-  #       it 'keeps database the same', :skip_before do
-  #         expect { create_message }.to change(Message, :count).by(0)
-  #       end
-  #     end
-  #   end
-  # end
+        it 'keeps database the same', :skip_before do
+          expect { create_message }.to change(Message, :count).by(0)
+        end
+      end
+    end
+  end
    
-  describe "PUT /api/chats/:id/messages/:id" do
+  describe "PUT /api/chats/:id/messages" do
     let(:user) { create(:user, :client_user) }
     let(:chat) { create(:chat) }
     let(:chat_user) { create(:chat_user, user_id: user.id) }
     let(:message) { create(:message, chat_id: chat.id, user_id: user.id) }
 
     subject(:update_message) do
-      patch "/api/chats/#{chat_id}/messages/#{id}",
+      patch "/api/chats/#{chat_id}/messages",
         headers: { 'Authorization': token },
         params: { message: attributes }
     end
@@ -177,7 +177,6 @@ RSpec.describe 'Messages', type: :request do
     context 'when user is not logged' do
       let(:token) { '' }
       let(:chat_id) { chat.id }
-      let(:id) { message.id }
 
       before { update_message }
 
@@ -194,8 +193,7 @@ RSpec.describe 'Messages', type: :request do
       let(:token) { json_response[:user][:token] }
 
       context 'when message does not exist' do
-        let(:chat_id) { 1 }
-        let(:id) { 99 }
+        let(:chat_id) { 99 }
 
         before do
           login_with_api(user)
@@ -215,7 +213,6 @@ RSpec.describe 'Messages', type: :request do
 
       context 'when message exists' do
         let(:chat_id) { chat.id }
-        let(:id) { message.id }
         
         context 'when belongs to current user' do
           before do
@@ -275,7 +272,6 @@ RSpec.describe 'Messages', type: :request do
 
         context 'when trying to update a message that is not the last one' do
           let(:chat_id) { chat.id }
-          let(:id) { 1 }
           before do
             login_with_api(user)
             token

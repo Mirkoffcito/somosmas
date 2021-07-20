@@ -20,7 +20,7 @@ module Api
 
     def update
       @message = chat.messages.last
-      if @message.user_id == @current_user.id
+      if message.user_id == @current_user.id
         if @message.update(message_update_params)
           @message.update(modified: true)
           render json: @message, serializer: MessageSerializer, status: :ok
