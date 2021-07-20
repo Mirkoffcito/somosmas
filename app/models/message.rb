@@ -6,6 +6,8 @@ class Message < ApplicationRecord
 
   before_save :profanity
 
+  default_scope { order(created_at: :desc) }
+
   private
   
   def generate_string(number)
