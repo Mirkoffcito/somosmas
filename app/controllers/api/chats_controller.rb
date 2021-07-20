@@ -5,13 +5,13 @@ module Api
     skip_before_action :authenticate_admin
 
     def create
-      chat = find_chat
-
-      if chat.blank?
-        chat = Chat.new(chat_params)
-        chat.user1 = @current_user.id
+      if chat_user.blank?
+        byebug
+        chat = Chat.new
+        chat.chat_users.build(user_id: @current_user.id)
+        chat.chat_users.build(user_id: params[:receiver])
       else
-        chat.messages.build(message_params)
+        chat = chat_user.chat 
       end
 
       if chat.save
@@ -23,23 +23,23 @@ module Api
 
     private
 
-    def permitted_params
-      params.require(:chat).permit(:user2, message: [:detail])
-    end
+    # def params_attr
+    #   byebug
+    #   params.require(:chat).permit(:receiver)
+    # end
 
-    def message_params
-      permitted_params[:message].merge(user_id: @current_user.id)
-    end
+    # def message_params
+    #   params_attr[:message].merge(user_id: @current_user.id)
+    # end
 
-    def chat_params
-      permitted_params.slice(:user2)
-                      .merge(messages_attributes: [message_params])
-    end
+    # def chat_params
+    #   byebug
+    #   params_attr.slice(:receiver)
+    #                   .merge(messages_attributes: [message_params])
+    # end
 
-    def find_chat
-      Chat.where(user1: @current_user.id,
-                 user2: params[:chat][:user2]).or(Chat.where(user1: params[:chat][:user2],
-                                                             user2: @current_user.id)).first
+    def chat_user
+      ChatUser.find_by(user_id: @current_user.id, chat_id: ChatUser.where(user_id: params[:receiver]).select(:chat_id))
     end
   end
 end

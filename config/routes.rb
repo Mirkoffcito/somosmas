@@ -27,6 +27,7 @@ Rails.application.routes.draw do
     resources :members, only: [:index, :destroy, :create, :update]
     resources :comments, only: [:index, :create, :update, :destroy]
     resources :messages, only: :create
+    resources :chats, only: [:create]
     
   end
 
