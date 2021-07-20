@@ -28,10 +28,10 @@ module Api
             render json: @message, serializer: MessageSerializer, status: :ok
           end
         else
-          render json: {error: 'You are not the owner of this message'}, status: :unauthorized
+          render json: {message: 'You are not the owner of this message'}, status: :unauthorized
         end
       else
-        render json: {error: 'This is not the last message of this chat'}, status: :unauthorized
+        render json: {message: 'This is not the last message of this chat'}, status: :unauthorized
       end 
     end
 
