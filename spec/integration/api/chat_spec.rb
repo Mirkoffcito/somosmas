@@ -7,10 +7,12 @@ RSpec.describe '../integration/api/chats', type: :request do
     path '/api/chats' do
       
       get 'Get all chats' do
-        tags 'New'
+        tags 'Chats'
         consumes 'application/json'
         produces 'application/json'
-      
+        security [bearer_auth: {}]
+        parameter name: :Authorization, in: :header, type: :string
+    
         response '200', 'List of chats' do
           schema type: :object,
             properties: {
@@ -19,7 +21,7 @@ RSpec.describe '../integration/api/chats', type: :request do
                   items:{
                     properties: {
                       id: { type: :integer },
-                      created_at: { type: string }
+                      created_at: { type: :string }
                     }
                   }
                 }
@@ -27,3 +29,6 @@ RSpec.describe '../integration/api/chats', type: :request do
           run_test!
         end
       end
+    end
+  end
+end
