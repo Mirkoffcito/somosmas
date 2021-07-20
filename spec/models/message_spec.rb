@@ -20,6 +20,9 @@ RSpec.describe Message, type: :model do
         # it will return false, because the message has been censored 
         expect(profanities.any? { |word| message.detail.include?(word) } ).to eq(false)
       end
+      it "changes 'censored' flag from false to true" do
+        expect(message.censored).to eq(true)
+      end
     end
 
     context 'message does not contain profanities' do
@@ -30,6 +33,9 @@ RSpec.describe Message, type: :model do
         # it will check if any of profanities words are included in the created message
         # it will return false, because the message has been censored 
         expect(profanities.any? { |word| message.detail.include?(word) } ).to eq(false)
+      end
+      it 'does not change censored flag from false to true' do
+        expect(message.censored).to eq(false)
       end
     end
   end
