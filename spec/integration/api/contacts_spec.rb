@@ -104,10 +104,10 @@ RSpec.describe '../integration/api/contacts', type: :request do
               }
             }
           run_test!
+        end   
+        response '401', 'unauthorized' do
+          run_test!
         end
-      end
-      response '401', 'unauthorized' do
-        run_test!
       end
     end
   end
