@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     get 'news/:id/comments', to: 'news#list_comment_news'
     post 'chats/:id/messages', to: 'messages#create'
     patch 'chats/:id/messages/:message_id', to: 'messages#update'
-
+    get 'chats/:id/messages', to: 'messages#index'
 
     resources :news, only: [:show, :destroy, :create, :update, :index]
     resources :slides, only: [:index, :update, :destroy, :show, :create]
@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     resources :members, only: [:index, :destroy, :create, :update]
     resources :comments, only: [:index, :create, :update, :destroy]
     resources :messages, only: [:create, :show]
+    resources :chats, only: [:index ]
     
   end
 

@@ -31,7 +31,7 @@ RSpec.describe 'Authentications', type: :request do
         create_list(:article, 10)
         get_news
       end
-
+      
       it 'returns a HTTP STATUS 200' do
         expect(response).to have_http_status(:ok)
       end

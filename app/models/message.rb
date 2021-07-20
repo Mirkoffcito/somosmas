@@ -7,6 +7,7 @@ class Message < ApplicationRecord
   before_save :profanity
 
   validates :detail, presence: true
+  default_scope { order(created_at: :desc) }
 
   private
   
@@ -22,6 +23,7 @@ class Message < ApplicationRecord
       profanities.each do |str|
         if str.word.in? pal.downcase
           test[i] = generate_string(pal.length) # reemplaza la palabra con un string
+          self.censored ||= true
         end
       end
     end
