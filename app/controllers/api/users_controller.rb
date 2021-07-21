@@ -32,7 +32,7 @@ module Api
     def update
       if user.id == @current_user.id
         if user.update(user_update_params)
-            render json: user
+          render json: user
         else
           render json: user.errors, status: :bad_request
         end

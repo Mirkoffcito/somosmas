@@ -99,9 +99,9 @@ RSpec.describe 'Messages', type: :request do
 
   describe "GET /api/chats/:id/messages" do
     let(:token) {  json_response[:user][:token] }
-    let!(:sender) { create(:user, :client_user) }
+    let(:sender) { create(:user, :client_user) }
     let(:receiver) { create(:user, id: 2) }
-    let!(:chat) { create(:chat) }
+    let(:chat) { create(:chat) }
     let!(:chat_user) { create(:chat_user, user_id: sender.id, chat_id: chat.id) }
     
     subject(:get_messages) do
