@@ -2,7 +2,7 @@ require 'swagger_helper'
 
 RSpec.describe '../integration/api/comments', type: :request do
   describe 'Comments API' do
-    path '/api/comments' do
+    path '/api/backoffice/comments' do
       get 'Get all comments' do
         tags 'Comments'
         consumes 'application/json'
@@ -30,7 +30,9 @@ RSpec.describe '../integration/api/comments', type: :request do
           run_test!
         end
       end
+    end
 
+    path '/api/comments' do
       post '/api/comments' do
         tags 'Comments'
         consumes 'application/json'
