@@ -7,6 +7,7 @@ FactoryBot.define do
     last_name { Faker::Name.last_name }
     password { Faker::Internet.password }
     password_confirmation { password }
+    settings {'none'}
 
     trait :admin_user do
       association :role, factory: :admin

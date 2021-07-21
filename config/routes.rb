@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     get 'my_contacts', to: 'contacts#my_contacts'
     get 'news/:id/comments', to: 'news#list_comment_news'
     post 'chats/:id/messages', to: 'messages#create'
-    get 'chats/:id/messages', to: 'messages#index'
+    get 'chats/:id/messages', to: 'messages#index', defaults: {format: :json}
 
     resources :messages, only: [:show]
     resources :news, only: [:show, :destroy, :create, :update, :index]

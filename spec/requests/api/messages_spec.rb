@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Messages', type: :request do
+  User.skip_callback(:create, :after, :send_mail)
   let(:attributes) { attributes_for :message }
 
   describe 'GET /api/messages/:id' do
@@ -98,9 +99,9 @@ RSpec.describe 'Messages', type: :request do
 
   describe "GET /api/chats/:id/messages" do
     let(:token) {  json_response[:user][:token] }
-    let(:sender) { create(:user, :client_user) }
+    let!(:sender) { create(:user, :client_user) }
     let(:receiver) { create(:user, id: 2) }
-    let(:chat) { create(:chat) }
+    let!(:chat) { create(:chat) }
     let!(:chat_user) { create(:chat_user, user_id: sender.id, chat_id: chat.id) }
     
     subject(:get_messages) do
@@ -199,9 +200,32 @@ RSpec.describe 'Messages', type: :request do
         end
       end
     end
+
+    context 'when user has upcase settings' do
+      let(:userr) { create(:user, settings:'upcase', id:3) }
+      let(:token) { JSON.parse(response.body, symbolize_names: true)[:user][:token] }
+      let(:chat) { create(:chat) }
+      let(:chuser) { create(:chat_user, user_id: userr.id, chat_id: chat.id) }
+      let(:message) { create(:message, user_id: userr.id, chat_id: chat.id, detail:'boa noite') }
+      let(:id) { chat.id }
+      before do
+        login_with_api(userr)
+        byebug
+        token
+        @json_response = nil
+        get_messages
+      end
+      it 'returns messages detail in upcase format' do
+        json_response[:messages].each do |message|
+          byebug
+          expect(message[:detail]).to eq(message[:detail].upcase)
+        end
+      end
+    end
+
   end
   
-  describe "POST /api/chats/#{@id}/messages" do
+  describe "POST /api/chats/id/messages" do
     subject(:create_message) do
       post "/api/chats/#{@id}/messages",
         headers: { 'Authorization': token },
