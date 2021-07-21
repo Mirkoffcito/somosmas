@@ -35,11 +35,8 @@ module Api
                       status: :unauthorized
       end
 
-      if last_message.id == message.id && message.user_id == @current_user.id
-        @message.update(message_update_params)
-        @message.update(modified: true)
-        render json: @message, serializer: MessageSerializer, status: :ok
-      end
+      @message.update(message_update_params.merge({ modified: true }))
+      render json: @message, serializer: MessageSerializer, status: :ok
     end
 
     private
