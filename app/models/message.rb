@@ -11,7 +11,7 @@ class Message < ApplicationRecord
   private
 
   def analysis
-    Sentimental.analysis(self)
+    SentimentalAnalysis.analysis(self)
   end
   
   def generate_string(number)

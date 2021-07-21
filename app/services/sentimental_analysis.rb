@@ -1,7 +1,7 @@
 require 'rest-client'
 require 'json'
 
-class Sentimental 
+class SentimentalAnalysis
 
   def self.analysis(detail)
     url = 'https://sentim-api.herokuapp.com/api/v1/'
