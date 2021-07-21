@@ -6,6 +6,7 @@ class Message < ApplicationRecord
 
   before_save :profanity
 
+  validates :detail, presence: true
   default_scope { order(created_at: :desc) }
 
   private

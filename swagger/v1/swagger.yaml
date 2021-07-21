@@ -979,6 +979,60 @@ paths:
                         type: string
               required:
               - detail
+    put:
+      summary: Updates a message
+      tags:
+      - Messages
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type: object
+                  properties:
+                    message:
+                      type: object
+                      items:
+                        properties:
+                          detail:
+                            type: string
+                    required:
+                    - detail
+        '400':
+          description: Parameter is missing or its value is empty
+        '401':
+          description: unauthorized
+        '404':
+          description: not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: object
+                  items:
+                    properties:
+                      detail:
+                        type: string
+              required:
+              - detail
   "/api/news":
     get:
       summary: Get all news
