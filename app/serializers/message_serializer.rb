@@ -6,14 +6,14 @@ class MessageSerializer < ActiveModel::Serializer
 
   def detail
     case object.user.settings
-    when 'downcase' # Uppercase
+    when 'downcase' # downcase
       object.detail.downcase
-    when 'upcase' # lowercase
+    when 'upcase' # upcase
       object.detail.upcase
-    when 'accentless'
+    when 'accentless' # sin tildes
       I18n.transliterate(object.detail)
     else
-      object.detail
+      object.detail # sin configuracion
     end
   end
 end
