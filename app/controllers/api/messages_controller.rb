@@ -26,10 +26,14 @@ module Api
       last_message = chat.messages.last
       @message = Message.find(params[:message_id])
 
-      return render json: { message: 'This is not the last message of this chat' },
-        status: :unauthorized if last_message.id != message.id
-      return render json: { message: 'You are not the owner of this message' },
-          status: :unauthorized if message.user_id != @current_user.id 
+      if last_message.id != message.id
+        return render json: { message: 'This is not the last message of this chat' },
+                      status: :unauthorized
+      end
+      if message.user_id != @current_user.id
+        return render json: { message: 'You are not the owner of this message' },
+                      status: :unauthorized
+      end
 
       if last_message.id == message.id && message.user_id == @current_user.id
         @message.update(message_update_params)
