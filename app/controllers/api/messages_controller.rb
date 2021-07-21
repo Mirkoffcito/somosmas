@@ -2,14 +2,12 @@
 
 module Api
   class MessagesController < ApplicationController
-    skip_before_action :authenticate_admin, only: [:show, :create, :index, :update]
+    skip_before_action :authenticate_admin, only: %i[show create index update]
 
     def index
-      if chat.users.to_a.any?(@current_user)
-        paginate @chat.messages, per_page: 10, each_serializer: MessageSerializer
-      end
+      paginate @chat.messages, per_page: 10, each_serializer: MessageSerializer if chat.users.to_a.any?(@current_user)
     end
-    
+
     def show
       render json: message, serializer: MessageSerializer, status: :ok
     end
@@ -27,27 +25,26 @@ module Api
     def update
       last_message = chat.messages.last
       @message = Message.find(params[:message_id])
-      if last_message.id == message.id
-        if message.user_id == @current_user.id 
-          if @message.update(message_update_params)
-            @message.update(modified: true)
-            render json: @message, serializer: MessageSerializer, status: :ok
-          end
-        else
-          render json: {message: 'You are not the owner of this message'}, status: :unauthorized
-        end
-      else
-        render json: {message: 'This is not the last message of this chat'}, status: :unauthorized
-      end 
+
+      return render json: { message: 'This is not the last message of this chat' },
+        status: :unauthorized if last_message.id != message.id
+      return render json: { message: 'You are not the owner of this message' },
+          status: :unauthorized if message.user_id != @current_user.id 
+
+      if last_message.id == message.id && message.user_id == @current_user.id
+        @message.update(message_update_params)
+        @message.update(modified: true)
+        render json: @message, serializer: MessageSerializer, status: :ok
+      end
     end
 
-   private
+    private
 
     def message
       @message ||= @current_user.messages.find(params[:id])
     end
 
-    def chat 
+    def chat
       @chat ||= Chat.find(params[:id])
     end
 
