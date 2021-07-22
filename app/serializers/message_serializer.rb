@@ -6,7 +6,7 @@ class MessageSerializer < ActiveModel::Serializer
   belongs_to :chat
 
   def analysis
-    SentimentalAnalysis.external_api(self)
+    SentimentalAnalysis.external_api(object.detail)
   end
 end
  

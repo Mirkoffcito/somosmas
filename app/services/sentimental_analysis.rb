@@ -11,10 +11,10 @@ class SentimentalAnalysis
   def self.external_api(detail)
     body = { "text": "#{detail}" }    
     response = RestClient::Request.execute(method: :post, :url => URL, :headers => HEADERS, :payload => body.to_json)
+    # build_response(response)
   end
 
-  def build_response
-    byebug
+  def build_response(response)
     if response.code == 200
       response = JSON.parse(response)
       response['result']
