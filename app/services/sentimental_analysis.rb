@@ -3,11 +3,7 @@ require 'json'
 
 class SentimentalAnalysis
 
-  def self.analysis(detail, url, headers)
-    body = { "text": "#{detail}" }
-      
-    response = RestClient::Request.execute(method: :post, :url => url, :headers => headers, :payload => body.to_json)
-    
+  def self.analysis(response)
     if response.code == 200
       response = JSON.parse(response) 
       response['result']
