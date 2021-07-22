@@ -6,7 +6,7 @@ class MessageSerializer < ActiveModel::Serializer
   belongs_to :chat
 
   def analysis
-    url = 'https://sentim-api.herokuapp.com/api/v1/'
+    url = 'https://sentim-api.herokuapp.com/api/v1/'.freeze
     headers = { "Content-Type": 'application/json' }.freeze
     body = { "text": to_s }
     response = RestClient::Request.execute(method: :post, url: url, headers: headers, payload: body.to_json)
