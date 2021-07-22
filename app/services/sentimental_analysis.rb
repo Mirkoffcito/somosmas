@@ -4,7 +4,17 @@ require 'rest-client'
 require 'json'
 
 class SentimentalAnalysis
-  def self.analysis(response)
+
+  URL = 'https://sentim-api.herokuapp.com/api/v1/'.freeze
+  HEADERS = { "Content-Type": "application/json" }.freeze
+
+  def self.external_api(detail)
+    body = { "text": "#{detail}" }    
+    response = RestClient::Request.execute(method: :post, :url => URL, :headers => HEADERS, :payload => body.to_json)
+  end
+
+  def build_response
+    byebug
     if response.code == 200
       response = JSON.parse(response)
       response['result']
