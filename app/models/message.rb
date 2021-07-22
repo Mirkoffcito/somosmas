@@ -10,10 +10,6 @@ class Message < ApplicationRecord
   default_scope { order(created_at: :desc) }
 
   private
-
-  def analysis
-    SentimentalAnalysis.analysis(self)
-  end
   
   def generate_string(number)
     charset = ['&','%','$','#','*']
