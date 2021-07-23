@@ -5,7 +5,9 @@ module Api
     skip_before_action :authenticate_admin, only: %i[show create index update]
 
     def index
-      paginate @chat.messages, per_page: 10, each_serializer: MessageSerializer if chat.users.to_a.any?(@current_user)
+      if chat.users.to_a.any?(@current_user)
+        paginate @chat.messages.includes(:user), per_page: 10, each_serializer: MessageSerializer
+      end
     end
 
     def show

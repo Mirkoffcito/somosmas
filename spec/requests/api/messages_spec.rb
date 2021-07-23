@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Messages', type: :request do
+  User.skip_callback(:create, :after, :send_mail)
   let(:attributes) { attributes_for :message }
 
   describe 'GET /api/messages/:id' do
@@ -199,7 +200,7 @@ RSpec.describe 'Messages', type: :request do
     end
   end
   
-  describe "POST /api/chats/#{@id}/messages" do
+  describe "POST /api/chats/id/messages" do
     subject(:create_message) do
       post "/api/chats/#{@id}/messages",
         headers: { 'Authorization': token },
