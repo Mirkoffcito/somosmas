@@ -24,6 +24,13 @@ RSpec.describe '../integration/api/messages', type: :request do
                   items: {
                     id: {type: :integer }
                   }
+                },
+                analysis: {
+                  type: :object,
+                  items: {
+                    polarity: { type: :float },
+                    type: { type: :string }
+                  }
                 }
               }
             }
@@ -64,6 +71,13 @@ RSpec.describe '../integration/api/messages', type: :request do
                   type: :object,
                   items: {
                     id: {type: :integer }
+                  }
+                },
+                analysis: {
+                  type: :object,
+                  items: {
+                    polarity: { type: :float },
+                    type: { type: :string }
                   }
                 }
               }
@@ -112,11 +126,24 @@ RSpec.describe '../integration/api/messages', type: :request do
                 type: :object,
                 items: {
                   id: { type: :integer },
-                  detail: { type: :string }
+                  detail: { type: :string },
+                  chat: {
+                    type: :object,
+                    items: {
+                      id: {type: :integer }
+                    }
+              },
+              analysis: {
+                type: :object,
+                items: {
+                  polarity: { type: :float },
+                  type: { type: :string }
                 }
               }
             }
-            run_test!
+          }
+        }
+          run_test!
         end
 
         response '401', 'unauthorized' do
