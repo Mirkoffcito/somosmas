@@ -6,7 +6,7 @@ module Api
 
     def index
       if chat.users.to_a.any?(@current_user)
-        paginate @chat.messages, per_page: 10, each_serializer: MessageSerializer
+        paginate @chat.messages.includes(:user), per_page: 10, each_serializer: MessageSerializer
       end
     end
     

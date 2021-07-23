@@ -5,15 +5,6 @@ class MessageSerializer < ActiveModel::Serializer
   belongs_to :user, serializer: UserClientIndexSerializer
 
   def detail
-    case object.user.settings
-    when 'downcase' # downcase
-      object.detail.downcase
-    when 'upcase' # upcase
-      object.detail.upcase
-    when 'accentless' # sin tildes
-      I18n.transliterate(object.detail)
-    else
-      object.detail # sin configuracion
-    end
+    MessageService.user_config(object.user.settings,  object.detail)
   end
 end
