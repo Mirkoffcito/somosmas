@@ -17,7 +17,10 @@ module Api
       else
         chat = chat_user.chat
       end
-      chat.messages.build(message_params)
+      
+      if message_params
+        chat.messages.build(message_params)
+      end
   
       if chat.save
         render json: chat, serializer: ChatSerializer, status: :created
@@ -37,7 +40,9 @@ module Api
     end
 
     def message_params
-      params_attr[:message].merge(user_id: @current_user.id)
+      if params_attr[:message]
+        params_attr[:message].merge(user_id: @current_user.id)
+      end
     end
 
     def chat_user
