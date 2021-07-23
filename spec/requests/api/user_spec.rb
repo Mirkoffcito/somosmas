@@ -20,7 +20,7 @@ RSpec.describe 'Users', type: :request do
 
     context 'when users is logged' do
       subject { get '/api/users', headers: @headers }
-      User.skip_callback(:create, :after, :send_mail)
+      # User.skip_callback(:create, :after, :send_mail)
       let!(:users) { create_list(:user, 8) }
 
       context 'when user is admin' do

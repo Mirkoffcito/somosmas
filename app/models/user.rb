@@ -16,6 +16,8 @@ class User < ApplicationRecord
 
   has_secure_password
 
+  enum settings: { upcase: 'upcase', downcase: 'downcase', accentless: 'accentless', no_settings: 'none' }
+
   validates :first_name, presence: true
   validates :last_name, presence: true
 

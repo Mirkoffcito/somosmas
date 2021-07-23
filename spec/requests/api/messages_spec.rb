@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Messages', type: :request do
+  User.skip_callback(:create, :after, :send_mail)
   let(:attributes) { attributes_for :message }
 
   describe 'GET /api/messages/:id' do
@@ -72,6 +73,11 @@ RSpec.describe 'Messages', type: :request do
             expect(json_response[:message]).to have_key(:detail)
             expect(json_response[:message]).to have_key(:chat)
           end
+
+          it 'check that message to have polarity and type' do
+            expect(json_response[:message][:analysis]).to have_key(:polarity)
+            expect(json_response[:message][:analysis]).to have_key(:type)
+          end
         end
   
         context 'when not belongs to current user' do
@@ -89,14 +95,12 @@ RSpec.describe 'Messages', type: :request do
           it 'returns an error message' do
             expect(json_response[:message]).to eq('Unauthorized access.')
           end
-
         end
-        
       end
     end
   end
 
-  describe "GET /api/chats/:id/messages" do
+  describe 'GET /api/chats/:id/messages' do
     let(:token) {  json_response[:user][:token] }
     let(:sender) { create(:user, :client_user) }
     let(:receiver) { create(:user, id: 2) }
@@ -140,7 +144,7 @@ RSpec.describe 'Messages', type: :request do
         end
 
         it 'returns an error message' do
-          expect(json_response[:error]).to eq ('message not found')
+          expect(json_response[:error]).to eq('message not found')
         end
       end
 
@@ -175,11 +179,18 @@ RSpec.describe 'Messages', type: :request do
             it 'returns a list of messages' do
               expect(json_response[:messages].count).to eq(10)
             end
-
+            
             it 'checks that each message has id, detail and chat keys' do
               expect(json_response[:messages]).to all(have_key(:id))
               expect(json_response[:messages]).to all(have_key(:detail))
               expect(json_response[:messages]).to all(have_key(:chat))
+            end
+
+            it 'check all messages to have polarity and type' do
+              json_response[:messages].each do |message|
+                expect(message[:analysis]).to have_key(:polarity)
+                expect(message[:analysis]).to have_key(:type)
+              end
             end
           end
 
@@ -201,7 +212,7 @@ RSpec.describe 'Messages', type: :request do
     end
   end
   
-  describe "POST /api/chats/#{@id}/messages" do
+  describe "POST /api/chats/id/messages" do
     subject(:create_message) do
       post "/api/chats/#{@id}/messages",
         headers: { 'Authorization': token },
@@ -265,7 +276,141 @@ RSpec.describe 'Messages', type: :request do
         it 'keeps database the same', :skip_before do
           expect { create_message }.to change(Message, :count).by(0)
         end
+      end
+    end
+  end
+   
+  describe "PUT chats/:id/messages/:message_id" do
+    let(:user) { create(:user, :client_user) }
+    let(:chat) { create(:chat) }
+    let(:chat_user) { create(:chat_user, chat_id: chat.id, user_id: user.id) }
+    let(:message) { create(:message, chat_id: chat.id, user_id: user.id) }
+    
+    subject(:update_message) do
+      patch "/api/chats/#{id}/messages/#{message_id}",
+        headers: { 'Authorization': token },
+        params: { message: attributes }
+      end
+      
+      context 'when user is not logged' do
+        let(:token) { '' }
+        let(:id) { 1 }
+        let(:message_id) { 1 }
         
+        before { update_message }
+        
+        it 'return a HTTP STATUS 401' do
+          expect(response).to have_http_status(:unauthorized)
+        end
+        
+        it 'returns an error message' do
+          expect(json_response[:message]).to eq('Unauthorized access.')
+        end
+      end
+      
+      context 'when user is logged in' do
+        let(:token) { json_response[:user][:token] }
+        
+        context 'when message does not exist' do
+          let(:id) { chat.id }
+          let(:message_id) { 999 }
+          
+          before do
+            login_with_api(user)
+            token
+            @json_response = nil
+            update_message
+          end
+          
+          it 'returns a HTTP STATUS 404' do
+            expect(response).to have_http_status(:not_found)
+          end
+          
+          it 'returns an error message' do
+            expect(json_response[:error]).to eq('message not found')
+          end
+        end
+        
+        context 'when last message exists' do
+          let(:id) { chat.id }
+          let(:message_id) { message.id }
+          
+          context 'when belongs to current user' do
+            before do
+              login_with_api(user)
+              token
+              @json_response = nil
+              attributes[:detail] = 'DETAIL TEST'
+              update_message
+            end
+            
+            it 'returns a HTTP STATUS 200' do
+              expect(response).to have_http_status(:ok)
+            end
+            
+            it 'check message to have id, detail, chat keys' do
+              expect(json_response[:message]).to have_key(:id)
+              expect(json_response[:message]).to have_key(:detail)
+              expect(json_response[:message]).to have_key(:chat)
+            end
+          end
+          
+          context 'when owner updates with empty params' do
+            let(:attributes) {}
+            before do
+              login_with_api(user)
+              token
+              @json_response = nil
+              update_message
+            end
+            
+            it 'returns a HTTP STATUS 400' do
+              expect(response).to have_http_status(:bad_request)
+            end
+
+            it 'returns a message error' do
+              expect(json_response[:error]).to eq('Parameter is missing or its value is empty')
+            end
+        end
+        
+        context 'when not belongs to current user' do
+          let!(:user2) { create(:user, :admin_user) }
+          let(:chat_user2) { create(:chat_user, chat_id: chat.id, user_id: user2.id) }
+
+          before do
+            login_with_api(user2)
+            token
+            @json_response = nil
+            update_message 
+          end
+          
+          it 'returns a HTTP STATUS 401' do
+            expect(response).to have_http_status(:unauthorized)
+          end
+          
+          it 'returns an error message' do
+            expect(json_response[:message]).to eq('You are not the owner of this message')
+          end
+        end
+
+        context 'when trying to update a message that is not the last one' do
+          before do
+            login_with_api(user)
+            token
+            @json_response = nil
+            create(:message, chat_id: chat.id, user_id: user.id)
+            message.id = Message.first.id
+            update_message
+          end
+
+          it 'returns a HTTP STATUS 401' do
+            expect(response).to have_http_status(:unauthorized)
+          end
+
+          it 'returns an error message' do
+            expect(json_response[:message]).to eq('This is not the last message of this chat')
+          end
+        end
       end
     end
   end
