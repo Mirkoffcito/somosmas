@@ -6,6 +6,8 @@ module ErrorsHelper
     rescue_from ActionController::ParameterMissing, with: :parameter_missing
     rescue_from ActiveRecord::RecordNotFound, with: :not_found
     rescue_from ActiveSupport::MessageVerifier::InvalidSignature, with: :file_type_error
+    rescue_from ArgumentError, with: :settings_error
+    
 
     def parameter_missing
       render json: { error: 'Parameter is missing or its value is empty' }, status: :bad_request
@@ -17,6 +19,10 @@ module ErrorsHelper
 
     def file_type_error
       render json: { error: 'Wrong file type' }, status: :bad_request
+    end
+
+    def settings_error
+      render json: { error: "Valid settings are: 'upcase', 'downcase', 'accentless' or 'none'(no setting)"}, status: :bad_request
     end
   end
 end

@@ -497,7 +497,7 @@ paths:
                                     type: string
                               image:
                                 type: string
-  "/api/comments":
+  "/api/backoffice/comments":
     get:
       summary: Get all comments
       tags:
@@ -527,6 +527,7 @@ paths:
                           type: string
         '401':
           description: unauthorized
+  "/api/comments":
     post:
       summary: "/api/comments"
       tags:
@@ -646,6 +647,124 @@ paths:
           description: unauthorized
         '404':
           description: not found
+  "/api/backoffice/contacts":
+    get:
+      summary: Lists all contacts
+      tags:
+      - Contacts
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: lists contacts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contacts:
+                    type: array
+                    items:
+                      properties:
+                        user_id:
+                          type: integer
+                        message:
+                          type: string
+                        created_at:
+                          type: string
+        '401':
+          description: unauthorized
+  "/api/contacts":
+    post:
+      summary: Creates a contact
+      tags:
+      - Contacts
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Contact created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contact:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      message:
+                        type: string
+                      user_id:
+                        type: integer
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contact:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    message:
+                      type: string
+                  required:
+                  - id
+                  - name
+                  - message
+  "/api/my_contacts":
+    get:
+      summary: Lists my contacts
+      tags:
+      - Contacts
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: lists contacts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contacts:
+                    type: array
+                    items:
+                      properties:
+                        user_id:
+                          type: integer
+                        created_at:
+                          type: integer
+                        message:
+                          type: string
+        '401':
+          description: unauthorized
   "/api/members":
     post:
       summary: Creates a member
@@ -881,6 +1000,13 @@ paths:
                         items:
                           id:
                             type: integer
+                      analysis:
+                        type: object
+                        items:
+                          polarity:
+                            type: float
+                          type:
+                            type: string
         '404':
           description: message not found
         '401':
@@ -922,6 +1048,13 @@ paths:
                         items:
                           id:
                             type: integer
+                      analysis:
+                        type: object
+                        items:
+                          polarity:
+                            type: float
+                          type:
+                            type: string
         '401':
           description: unauthorized
         '404':
@@ -957,6 +1090,18 @@ paths:
                         type: integer
                       detail:
                         type: string
+                      chat:
+                        type: object
+                        items:
+                          id:
+                            type: integer
+                      analysis:
+                        type: object
+                        items:
+                          polarity:
+                            type: float
+                          type:
+                            type: string
         '401':
           description: unauthorized
         '422':
@@ -965,6 +1110,60 @@ paths:
           description: bad request
         '404':
           description: chat not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: object
+                  items:
+                    properties:
+                      detail:
+                        type: string
+              required:
+              - detail
+    put:
+      summary: Updates a message
+      tags:
+      - Messages
+      security:
+      - bearer_auth: {}
+      parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type: object
+                  properties:
+                    message:
+                      type: object
+                      items:
+                        properties:
+                          detail:
+                            type: string
+                    required:
+                    - detail
+        '400':
+          description: Parameter is missing or its value is empty
+        '401':
+          description: unauthorized
+        '404':
+          description: not found
       requestBody:
         content:
           application/json:
