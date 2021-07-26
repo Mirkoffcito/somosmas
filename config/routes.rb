@@ -27,9 +27,8 @@ Rails.application.routes.draw do
     resources :testimonials, only: [:create, :update, :destroy, :index]
     resources :members, only: [:index, :destroy, :create, :update]
     resources :comments, only: [:index, :create, :update, :destroy]
+    resources :chats, only: [:index, :create]
     resources :messages, only: [:create, :show]
-    resources :chats, only: [:index ]
-    
   end
 
 end
