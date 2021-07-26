@@ -10,21 +10,19 @@ module Api
     end
 
     def create
-      if chat_user.blank?
-        chat = Chat.new
-        chat.chat_users.build(user_id: @current_user.id)
-        chat.chat_users.build(user_id: receiver)
-        chat.messages.build(message_params) if message_params
+      return render json: { message: "Chat already exists, chat N° #{chat_user.chat.id}" } if chat_user.present?
 
-        if chat.save
-          render json: chat, serializer: ChatSerializer, status: :created
-        elsif chat_user.nil?
-          render json: { error: 'User not found' }, status: :not_found
-        else
-          render json: chat.errors, status: :bad_request
-        end
+      chat = Chat.new
+      chat.chat_users.build(user_id: @current_user.id)
+      chat.chat_users.build(user_id: receiver)
+      chat.messages.build(message_params) if message_params
+
+      if chat.save
+        render json: chat, serializer: ChatSerializer, status: :created
+      elsif chat_user.nil?
+        render json: { error: 'User not found' }, status: :not_found
       else
-        render json: { message: "Chat already exists, chat N° #{chat_user.chat.id}" }
+        render json: chat.errors, status: :bad_request
       end
     end
 
